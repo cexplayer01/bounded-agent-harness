@@ -1,0 +1,10 @@
+{
+  "mcp.research": {
+    "type": "literal",
+    "output": { "sources": ["example-primary-source"] }
+  },
+  "mcp.code-review": {
+    "type": "literal",
+    "output": { "findings": [] }
+  }
+}

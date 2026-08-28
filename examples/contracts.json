@@ -1,0 +1,6 @@
+[
+  { "id": "research-input.v1", "required": ["question"] },
+  { "id": "review-input.v1", "required": ["scope"] },
+  { "id": "evidence.v1", "required": ["sources"] },
+  { "id": "review.v1", "required": ["findings"] }
+]

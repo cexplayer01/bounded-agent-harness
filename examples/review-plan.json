@@ -1,0 +1,34 @@
+{
+  "id": "bounded-change-review",
+  "version": 1,
+  "objective": "Research one constraint and independently review the resulting bounded change.",
+  "budget": { "maxCostUnits": 8 },
+  "steps": [
+    {
+      "id": "research",
+      "specialist": "source-researcher",
+      "capability": "research.primary-sources",
+      "authority": "read.external",
+      "dependsOn": [],
+      "contextProjection": {},
+      "input": { "question": "What primary contract governs this change?" },
+      "inputContract": "research-input.v1",
+      "outputContract": "evidence.v1",
+      "costUnits": 3,
+      "effect": "read"
+    },
+    {
+      "id": "review",
+      "specialist": "implementation-reviewer",
+      "capability": "review.contract",
+      "authority": "read.workspace",
+      "dependsOn": ["research"],
+      "contextProjection": { "research": ["sources"] },
+      "input": { "scope": "one bounded module" },
+      "inputContract": "review-input.v1",
+      "outputContract": "review.v1",
+      "costUnits": 4,
+      "effect": "read"
+    }
+  ]
+}

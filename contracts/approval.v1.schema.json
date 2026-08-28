@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/approval.v1.schema.json",
+  "title": "Agent Harness Approval V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["gateId", "stepId", "workflowDigest", "decision"],
+  "properties": {
+    "gateId": { "type": "string", "minLength": 1 },
+    "stepId": { "type": "string", "minLength": 1 },
+    "workflowDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "decision": { "const": "approved" }
+  }
+}

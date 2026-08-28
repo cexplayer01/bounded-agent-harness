@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/plan.v1.schema.json",
+  "title": "Agent Harness Plan V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "objective", "budget", "steps"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9._-]{1,79}$" },
+    "version": { "const": 1 },
+    "objective": { "type": "string", "minLength": 1 },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxCostUnits"],
+      "properties": { "maxCostUnits": { "type": "integer", "minimum": 0 } }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "specialist", "capability", "authority", "dependsOn", "contextProjection", "input", "inputContract", "outputContract", "costUnits", "effect"],
+        "properties": {
+          "id": { "type": "string" },
+          "specialist": { "type": "string" },
+          "capability": { "type": "string" },
+          "authority": { "type": "string" },
+          "dependsOn": { "type": "array", "items": { "type": "string" } },
+          "contextProjection": {
+            "type": "object",
+            "additionalProperties": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+          },
+          "input": { "type": "object" },
+          "inputContract": { "type": "string" },
+          "outputContract": { "type": "string" },
+          "costUnits": { "type": "integer", "minimum": 0 },
+          "effect": { "enum": ["read", "local", "external"] },
+          "idempotencyKey": { "type": "string", "minLength": 8 },
+          "approval": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["required", "gateId"],
+            "properties": {
+              "required": { "const": true },
+              "gateId": { "type": "string", "pattern": "^[a-z][a-z0-9._-]{1,79}$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

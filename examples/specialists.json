@@ -1,0 +1,24 @@
+[
+  {
+    "id": "source-researcher",
+    "version": 1,
+    "description": "Finds and cites primary evidence; does not edit implementation.",
+    "strengths": ["source discovery", "evidence extraction"],
+    "limitations": ["does not modify implementation", "does not authorize external actions"],
+    "capabilities": ["research.primary-sources"],
+    "authority": ["read.external", "write.handoff"],
+    "adapter": "mcp.research",
+    "evidence": { "completedRuns": 0, "acceptedOutputs": 0, "rejectedOutputs": 0 }
+  },
+  {
+    "id": "implementation-reviewer",
+    "version": 1,
+    "description": "Reviews a bounded change against its contract and returns findings.",
+    "strengths": ["adversarial review", "edge cases"],
+    "limitations": ["does not implement findings", "does not expand review scope"],
+    "capabilities": ["review.contract"],
+    "authority": ["read.workspace", "write.handoff"],
+    "adapter": "mcp.code-review",
+    "evidence": { "completedRuns": 0, "acceptedOutputs": 0, "rejectedOutputs": 0 }
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/memory-record.v1.schema.json",
+  "title": "Agent Harness Memory Record V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["key", "revision", "contract", "value", "digest"],
+  "properties": {
+    "key": { "type": "string", "pattern": "^[a-z][a-z0-9._-]{1,119}$" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "contract": { "type": "string", "minLength": 1 },
+    "value": {},
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/handoff.v1.schema.json",
+  "title": "Agent Harness Handoff V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "runId", "workflowDigest", "stepId", "sequence", "specialist", "capability", "authority", "inputContract", "outputContract"],
+  "properties": {
+    "format": { "const": "agent-harness.handoff.v1" },
+    "runId": { "type": "string", "minLength": 1 },
+    "workflowDigest": { "type": "string", "pattern": "^sha256:" },
+    "stepId": { "type": "string", "minLength": 1 },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "specialist": { "type": "string", "minLength": 1 },
+    "capability": { "type": "string", "minLength": 1 },
+    "authority": { "type": "string", "minLength": 1 },
+    "inputContract": { "type": "string", "minLength": 1 },
+    "outputContract": { "type": "string", "minLength": 1 }
+  }
+}
