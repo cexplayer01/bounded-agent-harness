@@ -8,8 +8,8 @@ import { AdapterRegistry, canonicalize, ContractRegistry, FileMemoryStore, execu
 const workflow = {
   format: "agent-harness.workflow.v1", digest: "sha256:test", budget: { maxCostUnits: 2, compiledCostUnits: 2 },
   steps: [
-    { sequence: 0, id: "find", specialist: "researcher", adapter: "mcp.fake", dependsOn: [], input: { q: "x" }, outputContract: "evidence.v1", costUnits: 1, effect: "read" },
-    { sequence: 1, id: "review", specialist: "reviewer", adapter: "local.review", dependsOn: ["find"], input: {}, outputContract: "review.v1", costUnits: 1, effect: "read" }
+    { sequence: 0, id: "find", specialist: "researcher", adapter: "mcp.fake", capability: "research.web", authority: "read.workspace", dependsOn: [], input: { q: "x" }, outputContract: "evidence.v1", costUnits: 1, effect: "read" },
+    { sequence: 1, id: "review", specialist: "reviewer", adapter: "local.review", capability: "review.evidence", authority: "read.workspace", dependsOn: ["find"], input: {}, outputContract: "review.v1", costUnits: 1, effect: "read" }
   ]
 };
 

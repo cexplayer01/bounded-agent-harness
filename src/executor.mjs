@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { assert, HarnessError } from "./errors.mjs";
+import { buildCapabilityEnvelope } from "./capability-envelope.mjs";
 import { recoveryCheckpoint } from "./heartbeat.mjs";
 import { verifyWorkflowArtifact } from "./workflow-compiler.mjs";
 
@@ -68,12 +69,28 @@ export async function executeWorkflow({ workflow, contracts, adapters, memory, r
         stepId: step.id,
         sequence: step.sequence,
         specialist: step.specialist,
+        adapter: step.adapter,
         capability: step.capability,
         authority: step.authority,
         inputContract: step.inputContract,
         outputContract: step.outputContract
       };
-      const adapterValue = await adapters.get(step.adapter).invoke({ handoff, input: step.input, context, signal, idempotencyKey: step.idempotencyKey, resumed: Boolean(prior), reservedCostUnits: step.costUnits });
+      const adapterValue = await adapters.get(step.adapter).invoke({
+        handoff,
+        invocation: buildCapabilityEnvelope({
+          runId,
+          workflowDigest: workflow.digest,
+          step,
+          attempt: 1,
+          expiresAt: new Date(now() + 60_000).toISOString()
+        }),
+        input: step.input,
+        context,
+        signal,
+        idempotencyKey: step.idempotencyKey,
+        resumed: Boolean(prior),
+        reservedCostUnits: step.costUnits
+      });
       const wrapped = adapterValue?.format === "agent-harness.adapter-result.v1";
       const output = wrapped ? adapterValue.output : adapterValue;
       const usage = wrapped ? adapterValue.usage : { costUnits: step.costUnits, source: "reserved-ceiling" };

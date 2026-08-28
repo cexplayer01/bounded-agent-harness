@@ -3,7 +3,30 @@ import assert from "node:assert/strict";
 import { mcpAdapter } from "../src/adapters.mjs";
 
 const request = {
-  handoff: { format: "agent-harness.handoff.v1", stepId: "review" },
+  handoff: {
+    format: "agent-harness.handoff.v1",
+    runId: "run-1",
+    workflowDigest: "sha256:test",
+    stepId: "review",
+    capability: "review",
+    authority: "read.project",
+    adapter: "mcp-review"
+  },
+  invocation: {
+    format: "agent-harness.adapter-invocation.v1",
+    runId: "run-1",
+    stepId: "review",
+    attempt: 1,
+    workflowDigest: "sha256:test",
+    authorization: {
+      allowedCapability: "review",
+      allowedAuthority: "read.project",
+      allowedAdapter: "mcp-review",
+      allowedEffect: "read",
+      maxEffects: 0,
+      expiresAt: "2099-01-01T00:00:00.000Z"
+    }
+  },
   input: { target: "module.mjs" },
   context: {},
   idempotencyKey: undefined,
@@ -17,7 +40,7 @@ test("MCP adapter accepts provider list shapes and returns only structured conte
       listTools: async () => listResult,
       callTool: async (value) => { received = value; return { content: [{ type: "text", text: "ignored" }], structuredContent: { findings: [] } }; }
     }, { server: "review-server", tool: "review" });
-    assert.deepEqual(await adapter.invoke({ ...request, reservedCostUnits: 3 }), { format: "agent-harness.adapter-result.v1", output: { findings: [] }, usage: { costUnits: 3, source: "reserved-ceiling" }, provider: { name: "review-server", version: null, identity: "configuration-only" } });
+    assert.deepEqual(await adapter.invoke({ ...request, reservedCostUnits: 3 }), { format: "agent-harness.adapter-result.v1", output: { findings: [] }, usage: { costUnits: 3, source: "reserved-ceiling" }, provider: { name: "review-server", version: null, identity: "configuration-only", assuranceLevel: "configuration-only" } });
     assert.equal(received.arguments.handoff.stepId, "review");
   }
 });
@@ -30,7 +53,7 @@ test("MCP adapter pins provider identity before invoking a tool", async () => {
   };
   const adapter = mcpAdapter(client, { server: "review", tool: "check", expectedServer: { name: "trusted-review", version: "1.2.0" } });
   const result = await adapter.invoke({ ...request, reservedCostUnits: 1 });
-  assert.deepEqual(result.provider, { name: "trusted-review", version: "1.2.0", identity: "pinned" });
+  assert.deepEqual(result.provider, { name: "trusted-review", version: "1.2.0", identity: "pinned", assuranceLevel: "configuration-only" });
   assert.equal(calls, 1);
 
   const impostor = mcpAdapter({ getServerInfo: async () => ({ name: "impostor", version: "1.2.0" }), callTool: async () => { calls += 1; } }, { server: "review", tool: "check", expectedServer: { name: "trusted-review", version: "1.2.0" } });
@@ -53,4 +76,30 @@ test("MCP adapter fails closed on missing tools, tool errors, and prose-only out
 
   const prose = mcpAdapter({ callTool: async () => ({ content: [{ type: "text", text: "looks good" }] }) }, { server: "s", tool: "review" });
   await assert.rejects(() => prose.invoke(request), /must return structuredContent/);
+});
+
+test("MCP adapter rejects expired or mismatched capability envelopes before provider invocation", async () => {
+  let calls = 0;
+  const adapter = mcpAdapter({ callTool: async () => { calls += 1; return { structuredContent: { findings: [] } }; } }, { server: "s", tool: "review" });
+  await assert.rejects(
+    () => adapter.invoke({
+      ...request,
+      invocation: {
+        ...request.invocation,
+        authorization: { ...request.invocation.authorization, expiresAt: "2000-01-01T00:00:00.000Z" }
+      }
+    }),
+    (error) => error?.code === "CAPABILITY_EXPIRED"
+  );
+  await assert.rejects(
+    () => adapter.invoke({
+      ...request,
+      invocation: {
+        ...request.invocation,
+        authorization: { ...request.invocation.authorization, allowedAuthority: "crm.write" }
+      }
+    }),
+    (error) => error?.code === "CAPABILITY_MISMATCH"
+  );
+  assert.equal(calls, 0);
 });

@@ -6,11 +6,22 @@ const TEXT = new Set([".json", ".md", ".mjs"]);
 const SECRET_ASSIGNMENT = /\b(api[_-]?key|access[_-]?token|client[_-]?secret|password)\b\s*[=:]\s*["'][^"']{8,}["']/i;
 const ABSOLUTE_LOCAL_PATH = /(?:[A-Za-z]:\\+Users\\+|\/home\/|\/Users\/)/;
 const IMPORT = /from\s+["']([^"']+)["']/g;
+const GENERATED_DIRS = new Set([
+  "node_modules",
+  ".agent-harness",
+  "test",
+  ".next",
+  ".vinext",
+  ".wrangler",
+  "dist",
+  ".open-next",
+  ".turbo"
+]);
 
 async function files(root, current = root) {
   const found = [];
   for (const entry of await readdir(current, { withFileTypes: true })) {
-    if (["node_modules", ".agent-harness", "test"].includes(entry.name)) continue;
+    if (GENERATED_DIRS.has(entry.name)) continue;
     const path = resolve(current, entry.name);
     if (entry.isDirectory()) found.push(...await files(root, path));
     else if (TEXT.has(extname(entry.name))) found.push(path);

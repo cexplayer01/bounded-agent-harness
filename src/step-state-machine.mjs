@@ -1,0 +1,100 @@
+import { assert } from "./errors.mjs";
+
+export const STEP_STATES = Object.freeze({
+  PENDING: "PENDING",
+  AUTHORIZED: "AUTHORIZED",
+  LEASED: "LEASED",
+  INVOKING: "INVOKING",
+  SUCCEEDED: "SUCCEEDED",
+  FAILED_RETRYABLE: "FAILED_RETRYABLE",
+  FAILED_FINAL: "FAILED_FINAL",
+  RECONCILIATION_REQUIRED: "RECONCILIATION_REQUIRED",
+  PARKED: "PARKED",
+  RECONCILING: "RECONCILING",
+  COMPLETED: "COMPLETED"
+});
+
+export const STEP_EVENTS = Object.freeze({
+  AUTHORIZE: "AUTHORIZE",
+  ACQUIRE_LEASE: "ACQUIRE_LEASE",
+  START_INVOCATION: "START_INVOCATION",
+  SUCCEED: "SUCCEED",
+  FAIL_RETRYABLE: "FAIL_RETRYABLE",
+  FAIL_FINAL: "FAIL_FINAL",
+  AMBIGUOUS_EFFECT: "AMBIGUOUS_EFFECT",
+  PARK: "PARK",
+  START_RECONCILIATION: "START_RECONCILIATION",
+  RECONCILE_SUCCEEDED: "RECONCILE_SUCCEEDED",
+  RECONCILE_FAILED: "RECONCILE_FAILED",
+  COMPLETE: "COMPLETE"
+});
+
+const TRANSITIONS = Object.freeze({
+  [STEP_STATES.PENDING]: Object.freeze({
+    [STEP_EVENTS.AUTHORIZE]: STEP_STATES.AUTHORIZED,
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.AUTHORIZED]: Object.freeze({
+    [STEP_EVENTS.ACQUIRE_LEASE]: STEP_STATES.LEASED,
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.LEASED]: Object.freeze({
+    [STEP_EVENTS.START_INVOCATION]: STEP_STATES.INVOKING,
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.INVOKING]: Object.freeze({
+    [STEP_EVENTS.SUCCEED]: STEP_STATES.SUCCEEDED,
+    [STEP_EVENTS.FAIL_RETRYABLE]: STEP_STATES.FAILED_RETRYABLE,
+    [STEP_EVENTS.FAIL_FINAL]: STEP_STATES.FAILED_FINAL,
+    [STEP_EVENTS.AMBIGUOUS_EFFECT]: STEP_STATES.RECONCILIATION_REQUIRED
+  }),
+  [STEP_STATES.SUCCEEDED]: Object.freeze({
+    [STEP_EVENTS.COMPLETE]: STEP_STATES.COMPLETED
+  }),
+  [STEP_STATES.FAILED_RETRYABLE]: Object.freeze({
+    [STEP_EVENTS.ACQUIRE_LEASE]: STEP_STATES.LEASED,
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.FAILED_FINAL]: Object.freeze({
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.RECONCILIATION_REQUIRED]: Object.freeze({
+    [STEP_EVENTS.START_RECONCILIATION]: STEP_STATES.RECONCILING,
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.RECONCILING]: Object.freeze({
+    [STEP_EVENTS.RECONCILE_SUCCEEDED]: STEP_STATES.SUCCEEDED,
+    [STEP_EVENTS.RECONCILE_FAILED]: STEP_STATES.FAILED_FINAL,
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.PARKED]: Object.freeze({}),
+  [STEP_STATES.COMPLETED]: Object.freeze({})
+});
+
+export function isTerminalStepState(state) {
+  return state === STEP_STATES.COMPLETED || state === STEP_STATES.PARKED;
+}
+
+export function allowedStepEvents(state) {
+  assert(Object.hasOwn(TRANSITIONS, state), "INVALID_STEP_STATE", `unknown step state: ${state}`);
+  return Object.freeze(Object.keys(TRANSITIONS[state]));
+}
+
+export function transitionStepState(state, event) {
+  assert(Object.hasOwn(TRANSITIONS, state), "INVALID_STEP_STATE", `unknown step state: ${state}`);
+  const next = TRANSITIONS[state][event];
+  assert(next, "INVALID_STEP_TRANSITION", `cannot apply ${event} from ${state}`);
+  return next;
+}
+
+export function reduceStepEvents(events, initialState = STEP_STATES.PENDING) {
+  assert(Array.isArray(events), "INVALID_STEP_EVENTS", "step events must be an array");
+  return events.reduce((state, event) => transitionStepState(state, event), initialState);
+}
+
+export function classifyExecutionPlane(event) {
+  if ([STEP_EVENTS.AUTHORIZE, STEP_EVENTS.ACQUIRE_LEASE, STEP_EVENTS.PARK].includes(event)) return "control";
+  if ([STEP_EVENTS.START_INVOCATION, STEP_EVENTS.SUCCEED, STEP_EVENTS.FAIL_RETRYABLE, STEP_EVENTS.FAIL_FINAL, STEP_EVENTS.AMBIGUOUS_EFFECT].includes(event)) return "execution";
+  if ([STEP_EVENTS.START_RECONCILIATION, STEP_EVENTS.RECONCILE_SUCCEEDED, STEP_EVENTS.RECONCILE_FAILED, STEP_EVENTS.COMPLETE].includes(event)) return "reconciliation";
+  assert(false, "INVALID_STEP_EVENT", `unknown step event: ${event}`);
+}

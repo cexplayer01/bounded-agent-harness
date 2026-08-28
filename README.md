@@ -7,6 +7,7 @@ It packages the useful reliability mechanisms without requiring chat transcripts
 ## Product promise
 
 - Persistent shared memory is contract-bound, revisioned data, not chat history.
+- The deterministic control plane is separate from nondeterministic provider execution and post-effect reconciliation.
 - Contracts are named, versioned, fingerprinted, and validated at boundaries.
 - Specialists advertise honest strengths, explicit limitations, capabilities, narrow authority, and outcome counts.
 - MCP providers are adapters; they do not silently acquire authority.
@@ -45,7 +46,9 @@ Compilation refuses to overwrite an existing artifact. `run` and `resume` curren
 
 MCP adapters optionally verify that their configured tool is advertised, pass a versioned handoff envelope containing the exact workflow, specialist, capability, authority, and output-contract identity, and accept only `structuredContent`. Tool errors and prose-only responses fail closed.
 
-An MCP adapter can pin the expected server name and version. When pinned, invocation cannot begin until the client reports a matching identity; the verified identity is retained in the step evidence. Unpinned adapters are labeled `configuration-only`, never implied to be authenticated.
+An MCP adapter can pin the expected server name and version. When pinned, invocation cannot begin until the client reports a matching identity; the verified identity is retained in the step evidence. Unpinned adapters are labeled `configuration-only`, never implied to be authenticated. Pinned metadata is still recorded with `assuranceLevel: "configuration-only"` until a future adapter adds transport-authenticated or cryptographically attested identity.
+
+Adapters also receive a versioned capability envelope that binds run ID, step ID, workflow digest, capability, authority, adapter ID, allowed effect count, expiry, and idempotency key for external effects. The MCP adapter validates that envelope before provider invocation, so an expired, mismatched, or over-scoped handoff fails before a tool call can happen.
 
 `npm run demo:mcp` proves the provider boundary end to end with two intentionally different in-process MCP client shapes: a primary-source researcher feeds a separate contract reviewer, both identities are pinned, structured context crosses the dependency edge, actual cost is recorded, and no network or model is required. It is a compatibility proof, not evidence that a particular external provider is trustworthy.
 
@@ -55,6 +58,8 @@ Worker heartbeats enter the same tamper-evident ledger with run, worker, workflo
 
 Recovery policy is an explicit pure decision, separate from heartbeat detection. Policy, contract, authority, identity, and budget failures park immediately. Temporary read/local failures may retry only within a caller-supplied attempt ceiling. An ambiguous external effect requires owner review unless its compiled step carries a stable idempotency key. Exhausted attempts park instead of creating an autonomous loop.
 
+Step lifecycle is now a closed state machine instead of an implied event-story. A step must move through `PENDING -> AUTHORIZED -> LEASED -> INVOKING` before it can succeed, fail, or require reconciliation. Ambiguous external effects enter `RECONCILIATION_REQUIRED`; they cannot be marked completed without a reconciliation path, and retryable failures must reacquire a lease before invoking again.
+
 Plans may place a named approval gate on any step. Execution accepts an approval only when its gate, step, decision, and complete workflow digest match exactly, then records gate verification before invoking the adapter. An approval from an older compilation cannot authorize changed work.
 
 Deterministic specialist routing filters by capability and authority before considering outcomes. It prefers verified accepted-output rates, labels profiles with no history as unproven, retains limitations in its rationale, and uses stable ID ordering for ties. Model branding and persuasive self-description do not influence selection.
@@ -62,6 +67,8 @@ Deterministic specialist routing filters by capability and authority before cons
 The compiled artifact fingerprints every selected specialist's complete profile and records its adapter ID. Changing declared capability, authority, limitation, evidence, or adapter therefore produces a different workflow identity and invalidates approvals or resume artifacts bound to the older compilation.
 
 Outcome updates are explicit and immutable. A completed result may be recorded as accepted, rejected, or completed-but-unreviewed; an unreviewed completion increases experience without pretending it was accepted. The library returns an updated profile for the caller to validate and persist through shared memory.
+
+Storage and provider boundaries are now named as ports. The existing filesystem event log, shared state, contract registry, and MCP adapter satisfy those executable interfaces, while future SQLite, Postgres, S3, Redis, hosted approval, or remote lease implementations can replace them without changing the compiler contract. The current package defines the lease-store shape, but does not claim distributed leasing is implemented.
 
 `SharedMemory` is the compact persistent project-memory primitive: named records are validated against the registry, written atomically, integrity-digested, revisioned with optimistic concurrency, and linked into the run event ledger. A stale agent cannot silently overwrite a newer fact. The event ledger serializes multiple local writers through an exclusive bounded lock, preserving one valid hash chain instead of racing append operations.
 
@@ -76,19 +83,16 @@ Dependency context is least-disclosure by construction. Every compiled step expl
 ## Architecture
 
 ```text
-validated plan + contract registry + specialist profiles
+deterministic control plane
+  validated plan + contracts + authority + budget + step state machine
                          |
-                  deterministic compiler
+                         v
+nondeterministic execution plane
+  MCP adapter / local adapter / human gate / provider result
                          |
-                immutable workflow artifact
-                         |
-          policy-enforcing executor
-             /            |             \
-       MCP adapter   local adapter   human gate
-                         |
-          events + checkpoints + heartbeat
-                         |
-              persistent shared memory
+                         v
+reconciliation plane
+  observed effect checks + events + checkpoints + heartbeat + shared memory
 ```
 
 ## Boundary

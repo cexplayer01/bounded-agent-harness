@@ -16,10 +16,13 @@ Status: implemented and tested locally.
 - Contract-bound, integrity-checked shared records with optimistic concurrency.
 - Policy-enforcing executor with structured handoffs.
 - MCP-shaped provider adapter and local test adapter.
+- Executable port checks for event store, state store, contract registry, provider adapter, and future lease store.
+- Versioned adapter capability envelope enforced before MCP provider invocation.
 - Heartbeat receipt, lease expiry, bounded retry, and recovery checkpoint.
 - Heartbeat receipts and lease summaries bind worker, workflow, cumulative cost, and monotonic time; bounded recovery policy is explicit and side-effect-aware.
 - Per-step cost ledger and run summary.
 - Local multi-writer serialization and non-destructive orphan diagnosis; distributed locking and authorized orphan removal remain.
+- Closed step state machine with explicit `RECONCILIATION_REQUIRED` for ambiguous external effects.
 
 Status: local execution foundation implemented; distributed operation remains.
 

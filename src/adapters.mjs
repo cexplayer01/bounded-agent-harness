@@ -1,4 +1,5 @@
 import { assert } from "./errors.mjs";
+import { validateCapabilityEnvelope } from "./capability-envelope.mjs";
 
 export class AdapterRegistry {
   #adapters = new Map();
@@ -26,9 +27,9 @@ export function mcpAdapter(client, { server, tool, expectedServer }) {
           const actual = await client.getServerInfo({ server, signal: request.signal });
           assert(actual?.name === expectedServer.name, "MCP_IDENTITY_MISMATCH", `expected MCP server ${expectedServer.name}, received ${actual?.name || "unknown"}`);
           if (expectedServer.version !== undefined) assert(actual.version === expectedServer.version, "MCP_IDENTITY_MISMATCH", `expected MCP server version ${expectedServer.version}, received ${actual.version || "unknown"}`);
-          provider = { name: actual.name, version: actual.version || null, identity: "pinned" };
+          provider = { name: actual.name, version: actual.version || null, identity: "pinned", assuranceLevel: "configuration-only" };
         } else {
-          provider = { name: server, version: null, identity: "configuration-only" };
+          provider = { name: server, version: null, identity: "configuration-only", assuranceLevel: "configuration-only" };
         }
       }
       if (!verified && typeof client.listTools === "function") {
@@ -41,6 +42,7 @@ export function mcpAdapter(client, { server, tool, expectedServer }) {
         server,
         name: tool,
         arguments: {
+          invocation: validateCapabilityEnvelope(request.invocation, { handoff: request.handoff, adapterId: request.handoff?.adapter, now: request.now }),
           handoff: request.handoff,
           input: request.input,
           context: request.context,
