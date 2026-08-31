@@ -1,5 +1,5 @@
 const proof = [
-  ["112", "tests passing"],
+  ["Fail-closed", "governed execution"],
   ["0", "runtime dependencies"],
   ["2", "MCP provider shapes proven"],
 ];
