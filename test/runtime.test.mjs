@@ -113,11 +113,11 @@ test("event log is hash chained and rejects tampering", async () => {
 test("event log serializes concurrent writers without losing chain integrity", async () => {
   const root = await mkdtemp(join(tmpdir(), "harness-"));
   try {
-    const writers = Array.from({ length: 4 }, () => new FileMemoryStore(root));
-    await Promise.all(Array.from({ length: 24 }, (_, index) => writers[index % writers.length].append({ type: "concurrent", index })));
+    const writers = Array.from({ length: 8 }, () => new FileMemoryStore(root));
+    await Promise.all(Array.from({ length: 64 }, (_, index) => writers[index % writers.length].append({ type: "concurrent", index })));
     const envelopes = await writers[0].envelopes();
-    assert.equal(envelopes.length, 24);
-    assert.deepEqual(envelopes.map((entry) => entry.sequence), Array.from({ length: 24 }, (_, index) => index));
+    assert.equal(envelopes.length, 64);
+    assert.deepEqual(envelopes.map((entry) => entry.sequence), Array.from({ length: 64 }, (_, index) => index));
   } finally { await rm(root, { recursive: true, force: true }); }
 });
 

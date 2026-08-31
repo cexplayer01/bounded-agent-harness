@@ -12,6 +12,10 @@ function inside(root, target) {
 
 const pause = (milliseconds) => new Promise((resolvePause) => setTimeout(resolvePause, milliseconds));
 
+function isRetriableLockContention(error) {
+  return error?.code === "EEXIST" || (process.platform === "win32" && error?.code === "EPERM");
+}
+
 export class FileMemoryStore {
   constructor(root, { lockTimeoutMs = 2000, lockRetryMs = 10 } = {}) {
     this.root = resolve(root);
@@ -49,7 +53,10 @@ export class FileMemoryStore {
         lock = await open(this.lockPath, "wx");
         await lock.writeFile(`${JSON.stringify({ pid: process.pid, acquiredAt: new Date().toISOString() })}\n`, "utf8");
       } catch (error) {
-        if (error.code !== "EEXIST") throw error;
+        // Windows can briefly report EPERM while another writer closes and
+        // removes the lock file. Treat it as contention within the same
+        // bounded timeout; other permission failures still fail immediately.
+        if (!isRetriableLockContention(error)) throw error;
         assert(Date.now() - startedAt < this.lockTimeoutMs, "EVENT_LOG_LOCKED", "event log is locked by another writer");
         await pause(this.lockRetryMs);
       }
