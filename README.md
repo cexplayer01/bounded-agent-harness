@@ -43,6 +43,8 @@ node bin/harness.mjs lock-status --memory .agent-harness/run-1 --stale-after-ms 
 node bin/harness.mjs impact --root . --request examples/change-impact-request.json --output change-impact.json
 ```
 
+The source for [boundedagentharness.com](https://boundedagentharness.com) is kept in [`website/`](website/). Build output, provider credentials, deployment identity, and local hosting state are intentionally excluded.
+
 Compilation refuses to overwrite an existing artifact. `run` and `resume` currently accept only declarative literal adapters, providing a safe zero-side-effect end-to-end proof without executing arbitrary code or contacting a provider. `inspect` verifies the complete event hash chain, then reports deterministic per-run status, failure, actual/reserved cost, savings, provider identity, ledger head, and checkpoint.
 
 MCP adapters optionally verify that their configured tool is advertised, pass a versioned handoff envelope containing the exact workflow, specialist, capability, authority, and output-contract identity, and accept only `structuredContent`. Tool errors and prose-only responses fail closed.

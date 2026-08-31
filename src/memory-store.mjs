@@ -16,6 +16,20 @@ function isRetriableLockContention(error) {
   return error?.code === "EEXIST" || (process.platform === "win32" && error?.code === "EPERM");
 }
 
+async function releaseLock(path, { timeoutMs, retryMs }) {
+  const startedAt = Date.now();
+  while (true) {
+    try {
+      await unlink(path);
+      return;
+    } catch (error) {
+      if (!(process.platform === "win32" && error?.code === "EPERM")) throw error;
+      assert(Date.now() - startedAt < timeoutMs, "EVENT_LOG_LOCK_RELEASE_FAILED", "event log lock could not be released");
+      await pause(retryMs);
+    }
+  }
+}
+
 export class FileMemoryStore {
   constructor(root, { lockTimeoutMs = 2000, lockRetryMs = 10 } = {}) {
     this.root = resolve(root);
@@ -69,7 +83,7 @@ export class FileMemoryStore {
       await appendFile(this.eventsPath, `${JSON.stringify(envelope)}\n`, "utf8");
     } finally {
       await lock.close();
-      await unlink(this.lockPath);
+      await releaseLock(this.lockPath, { timeoutMs: this.lockTimeoutMs, retryMs: this.lockRetryMs });
     }
     return event;
   }

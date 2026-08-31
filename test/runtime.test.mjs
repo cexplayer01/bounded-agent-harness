@@ -114,7 +114,9 @@ test("event log serializes concurrent writers without losing chain integrity", a
   const root = await mkdtemp(join(tmpdir(), "harness-"));
   try {
     const writers = Array.from({ length: 8 }, () => new FileMemoryStore(root));
-    await Promise.all(Array.from({ length: 64 }, (_, index) => writers[index % writers.length].append({ type: "concurrent", index })));
+    const results = await Promise.allSettled(Array.from({ length: 64 }, (_, index) => writers[index % writers.length].append({ type: "concurrent", index })));
+    const failures = results.filter((result) => result.status === "rejected").map((result) => result.reason?.code || result.reason?.message || String(result.reason));
+    assert.deepEqual(failures, [], `concurrent writers failed: ${failures.join(", ")}`);
     const envelopes = await writers[0].envelopes();
     assert.equal(envelopes.length, 64);
     assert.deepEqual(envelopes.map((entry) => entry.sequence), Array.from({ length: 64 }, (_, index) => index));
