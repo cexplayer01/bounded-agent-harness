@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/owner-wake.v1.schema.json",
+  "title": "Owner timeout wake v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "workflowDigest", "parentRunId", "checkpointDigest", "action", "nextWakeAt", "wakeDigest"],
+  "properties": {
+    "format": { "const": "agent-harness.owner-wake.v1" },
+    "version": { "const": 1 },
+    "workflowDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "parentRunId": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "checkpointDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "action": { "const": "RECHECK_OWNER_TIMEOUT" },
+    "nextWakeAt": { "type": "string", "format": "date-time" },
+    "wakeDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}

@@ -1,9 +1,13 @@
 import { canonicalize, sha256 } from "./canonical-json.mjs";
 import { assert } from "./errors.mjs";
 import { validatePlan, validateSpecialist } from "./contracts.mjs";
+import { governanceDigest, validateGovernanceBundle } from "./governance.mjs";
+import { assertPlanWithinFloor, floorDigest, validateFloorManifest } from "./floor-policy.mjs";
 
-export function compileWorkflow({ plan, specialists, contracts }) {
+export function compileWorkflow({ plan, specialists, contracts, governance, floor }) {
   validatePlan(plan);
+  if (governance !== undefined) validateGovernanceBundle(governance);
+  if (floor !== undefined) { validateFloorManifest(floor); assertPlanWithinFloor({ plan, floor }); }
   const profiles = new Map(specialists.map((profile) => [validateSpecialist(profile).id, profile]));
   assert(profiles.size === specialists.length, "DUPLICATE_SPECIALIST", "specialist IDs must be unique");
   const steps = new Map(plan.steps.map((step) => [step.id, step]));
@@ -44,11 +48,23 @@ export function compileWorkflow({ plan, specialists, contracts }) {
       return { sequence, ...step, adapter: profiles.get(step.specialist).adapter };
     })
   };
+  if (governance !== undefined) artifact.governance = { ...governance, digest: governanceDigest(governance) };
+  if (floor !== undefined) artifact.floor = { ...floor, digest: floorDigest(floor) };
   return { ...artifact, digest: `sha256:${sha256(artifact)}`, canonical: canonicalize(artifact) };
 }
 
 export function verifyWorkflowArtifact(workflow) {
   assert(workflow?.format === "agent-harness.workflow.v1", "INVALID_WORKFLOW", "compiled workflow v1 is required");
+  if (workflow.governance !== undefined) {
+    const { digest, ...governance } = workflow.governance;
+    validateGovernanceBundle(governance);
+    assert(digest === governanceDigest(governance), "GOVERNANCE_TAMPERED", "workflow governance digest does not match its bundle");
+  }
+  if (workflow.floor !== undefined) {
+    const { digest, ...floor } = workflow.floor;
+    validateFloorManifest(floor);
+    assert(digest === floorDigest(floor), "FLOOR_TAMPERED", "workflow floor digest does not match its manifest");
+  }
   const { digest, canonical, ...artifact } = workflow;
   const expectedCanonical = canonicalize(artifact);
   const expectedDigest = `sha256:${sha256(artifact)}`;

@@ -1,0 +1,12 @@
+{
+  "format": "usb.autonomous-floor.v1",
+  "version": 1,
+  "project": "usb-website-platform",
+  "goal": "complete bounded local product work without repeated confirmation",
+  "allowedEffects": ["read", "local-test", "local-reversible-artifact"],
+  "forbiddenEffects": ["deploy", "dns", "payment", "email-send", "live-database-write", "customer-site-write"],
+  "requiredReviewRoles": ["contract", "domain", "consistency", "reconciliation"],
+  "maxCostUnits": 8,
+  "timeoutPolicy": { "forkAfterMinutes": 30, "localOnly": true },
+  "authorityMode": "NARROW_ONLY"
+}

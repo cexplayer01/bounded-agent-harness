@@ -14,11 +14,13 @@ test("CLI validates and deterministically compiles example files", async () => {
   const root = await mkdtemp(join(tmpdir(), "harness-cli-"));
   try {
     const output = join(root, "workflow.json");
-    const validated = await runCli(["validate", "--plan", path("review-plan.json"), "--specialists", path("specialists.json")], silent);
+    const validated = await runCli(["validate", "--plan", path("review-plan.json"), "--specialists", path("specialists.json"), "--floor", path("autonomous-floor.json")], silent);
     assert.equal(validated.valid, true);
-    const compiled = await runCli(["compile", "--plan", path("review-plan.json"), "--specialists", path("specialists.json"), "--contracts", path("contracts.json"), "--output", output], silent);
+    assert.equal(validated.floorProject, "usb-website-platform");
+    const compiled = await runCli(["compile", "--plan", path("review-plan.json"), "--specialists", path("specialists.json"), "--contracts", path("contracts.json"), "--floor", path("autonomous-floor.json"), "--output", output], silent);
     assert.match(compiled.digest, /^sha256:/);
-    await assert.rejects(() => runCli(["compile", "--plan", path("review-plan.json"), "--specialists", path("specialists.json"), "--contracts", path("contracts.json"), "--output", output], silent), (error) => error.code === "EEXIST");
+    assert.equal(compiled.floor.project, "usb-website-platform");
+    await assert.rejects(() => runCli(["compile", "--plan", path("review-plan.json"), "--specialists", path("specialists.json"), "--contracts", path("contracts.json"), "--floor", path("autonomous-floor.json"), "--output", output], silent), (error) => error.code === "EEXIST");
   } finally { await rm(root, { recursive: true, force: true }); }
 });
 
@@ -42,7 +44,7 @@ test("CLI runs a compiled workflow locally and can inspect its evidence", async 
   const root = await mkdtemp(join(tmpdir(), "harness-cli-"));
   try {
     const output = join(root, "workflow.json");
-    await runCli(["compile", "--plan", path("review-plan.json"), "--specialists", path("specialists.json"), "--contracts", path("contracts.json"), "--output", output], silent);
+    await runCli(["compile", "--plan", path("review-plan.json"), "--specialists", path("specialists.json"), "--contracts", path("contracts.json"), "--floor", path("autonomous-floor.json"), "--output", output], silent);
     const result = await runCli([
       "run", "--workflow", output,
       "--contracts", path("contracts.json"),

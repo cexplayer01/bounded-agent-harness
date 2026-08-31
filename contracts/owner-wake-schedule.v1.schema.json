@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/owner-wake-schedule.v1.schema.json",
+  "title": "Owner timeout wake schedule v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "wakeDigest", "nextWakeAt", "action", "status"],
+  "properties": {
+    "format": { "const": "agent-harness.owner-wake-schedule.v1" },
+    "version": { "const": 1 },
+    "wakeDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "nextWakeAt": { "type": "string", "format": "date-time" },
+    "action": { "const": "RECHECK_OWNER_TIMEOUT" },
+    "status": { "enum": ["SCHEDULED", "CONSUMED"] },
+    "consumedAt": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bounded-agent-harness.dev/contracts/governance-atom.v1.schema.json",
+  "title": "Bounded Agent Harness governed atom v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "statement", "reviewLevel", "enforcementPoints", "requiredEvidence", "blastRadius", "humanFloorRequired", "authorityMode", "status"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9._-]{1,79}$" },
+    "version": { "const": 1 },
+    "statement": { "type": "string", "minLength": 1 },
+    "reviewLevel": { "type": "integer", "minimum": 0, "maximum": 5 },
+    "enforcementPoints": { "type": "array", "items": { "enum": ["compile", "authorize", "lease", "invoke", "reconcile"] }, "minItems": 1, "uniqueItems": true },
+    "requiredEvidence": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "blastRadius": { "enum": ["low", "medium", "high"] },
+    "humanFloorRequired": { "type": "boolean" },
+    "authorityMode": { "const": "NARROW_ONLY" },
+    "status": { "enum": ["ACTIVE", "SUPERSEDED", "REVOKED"] },
+    "supersedes": { "type": "string", "pattern": "^[a-z][a-z0-9._-]{1,79}$" }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/model-selection.v1.schema.json",
+  "title": "Bounded model selection decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision", "selectedTier", "reason", "riskClass", "fork", "estimatedCostUnits", "maxCostUnits"],
+  "properties": {
+    "decision": { "enum": ["CONTINUE", "ESCALATE"] },
+    "selectedTier": { "enum": ["frontier", "standard", "economy", null] },
+    "reason": { "enum": ["FORK_LOWEST_REASONABLE", "REQUESTED_TIER", "HUMAN_FLOOR_REQUIRED"] },
+    "riskClass": { "enum": ["A", "B", "C", "D"] },
+    "fork": { "type": "boolean" },
+    "estimatedCostUnits": { "type": "integer", "minimum": 0 },
+    "maxCostUnits": { "type": "integer", "exclusiveMinimum": 0 }
+  }
+}

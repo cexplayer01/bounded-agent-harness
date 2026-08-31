@@ -1,10 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { canonicalize, ContractRegistry, HarnessError, compileWorkflow, verifyWorkflowArtifact } from "../src/index.mjs";
+import { REVIEW_LEVELS } from "../src/index.mjs";
 
 const registry = () => new ContractRegistry().register("input.v1", () => true).register("result.v1", () => true);
 const specialists = [{ id: "reviewer", version: 1, description: "Reviewer", strengths: ["review"], limitations: ["read only"], capabilities: ["review.code"], authority: ["read.workspace"], adapter: "mcp.review", evidence: { completedRuns: 0, acceptedOutputs: 0, rejectedOutputs: 0 } }];
 const plan = () => ({ id: "test-plan", version: 1, objective: "Test", budget: { maxCostUnits: 2 }, steps: [{ id: "review", specialist: "reviewer", capability: "review.code", authority: "read.workspace", dependsOn: [], contextProjection: {}, input: {}, inputContract: "input.v1", outputContract: "result.v1", costUnits: 1, effect: "read" }] });
+const governance = () => ({ version: 1, atoms: [{ id: "contract-review", version: 1, statement: "Every handoff satisfies the named output contract.", reviewLevel: REVIEW_LEVELS.CONTRACT, enforcementPoints: ["compile", "invoke"], requiredEvidence: ["accepted-output"], blastRadius: "low", humanFloorRequired: false, authorityMode: "NARROW_ONLY", status: "ACTIVE" }], requiredAtomIds: ["contract-review"], authorityMode: "NARROW_ONLY" });
+const floor = () => ({ format: "usb.autonomous-floor.v1", version: 1, project: "usb-website-platform", goal: "local work", allowedEffects: ["read", "local-test", "local-reversible-artifact"], forbiddenEffects: ["deploy", "dns", "payment"], requiredReviewRoles: ["contract", "domain", "consistency", "reconciliation"], maxCostUnits: 8, timeoutPolicy: { forkAfterMinutes: 30, localOnly: true }, authorityMode: "NARROW_ONLY" });
 
 test("compilation is deterministic", () => {
   const first = compileWorkflow({ plan: plan(), specialists, contracts: registry() });
@@ -43,6 +46,24 @@ test("compiled artifact verification detects field, canonical, and digest tamper
   const changedDigest = structuredClone(compiled);
   changedDigest.digest = "sha256:wrong";
   assert.throws(() => verifyWorkflowArtifact(changedDigest), /digest does not match/);
+});
+
+test("optional governance bundle is digest-bound at compile and verification", () => {
+  const compiled = compileWorkflow({ plan: plan(), specialists, contracts: registry(), governance: governance() });
+  assert.match(compiled.governance.digest, /^sha256:[a-f0-9]{64}$/);
+  assert.equal(verifyWorkflowArtifact(compiled), compiled);
+  const tampered = structuredClone(compiled);
+  tampered.governance.atoms[0].statement = "weakened";
+  assert.throws(() => verifyWorkflowArtifact(tampered), (error) => error?.code === "GOVERNANCE_TAMPERED");
+});
+
+test("optional floor manifest is bound and tamper-checked", () => {
+  const compiled = compileWorkflow({ plan: plan(), specialists, contracts: registry(), floor: floor() });
+  assert.match(compiled.floor.digest, /^sha256:[a-f0-9]{64}$/);
+  assert.equal(verifyWorkflowArtifact(compiled), compiled);
+  const tampered = structuredClone(compiled);
+  tampered.floor.goal = "changed";
+  assert.throws(() => verifyWorkflowArtifact(tampered), (error) => error?.code === "FLOOR_TAMPERED");
 });
 
 test("canonical JSON matches JSON omission semantics for undefined values", () => {

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/change-impact.v1.schema.json",
+  "title": "Bounded change-impact result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "change_id", "status", "change_kind", "changed_paths", "reference_tokens", "consumers", "verification", "active_card"],
+  "properties": {
+    "schema_version": { "const": "change-impact.v1" },
+    "change_id": { "type": "string" },
+    "status": { "enum": ["READY_FOR_TIERED_VERIFICATION", "NEEDS_VERIFICATION_MAPPING"] },
+    "change_kind": { "enum": ["DOCUMENTATION", "LOCAL_IMPLEMENTATION", "PUBLIC_INTERFACE", "SCHEMA_OR_POLICY", "EXTERNAL_EFFECT_BOUNDARY"] },
+    "changed_paths": { "type": "array", "items": { "type": "string" } },
+    "reference_tokens": { "type": "array", "items": { "type": "string" } },
+    "consumers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind", "matched_tokens"],
+        "properties": {
+          "path": { "type": "string" },
+          "kind": { "enum": ["SOURCE", "TEST", "DOCUMENTATION"] },
+          "matched_tokens": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selected", "gaps", "full_suite_required", "execution_order"],
+      "properties": {
+        "selected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "tier", "command"],
+            "properties": {
+              "id": { "type": "string" },
+              "tier": { "enum": ["TIER_0_STATIC", "TIER_1_DIRECT", "TIER_2_BOUNDARY", "TIER_3_FULL"] },
+              "command": { "type": "string" }
+            }
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "path"],
+            "properties": {
+              "code": { "enum": ["DIRECT_TEST_MISSING", "CONSUMER_TEST_MISSING", "BOUNDARY_TEST_MISSING", "FULL_SUITE_MISSING"] },
+              "path": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "full_suite_required": { "type": "boolean" },
+        "execution_order": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "active_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current_outcome", "current_change", "affected_consumers", "focused_proof", "full_suite", "exact_next_action", "external_gates"],
+      "properties": {
+        "current_outcome": { "type": "string" },
+        "current_change": { "type": "string" },
+        "affected_consumers": { "type": "integer", "minimum": 0 },
+        "focused_proof": { "type": "array", "items": { "type": "string" } },
+        "full_suite": { "enum": ["REQUIRED_ONCE_AT_MILESTONE", "REQUIRED_BUT_UNMAPPED", "NOT_REQUIRED_BY_CHANGE_KIND"] },
+        "exact_next_action": { "enum": ["MAP_MISSING_VERIFICATION_COVERAGE", "RUN_SELECTED_TESTS_IN_ORDER"] },
+        "external_gates": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

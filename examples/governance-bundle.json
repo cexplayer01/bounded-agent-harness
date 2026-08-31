@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "authorityMode": "NARROW_ONLY",
+  "requiredAtomIds": ["contract-review", "external-effect-reconciliation"],
+  "atoms": [
+    {
+      "id": "contract-review",
+      "version": 1,
+      "statement": "Every handoff satisfies the named input and output contracts.",
+      "reviewLevel": 1,
+      "enforcementPoints": ["compile", "invoke"],
+      "requiredEvidence": ["accepted-output", "contract-violation"],
+      "blastRadius": "low",
+      "humanFloorRequired": false,
+      "authorityMode": "NARROW_ONLY",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "external-effect-reconciliation",
+      "version": 1,
+      "statement": "An external effect is observed before it is called complete.",
+      "reviewLevel": 4,
+      "enforcementPoints": ["invoke", "reconcile"],
+      "requiredEvidence": ["reconciliation"],
+      "blastRadius": "high",
+      "humanFloorRequired": true,
+      "authorityMode": "NARROW_ONLY",
+      "status": "ACTIVE"
+    }
+  ]
+}

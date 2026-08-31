@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/review-record.v1.schema.json",
+  "title": "Bounded continuation review record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "role", "reviewerId", "status", "workflowDigest", "floorDigest", "scope", "evidence", "findings", "checkedAt"],
+  "properties": {
+    "format": { "const": "agent-harness.review-record.v1" },
+    "version": { "const": 1 },
+    "role": { "enum": ["contract", "domain", "consistency", "reconciliation"] },
+    "reviewerId": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["PASS", "FAIL"] },
+    "workflowDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "floorDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "scope": { "type": "string", "minLength": 1 },
+    "evidence": { "type": "string", "minLength": 1 },
+    "findings": { "type": "array", "items": { "type": "string" } },
+    "checkedAt": { "type": "string", "format": "date-time" }
+  }
+}

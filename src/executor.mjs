@@ -3,6 +3,8 @@ import { assert, HarnessError } from "./errors.mjs";
 import { buildCapabilityEnvelope } from "./capability-envelope.mjs";
 import { recoveryCheckpoint } from "./heartbeat.mjs";
 import { verifyWorkflowArtifact } from "./workflow-compiler.mjs";
+import { governanceDigest, validateGovernanceBundle } from "./governance.mjs";
+import { floorDigest, validateFloorManifest } from "./floor-policy.mjs";
 
 async function reconstruct(memory, workflow, runId) {
   const events = (await memory.events()).filter((event) => event.runId === runId);
@@ -34,6 +36,16 @@ export async function executeWorkflow({ workflow, contracts, adapters, memory, r
   if (Array.isArray(workflow.contracts)) {
     assert(JSON.stringify(workflow.contracts) === JSON.stringify(contracts.describe()), "CONTRACT_REGISTRY_MISMATCH", "runtime contract registry does not match the compiled workflow");
   }
+  if (workflow.governance !== undefined) {
+    const { digest, ...governance } = workflow.governance;
+    validateGovernanceBundle(governance);
+    assert(digest === governanceDigest(governance), "GOVERNANCE_TAMPERED", "workflow governance digest does not match its bundle");
+  }
+  if (workflow.floor !== undefined) {
+    const { digest, ...floor } = workflow.floor;
+    validateFloorManifest(floor);
+    assert(digest === floorDigest(floor), "FLOOR_TAMPERED", "workflow floor digest does not match its manifest");
+  }
   const prior = resume ? await reconstruct(memory, workflow, runId) : null;
   assert(resume || !(await reconstruct(memory, workflow, runId)), "RUN_ALREADY_EXISTS", `run ${runId} already exists; explicit resume is required`);
   assert(!prior?.runCompleted, "RUN_ALREADY_COMPLETED", `run ${runId} is already complete and cannot be resumed`);
@@ -41,6 +53,7 @@ export async function executeWorkflow({ workflow, contracts, adapters, memory, r
   const outputs = prior?.outputs || {};
   if (!prior) await memory.append({ type: "run.started", runId, workflowDigest: workflow.digest, at: new Date(now()).toISOString() });
   else await memory.append({ type: "run.resumed", runId, completedSteps: [...run.completedSteps], at: new Date(now()).toISOString() });
+  if (workflow.governance) await memory.append({ type: "governance.verified", runId, governanceDigest: workflow.governance.digest, authorityMode: workflow.governance.authorityMode, at: new Date(now()).toISOString() });
   try {
     for (const step of workflow.steps) {
       if (run.completedSteps.includes(step.id)) continue;

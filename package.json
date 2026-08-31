@@ -19,7 +19,7 @@
     "audit": "node bin/audit-package.mjs",
     "test": "node --test"
   },
-  "files": ["bin/", "contracts/", "examples/", "src/", "README.md", "PRODUCT.md", "ROADMAP.md", "THREAT-MODEL.md", "OPERATOR-GUIDE.md", "COMMERCIAL-LICENSING.md", "CONTRIBUTING.md", "SECURITY.md", "LICENSE"],
+  "files": ["bin/", "contracts/", "examples/", "src/", "README.md", "PRODUCT.md", "ROADMAP.md", "GOVERNANCE.md", "THREAT-MODEL.md", "OPERATOR-GUIDE.md", "COMMERCIAL-LICENSING.md", "CONTRIBUTING.md", "SECURITY.md", "LICENSE"],
   "license": "AGPL-3.0-or-later",
   "engines": { "node": ">=20" }
 }

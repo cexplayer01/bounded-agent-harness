@@ -1,0 +1,55 @@
+{
+  "schema_version": "change-impact-request.v1",
+  "change_id": "change-impact-gate-v1",
+  "outcome": "Add deterministic consumer discovery and tiered verification without executing commands",
+  "change_kind": "SCHEMA_OR_POLICY",
+  "changed_paths": [
+    "README.md",
+    "ROADMAP.md",
+    "contracts/change-impact-request.v1.schema.json",
+    "contracts/change-impact.v1.schema.json",
+    "examples/change-impact-request.json",
+    "src/change-impact.mjs",
+    "src/cli.mjs",
+    "src/index.mjs",
+    "test/change-impact.test.mjs"
+  ],
+  "reference_tokens": [
+    "change-impact-request.v1",
+    "change-impact.v1",
+    "scanChangeImpact"
+  ],
+  "verification_catalog": [
+    {
+      "id": "impact-static",
+      "tier": "TIER_0_STATIC",
+      "command": "node --check src/change-impact.mjs && node --check src/cli.mjs && node --check src/index.mjs",
+      "covers": { "prefixes": ["src", "contracts", "examples"] }
+    },
+    {
+      "id": "impact-direct",
+      "tier": "TIER_1_DIRECT",
+      "command": "node --test test/change-impact.test.mjs",
+      "covers": {
+        "prefixes": ["src", "contracts", "examples", "test"],
+        "tokens": ["change-impact-request.v1", "change-impact.v1", "scanChangeImpact"]
+      }
+    },
+    {
+      "id": "impact-cli-boundary",
+      "tier": "TIER_2_BOUNDARY",
+      "command": "node --test test/change-impact.test.mjs test/cli.test.mjs",
+      "covers": {
+        "paths": ["src/cli.mjs", "src/index.mjs", "test/change-impact.test.mjs", "test/cli.test.mjs"],
+        "tokens": ["change-impact-request.v1", "change-impact.v1", "scanChangeImpact"]
+      }
+    },
+    {
+      "id": "harness-full",
+      "tier": "TIER_3_FULL",
+      "command": "npm test",
+      "covers": { "global": true }
+    }
+  ],
+  "external_gates": []
+}

@@ -20,5 +20,16 @@
     "authority": ["read.workspace", "write.handoff"],
     "adapter": "mcp.code-review",
     "evidence": { "completedRuns": 0, "acceptedOutputs": 0, "rejectedOutputs": 0 }
+  },
+  {
+    "id": "sandy-ux-reviewer",
+    "version": 1,
+    "description": "Optional asynchronous visual and low-IQ usability reviewer; returns bounded findings only.",
+    "strengths": ["visual hierarchy", "responsive presentation", "low-IQ operator usability"],
+    "limitations": ["read-only findings", "cannot modify source", "cannot verify backend, provider, or live state", "availability is not guaranteed"],
+    "capabilities": ["review.ui-polish", "review.low-iq-usability"],
+    "authority": ["read.workspace"],
+    "adapter": "drive.sandy.review",
+    "evidence": { "completedRuns": 0, "acceptedOutputs": 0, "rejectedOutputs": 0 }
   }
 ]

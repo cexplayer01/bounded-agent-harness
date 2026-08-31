@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { AdapterRegistry, canonicalize, ContractRegistry, FileMemoryStore, executeWorkflow, heartbeatStatus, sha256 } from "../src/index.mjs";
+import { AdapterRegistry, canonicalize, ContractRegistry, FileMemoryStore, executeWorkflow, governanceDigest, heartbeatStatus, sha256 } from "../src/index.mjs";
 
 const workflow = {
   format: "agent-harness.workflow.v1", digest: "sha256:test", budget: { maxCostUnits: 2, compiledCostUnits: 2 },
@@ -26,6 +26,26 @@ test("executor validates handoffs, records costs, and checkpoints", async () => 
     assert.equal(result.spentCostUnits, 2);
     assert.equal((await memory.events()).length, 6);
     assert.equal((await memory.readCheckpoint()).status, "completed");
+  } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("executor verifies an optional governance bundle before invoking steps", async () => {
+  const root = await mkdtemp(join(tmpdir(), "harness-"));
+  try {
+    const governance = {
+      version: 1,
+      authorityMode: "NARROW_ONLY",
+      requiredAtomIds: ["contract-review"],
+      atoms: [{ id: "contract-review", version: 1, statement: "Handoffs satisfy their contracts.", reviewLevel: 1, enforcementPoints: ["compile", "invoke"], requiredEvidence: [], blastRadius: "low", humanFloorRequired: false, authorityMode: "NARROW_ONLY", status: "ACTIVE" }]
+    };
+    const governed = { ...structuredClone(workflow), governance: { ...governance, digest: governanceDigest(governance) } };
+    const contracts = new ContractRegistry().register("evidence.v1", (v) => Array.isArray(v.sources)).register("review.v1", (v) => v.approved === true);
+    const adapters = new AdapterRegistry()
+      .register("mcp.fake", { invoke: async () => ({ sources: ["primary"] }) })
+      .register("local.review", { invoke: async () => ({ approved: true }) });
+    const memory = new FileMemoryStore(root);
+    await executeWorkflow({ workflow: governed, contracts, adapters, memory, runId: "governed-1" });
+    assert.equal((await memory.events()).some((event) => event.type === "governance.verified" && event.governanceDigest === governed.governance.digest), true);
   } finally { await rm(root, { recursive: true, force: true }); }
 });
 

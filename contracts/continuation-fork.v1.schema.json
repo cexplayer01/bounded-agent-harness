@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/agent-harness/continuation-fork.v1.schema.json",
+  "title": "Bounded continuation fork v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "id", "parentRunId", "parentWorkflowDigest", "checkpointDigest", "floorDigest", "reason", "authorityCeiling", "modelPolicy", "budget", "parentStatus", "status", "createdAt"],
+  "properties": {
+    "format": { "const": "agent-harness.continuation-fork.v1" },
+    "version": { "const": 1 },
+    "id": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "parentRunId": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "parentWorkflowDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "checkpointDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "floorDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "reason": { "const": "OWNER_TIMEOUT" },
+    "authorityCeiling": { "const": "local-reversible-only" },
+    "modelPolicy": { "const": "lowest-reasonable-within-budget" },
+    "budget": { "type": "object", "additionalProperties": false, "required": ["maxCostUnits"], "properties": { "maxCostUnits": { "type": "integer", "exclusiveMinimum": 0 } } },
+    "parentStatus": { "const": "PAUSED_FOR_OWNER" },
+    "status": { "enum": ["RUNNABLE", "PENDING_OWNER_REVIEW", "REJECTED", "ACCEPTED", "PARENT_RESUMED"] },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

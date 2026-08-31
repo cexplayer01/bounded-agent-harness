@@ -1,0 +1,23 @@
+{
+  "format": "agent-harness.sandy-review.v1",
+  "version": 1,
+  "status": "RECEIVED",
+  "reviewerId": "sandy-ux-reviewer",
+  "authority": "READ_ONLY_REVIEW",
+  "scope": {
+    "paths": ["examples/customer-preview/index.html"],
+    "maxLines": 240,
+    "workflowDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "findings": [
+    {
+      "id": "primary-action-visibility",
+      "severity": "low",
+      "category": "ux",
+      "summary": "The primary action remains visible at the first viewport.",
+      "evidence": "Observed in the scoped preview at the supplied workflow digest.",
+      "recommendation": "Keep the primary action visually distinct while preserving its existing hook."
+    }
+  ],
+  "receivedAt": "2026-08-29T00:00:00Z"
+}

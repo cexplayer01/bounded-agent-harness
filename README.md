@@ -33,13 +33,14 @@ The CLI exposes the control-plane primitives without contacting a provider:
 
 ```powershell
 node bin/harness.mjs validate --plan examples/review-plan.json --specialists examples/specialists.json
-node bin/harness.mjs compile --plan examples/review-plan.json --specialists examples/specialists.json --contracts examples/contracts.json --output workflow.json
+node bin/harness.mjs compile --plan examples/review-plan.json --specialists examples/specialists.json --contracts examples/contracts.json --floor examples/autonomous-floor.json --output workflow.json
 node bin/harness.mjs run --workflow workflow.json --contracts examples/contracts.json --adapters examples/local-adapters.json --memory .agent-harness/run-1 --run-id demo-1
 node bin/harness.mjs inspect --memory .agent-harness/run-1
 node bin/harness.mjs heartbeat --last 2026-08-28T00:00:00Z --lease-ms 60000
 node bin/harness.mjs beat --memory .agent-harness/run-1 --run-id demo-1 --worker-id reviewer --workflow sha256:... --spent-cost 2
 node bin/harness.mjs leases --memory .agent-harness/run-1 --lease-ms 60000
 node bin/harness.mjs lock-status --memory .agent-harness/run-1 --stale-after-ms 60000
+node bin/harness.mjs impact --root . --request examples/change-impact-request.json --output change-impact.json
 ```
 
 Compilation refuses to overwrite an existing artifact. `run` and `resume` currently accept only declarative literal adapters, providing a safe zero-side-effect end-to-end proof without executing arbitrary code or contacting a provider. `inspect` verifies the complete event hash chain, then reports deterministic per-run status, failure, actual/reserved cost, savings, provider identity, ledger head, and checkpoint.
@@ -79,6 +80,66 @@ Compiled artifacts bind every field and contract definition fingerprint into a c
 Every compiled step binds both its static input and its output to named contract fingerprints. Input is validated during compilation and again immediately before adapter invocation. Declarative object contracts are closed by default: when `allowed` is omitted, only required keys may appear. Optional keys must be listed explicitly in `allowed`, which must include every required key. This prevents either the plan or a specialist from smuggling unreviewed fields through an otherwise valid boundary.
 
 Dependency context is least-disclosure by construction. Every compiled step explicitly maps each dependency to the fields it may receive; undeclared output fields stay in the ledger but do not cross into the next specialist's handoff. A declared field that is absent fails the run rather than becoming a silent `undefined` input.
+
+## Lean change verification
+
+`impact` is the deterministic pre-test gate for a code or contract change. It scans bounded text files for caller-declared interface tokens, reports downstream consumer paths without copying their contents, maps those paths to a closed verification catalog, and emits one compact active card. It does not run a test command, read Git history, contact a provider, or grant permission to change a file.
+
+The four verification tiers are intentionally small:
+
+1. `TIER_0_STATIC` — syntax, schema parsing, or formatting checks.
+2. `TIER_1_DIRECT` — tests for the changed implementation or contract.
+3. `TIER_2_BOUNDARY` — tests for launchers, callers, adapters, or other consumers.
+4. `TIER_3_FULL` — one serialized/full regression at the completed milestone.
+
+Documentation-only and local implementation changes do not automatically require the full suite. Public interfaces, schemas/policies, and external-effect boundaries require a boundary test and one mapped full suite. Any executable consumer lacking focused coverage returns `NEEDS_VERIFICATION_MAPPING`; the harness does not recommend spending time on the full suite until that coverage gap is addressed.
+
+This is the default rhythm:
+
+- Before editing a public name or contract, declare the old/new reference tokens and scan consumers.
+- After each small edit, run only selected static and direct checks.
+- At the completed boundary, run selected boundary checks.
+- At the milestone, run the full suite once when the impact result requires it.
+- If a test fails, repair the specific defect, rerun the failed/direct boundary, then perform the required final suite once.
+- Update the checkpoint after green evidence, not after every harmless command.
+
+The generated `active_card` is the concise continuation surface: current outcome, current change, affected-consumer count, focused proof IDs, full-suite requirement, exact next action, and external gates. Detailed historical evidence remains in the event/checkpoint surfaces rather than being repeated in every heartbeat.
+
+## Governed review ladder
+
+`src/governance.mjs` adds a Republic-style governance plane without introducing a policy server or a second runtime. Versioned governed atoms bind each requirement to concrete enforcement points (`compile`, `authorize`, `lease`, `invoke`, or `reconcile`) and required evidence. The review ladder is explicit: level 0 floor, level 1 contract, level 2 domain, level 3 consistency, level 4 reconciliation, and level 5 execution. `standingGovernanceQueries` reports unenforced rules, missing evidence, and composition defects. `assessPromotion` can recommend replacing routine continuous HITL only after caller-supplied evidence thresholds pass; it never mutates a specialist or grants authority. `NARROW_ONLY` remains mandatory, and high-blast or irreversible work retains the human floor.
+
+An optional governance bundle is digest-bound into a compiled workflow and revalidated before execution. This makes governance an execution-path check rather than a supervisory prompt or self-authored claim. The bundle is additive and does not change existing plans that do not opt in.
+
+### Optional Sandy reviewer
+
+`sandy-ux-reviewer` is a declared specialist option for asynchronous visual, responsive, and low-IQ usability review. It has `read.workspace` authority only and uses the external adapter ID `drive.sandy.review`; no Drive connector or local adapter is bundled. A plan may route a small review step to this profile when an adapter is available, but compilation and local execution remain independent of it. If the adapter is unavailable, record an explicit `UNAVAILABLE` result and continue the bounded workflow.
+
+Results must use `contracts/sandy-review-result.v1.schema.json` (also enforced by `validateSandyReview`). The result is limited to 20 findings over at most 20 relative paths and 300 lines, is bound to the exact workflow digest, and cannot contain patches, deployment instructions, provider credentials, or execution authority. `verifySandyReviewScope` checks the digest and declared paths; a caller must still verify each finding against source, contracts, and tests before accepting it.
+
+The proposed USB continuation floor is executable through `contracts/autonomous-floor.v1.schema.json` and `floor-policy.mjs`. Passing a floor to `compileWorkflow` binds it to the workflow digest and rejects plans whose effect or budget exceeds the declared envelope; execution rechecks the floor digest. The example floor is local-only and forbids deployment, DNS, payment, email sending, live database writes, and customer-Site writes. Floors are optional until USB explicitly activates them.
+
+`continuation-gate.mjs` evaluates the four-role evidence gate (contract, domain, consistency, and reconciliation). It returns `CONTINUE` only when each distinct role has a passing record bound to the same workflow and floor digests; missing, duplicate, failed, or stale records return `ESCALATE`. A pass is evidence, not authority, and the gate does not alter existing workflows until a caller opts in.
+
+`continuation-fork.mjs` creates one deterministic fork when an owner timeout occurs under a `localOnly` floor. The parent remains `PAUSED_FOR_OWNER`; the fork has a separate half-ceiling budget, `local-reversible-only` authority, and `lowest-reasonable-within-budget` model policy. Repeating the same checkpoint returns the existing fork instead of duplicating it. Owner decisions (`ACCEPT`, `REJECT`, or `RESUME_PARENT`) are explicit; no fork can merge or promote itself.
+
+`model-policy.mjs` turns that model policy into an explicit selection decision. A fork may select the economy tier for Class A/B work only when it fits the fork budget. Class C/D work always returns `ESCALATE` with `HUMAN_FLOOR_REQUIRED`; model selection is metadata and never invokes a provider.
+
+`continuation-controller.mjs` composes the optional path without I/O: it returns `CONTINUE_MAIN`, `WAIT_OWNER`, `CONTINUE_FORK`, or `ESCALATE_OWNER`. It requires the four-role gate first, waits for the configured local-only timeout, creates at most one deterministic fork, and applies the bounded model policy. The caller must persist the decision and run it through the existing executor; the controller never writes the parent run or invokes a model.
+
+`owner-timeout-watchdog.mjs` makes owner absence non-terminal. Before the deadline it returns a mandatory `nextWakeAt`; at or after the deadline it returns `CREATE_OR_RESUME_FORK`. A scheduler must persist and honor that wake-up, so a `WAIT_OWNER` result cannot silently end the workflow.
+
+`continuation-scheduler.mjs` is the enforcement boundary for that rule. `armOwnerTimeout` requires both a persistence callback and a scheduling callback, persists the versioned wake record before arming it, and fails closed when either boundary is missing. The host may use a file, database, queue, or timer adapter, but it cannot acknowledge `WAIT_OWNER` without a durable next wake.
+
+`file-wake-store.mjs` is the zero-dependency local adapter. It writes the wake and schedule atomically, rejects competing wake identities, and exposes `readPendingWake()` after a process restart; a host can poll that method and invoke the controller at the due time. `acknowledgeWake()` marks the schedule consumed so a retry cannot replay the same wake indefinitely.
+
+`owner-timeout-runner.mjs` provides that host polling boundary. `pollOwnerWake()` dispatches a due wake through an injected continuation handler and acknowledges it only after the handler returns a decision; a failed handler leaves the wake pending for a later heartbeat.
+
+`work-loop-policy.mjs` separates primary execution from recovery. A continuous run owns the active objective and must immediately take the next safe step after reporting progress. A heartbeat may detect liveness loss, dispatch a due wake, or request that the host start/resume the continuous run; it cannot present periodic wake-ups as continuous execution. A blocked gated action pauses only that action when alternate safe work exists. Yielding for an execution-window limit or exhausted safe work requires a recorded checkpoint first. Only a proven-complete objective is terminal.
+
+This distinction is intentionally host-neutral. Codex goal mode, a queue worker, a service process, or another durable runner may satisfy `CONTINUOUS_RUN`; cron and scheduled-task callbacks satisfy `HEARTBEAT_RECOVERY`. The harness decides the required disposition but does not secretly create a host process, spend tokens, or invoke a provider.
+
+`model-policy.mjs` turns that model policy into an explicit selection decision. A fork may select the economy tier for Class A/B work only when it fits the fork budget. Class C/D work always returns `ESCALATE` with `HUMAN_FLOOR_REQUIRED`; model selection is metadata and never invokes a provider.
 
 ## Architecture
 

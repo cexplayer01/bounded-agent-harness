@@ -2,6 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { ContractRegistry } from "./contract-registry.mjs";
 import { validatePlan, validateSpecialist } from "./contracts.mjs";
+import { validateFloorManifest } from "./floor-policy.mjs";
 import { heartbeatStatus } from "./heartbeat.mjs";
 import { recordHeartbeat, summarizeHeartbeats } from "./heartbeat.mjs";
 import { FileMemoryStore } from "./memory-store.mjs";
@@ -10,6 +11,7 @@ import { assert } from "./errors.mjs";
 import { declarativeContracts, localAdapters } from "./declarative-runtime.mjs";
 import { executeWorkflow } from "./executor.mjs";
 import { summarizeEvents } from "./observability.mjs";
+import { scanChangeImpact } from "./change-impact.mjs";
 
 const json = async (path) => JSON.parse(await readFile(resolve(path), "utf8"));
 
@@ -34,7 +36,8 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     const plan = validatePlan(await json(args.plan));
     const specialists = await json(args.specialists);
     specialists.forEach(validateSpecialist);
-    const result = { valid: true, planId: plan.id, specialists: specialists.map((item) => item.id).sort() };
+    const floor = args.floor ? validateFloorManifest(await json(args.floor)) : undefined;
+    const result = { valid: true, planId: plan.id, specialists: specialists.map((item) => item.id).sort(), ...(floor ? { floorProject: floor.project } : {}) };
     io.out(JSON.stringify(result, null, 2));
     return result;
   }
@@ -42,7 +45,8 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     const plan = await json(args.plan);
     const specialists = await json(args.specialists);
     const contracts = declarativeContracts(await json(args.contracts));
-    const compiled = compileWorkflow({ plan, specialists, contracts });
+    const floor = args.floor ? await json(args.floor) : undefined;
+    const compiled = compileWorkflow({ plan, specialists, contracts, floor });
     const output = args.output ? resolve(args.output) : null;
     if (output) await writeFile(output, `${JSON.stringify(compiled, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
     io.out(JSON.stringify({ compiled: true, planId: compiled.planId, digest: compiled.digest, output }, null, 2));
@@ -87,5 +91,14 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     io.out(JSON.stringify(result, null, 2));
     return result;
   }
-  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status> [options]");
+  if (command === "impact") {
+    assert(args.request && args.root, "CLI_ARGUMENT", "impact requires --request and --root");
+    const request = await json(args.request);
+    const result = await scanChangeImpact({ rootDirectory: resolve(args.root), request });
+    const output = args.output ? resolve(args.output) : null;
+    if (output) await writeFile(output, `${JSON.stringify(result, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
+    io.out(JSON.stringify(result, null, 2));
+    return result;
+  }
+  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact> [options]");
 }
