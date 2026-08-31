@@ -11,6 +11,16 @@ function inside(root, target) {
 }
 
 const pause = (milliseconds) => new Promise((resolvePause) => setTimeout(resolvePause, milliseconds));
+const localAppendQueues = new Map();
+
+function serializeLocalAppend(lockPath, operation) {
+  const previous = localAppendQueues.get(lockPath) || Promise.resolve();
+  const current = previous.catch(() => undefined).then(operation);
+  localAppendQueues.set(lockPath, current);
+  return current.finally(() => {
+    if (localAppendQueues.get(lockPath) === current) localAppendQueues.delete(lockPath);
+  });
+}
 
 function isRetriableLockContention(error) {
   return error?.code === "EEXIST" || (process.platform === "win32" && error?.code === "EPERM");
@@ -59,33 +69,35 @@ export class FileMemoryStore {
 
   async append(event) {
     assert(event && typeof event === "object" && !Array.isArray(event), "INVALID_EVENT", "event must be an object");
-    await this.initialize();
-    const startedAt = Date.now();
-    let lock;
-    while (!lock) {
-      try {
-        lock = await open(this.lockPath, "wx");
-        await lock.writeFile(`${JSON.stringify({ pid: process.pid, acquiredAt: new Date().toISOString() })}\n`, "utf8");
-      } catch (error) {
-        // Windows can briefly report EPERM while another writer closes and
-        // removes the lock file. Treat it as contention within the same
-        // bounded timeout; other permission failures still fail immediately.
-        if (!isRetriableLockContention(error)) throw error;
-        assert(Date.now() - startedAt < this.lockTimeoutMs, "EVENT_LOG_LOCKED", "event log is locked by another writer");
-        await pause(this.lockRetryMs);
+    return serializeLocalAppend(this.lockPath, async () => {
+      await this.initialize();
+      const startedAt = Date.now();
+      let lock;
+      while (!lock) {
+        try {
+          lock = await open(this.lockPath, "wx");
+          await lock.writeFile(`${JSON.stringify({ pid: process.pid, acquiredAt: new Date().toISOString() })}\n`, "utf8");
+        } catch (error) {
+          // Windows can briefly report EPERM while another writer closes and
+          // removes the lock file. Treat it as contention within the same
+          // bounded timeout; other permission failures still fail immediately.
+          if (!isRetriableLockContention(error)) throw error;
+          assert(Date.now() - startedAt < this.lockTimeoutMs, "EVENT_LOG_LOCKED", "event log is locked by another writer");
+          await pause(this.lockRetryMs);
+        }
       }
-    }
-    try {
-      const envelopes = await this.envelopes();
-      const previous = envelopes.at(-1);
-      const unsigned = { sequence: envelopes.length, previousHash: previous?.hash || null, payload: event };
-      const envelope = { ...unsigned, hash: `sha256:${sha256(unsigned)}` };
-      await appendFile(this.eventsPath, `${JSON.stringify(envelope)}\n`, "utf8");
-    } finally {
-      await lock.close();
-      await releaseLock(this.lockPath, { timeoutMs: this.lockTimeoutMs, retryMs: this.lockRetryMs });
-    }
-    return event;
+      try {
+        const envelopes = await this.envelopes();
+        const previous = envelopes.at(-1);
+        const unsigned = { sequence: envelopes.length, previousHash: previous?.hash || null, payload: event };
+        const envelope = { ...unsigned, hash: `sha256:${sha256(unsigned)}` };
+        await appendFile(this.eventsPath, `${JSON.stringify(envelope)}\n`, "utf8");
+      } finally {
+        await lock.close();
+        await releaseLock(this.lockPath, { timeoutMs: this.lockTimeoutMs, retryMs: this.lockRetryMs });
+      }
+      return event;
+    });
   }
 
   async envelopes() {
