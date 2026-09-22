@@ -110,7 +110,7 @@ function compareStatuses(expected, actual, findings, warnings) {
   }
 }
 
-export function validateTakeoverCheckpoint(checkpoint, { gitSnapshot = null, fileSnapshot = null } = {}) {
+export function validateTakeoverCheckpoint(checkpoint, { gitSnapshot = null, fileSnapshot = null, checkpointPath = "Project Brain/TAKEOVER-CHECKPOINT.v1.json" } = {}) {
   const findings = [];
   const warnings = [];
   if (!checkKeys(checkpoint, TOP_LEVEL_KEYS, "$", findings)) return { valid: false, findings, warnings };
@@ -209,7 +209,7 @@ export function validateTakeoverCheckpoint(checkpoint, { gitSnapshot = null, fil
 
   if (gitSnapshot) {
     if (checkpoint.repository.branch !== gitSnapshot.branch) add(findings, "GIT_BRANCH_MISMATCH", "repository.branch", "checkpoint branch does not match the current branch");
-    const checkpointCommitOnly = gitSnapshot.head_parent === checkpoint.repository.head && Array.isArray(gitSnapshot.head_parent_paths) && gitSnapshot.head_parent_paths.length === 1 && gitSnapshot.head_parent_paths[0] === "Project Brain/TAKEOVER-CHECKPOINT.v1.json";
+    const checkpointCommitOnly = gitSnapshot.head_parent === checkpoint.repository.head && Array.isArray(gitSnapshot.head_parent_paths) && gitSnapshot.head_parent_paths.length === 1 && gitSnapshot.head_parent_paths[0] === checkpointPath;
     if (checkpoint.repository.head !== gitSnapshot.head && !checkpointCommitOnly) add(findings, "GIT_HEAD_MISMATCH", "repository.head", "checkpoint commit does not match the current commit or a checkpoint-only follow-up commit");
     compareStatuses(normalizeStatuses(checkpoint.repository.expected_git_status), normalizeStatuses(gitSnapshot.status), findings, warnings);
     for (const entry of gitSnapshot.status.filter((item) => item.code === "??")) {

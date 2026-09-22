@@ -73,11 +73,12 @@ test("valid takeover checkpoint matches the repository snapshot", () => {
 test("portable clone passes with explicit warnings when local-only artifacts are absent", () => {
   const checkpoint = validCheckpoint();
   const result = validateTakeoverCheckpoint(checkpoint, {
+    checkpointPath: "handoff.md",
     gitSnapshot: {
       branch: checkpoint.repository.branch,
       head: "c".repeat(40),
       head_parent: checkpoint.repository.head,
-      head_parent_paths: ["Project Brain/TAKEOVER-CHECKPOINT.v1.json"],
+      head_parent_paths: ["handoff.md"],
       status: []
     },
     fileSnapshot: { "Project Brain/USB-HANDOFF-20260921.md": { exists: false } }
