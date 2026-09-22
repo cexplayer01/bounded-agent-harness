@@ -141,6 +141,14 @@ The proposed USB continuation floor is executable through `contracts/autonomous-
 
 This distinction is intentionally host-neutral. Codex goal mode, a queue worker, a service process, or another durable runner may satisfy `CONTINUOUS_RUN`; cron and scheduled-task callbacks satisfy `HEARTBEAT_RECOVERY`. The harness decides the required disposition but does not secretly create a host process, spend tokens, or invoke a provider.
 
+## Portable takeover checkpoints
+
+`src/takeover-checkpoint.mjs` validates a machine-readable stop point that carries the active objective, exact next step, resume command, repository identity, test/live evidence, known problems, authority boundary, and preservation register. A host supplies its current Git and file snapshots; the validator compares them without treating chat history as authority.
+
+The preservation register classifies each preserved item as `REPOSITORY`, `LOCAL_ONLY`, or `EXTERNAL`, records provenance and intended action, and binds an optional SHA-256 digest. Missing local-only artifacts produce explicit warnings so another clone can continue safe repository work without recreating owner data. Unregistered changes, branch or commit drift, missing repository items, and preserved-file hash drift fail closed.
+
+This package exposes the validator as a library boundary. A repository-specific host may add a thin snapshot adapter and a human-readable command, but the core package does not assume Git, a filesystem layout, credentials, deployment access, or a particular agent product.
+
 `model-policy.mjs` turns that model policy into an explicit selection decision. A fork may select the economy tier for Class A/B work only when it fits the fork budget. Class C/D work always returns `ESCALATE` with `HUMAN_FLOOR_REQUIRED`; model selection is metadata and never invokes a provider.
 
 ## Architecture

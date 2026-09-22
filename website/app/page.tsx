@@ -1,7 +1,7 @@
 const proof = [
   ["Fail-closed", "governed execution"],
   ["0", "runtime dependencies"],
-  ["2", "MCP provider shapes proven"],
+  ["Portable", "takeover checkpoints"],
 ];
 
 const flow = [
@@ -34,7 +34,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.1.0</p>
+          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.1.0 · portable handoffs</p>
           <h1>Agents move fast.<br /><em>The workflow should hold.</em></h1>
           <p className="lede">
             A deterministic control plane for multi-agent work: versioned memory,
@@ -116,7 +116,7 @@ export default function Home() {
         <div className="honest-copy">
           <p className="eyebrow">What exists now</p>
           <h2>A working control-plane foundation—not a production claim.</h2>
-          <p>Version 0.1.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, an in-process MCP compatibility proof, and an explicit work-loop policy that keeps continuous execution separate from heartbeat recovery.</p>
+          <p>Version 0.1.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, and an explicit work-loop policy that keeps continuous execution separate from heartbeat recovery.</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Run the five-minute demo ↗</a>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/THREAT-MODEL.md">Read the threat model ↗</a>

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://usb.local/contracts/takeover-checkpoint.v1.schema.json",
+  "title": "USB takeover checkpoint",
+  "description": "Machine-readable continuation and preservation state for a USB repository stop point.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "recorded_at_utc", "repository", "continuation", "evidence", "preservation_register", "authority"],
+  "properties": {
+    "schema_version": { "const": "usb-takeover-checkpoint.v1" },
+    "recorded_at_utc": { "type": "string", "format": "date-time" },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "head", "tracked_source_state", "expected_git_status"],
+      "properties": {
+        "branch": { "type": "string", "minLength": 1 },
+        "head": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "tracked_source_state": { "enum": ["CLEAN", "CLEAN_WITH_PRESERVED_UNTRACKED", "IN_PROGRESS"] },
+        "expected_git_status": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "path", "availability"],
+            "properties": {
+              "code": { "type": "string", "pattern": "^[ MADRCU?!]{2}$" },
+              "path": { "type": "string", "pattern": "^(?!/)(?![A-Za-z]:[\\/])(?!.*\\\\)(?!.*(^|/)\\.\\.(/|$)).+$" },
+              "availability": { "enum": ["REPOSITORY", "LOCAL_ONLY", "EXTERNAL"] }
+            }
+          }
+        }
+      }
+    },
+    "continuation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase", "status", "objective", "last_completed", "in_progress", "next_step", "resume_command", "do_not_repeat"],
+      "properties": {
+        "phase": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["READY", "IN_PROGRESS", "BLOCKED", "WAITING_FOR_OWNER", "COMPLETE"] },
+        "objective": { "type": "string", "minLength": 1 },
+        "last_completed": { "type": "string", "minLength": 1 },
+        "in_progress": { "type": ["string", "null"] },
+        "next_step": { "type": "string", "minLength": 1 },
+        "resume_command": { "type": "string", "minLength": 1 },
+        "do_not_repeat": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tests", "live", "known_problems"],
+      "properties": {
+        "tests": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["name", "result", "summary"], "properties": { "name": { "type": "string", "minLength": 1 }, "result": { "enum": ["PASS", "KNOWN_FAILURE", "NOT_RUN"] }, "summary": { "type": "string", "minLength": 1 } } } },
+        "live": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["target", "result", "observed_on", "effect_boundary"], "properties": { "target": { "type": "string", "minLength": 1 }, "result": { "enum": ["PASS", "NOT_APPLICABLE", "KNOWN_FAILURE"] }, "observed_on": { "type": "string", "minLength": 1 }, "deployment_id": { "type": "string", "minLength": 1 }, "rollback_deployment_id": { "type": "string", "minLength": 1 }, "effect_boundary": { "type": "string", "minLength": 1 } } } },
+        "known_problems": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["scope", "status", "summary", "next_action"], "properties": { "scope": { "type": "string", "minLength": 1 }, "status": { "type": "string", "minLength": 1 }, "summary": { "type": "string", "minLength": 1 }, "next_action": { "type": "string", "minLength": 1 } } } }
+      }
+    },
+    "preservation_register": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind", "classification", "state", "action", "provenance", "owner_decision_required", "availability"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["FILE", "DIRECTORY"] },
+          "classification": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["PRESERVE", "CURRENT", "HISTORICAL", "REBUILDABLE"] },
+          "action": { "enum": ["PRESERVE_IN_PLACE", "PRESERVE_UNTIL_OWNER_DECISION", "REBUILD_FROM_SOURCE", "DO_NOT_TOUCH"] },
+          "provenance": { "type": "string", "minLength": 1 },
+          "owner_decision_required": { "type": "boolean" },
+          "availability": { "enum": ["REPOSITORY", "LOCAL_ONLY", "EXTERNAL"] },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "required_for": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["next_action", "go_required", "blocked_actions"],
+      "properties": {
+        "next_action": { "type": "string", "minLength": 1 },
+        "go_required": { "type": "boolean" },
+        "blocked_actions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}
