@@ -18,6 +18,12 @@ const failures = [
   ["Stopped after status", "A progress report is not terminal. Safe work continues in the active run; heartbeat only monitors and recovers."],
 ];
 
+const continuation = [
+  ["Resume, don't fail", "Missing or stale approval becomes a durable checkpoint with the exact gate and workflow identity required to continue later."],
+  ["Spend proof where it matters", "Change-impact cards choose focused verification so documentation and local edits do not trigger needless full-suite work."],
+  ["Keep safe work moving", "A blocked gated action pauses that action; unrelated local work can continue until a real boundary or proven completion."],
+];
+
 export default function Home() {
   return (
     <main>
@@ -28,6 +34,7 @@ export default function Home() {
         </a>
         <div className="nav-links">
           <a href="#how">How it works</a>
+          <a href="#in-practice">In practice</a>
           <a href="https://github.com/cexplayer01/bounded-agent-harness">GitHub</a>
         </div>
       </nav>
@@ -131,6 +138,32 @@ export default function Home() {
             <li>General autonomous-agent framework</li>
           </ul>
           <span>Those boundaries are deliberate and documented.</span>
+        </div>
+      </section>
+
+      <section className="case-study" id="in-practice">
+        <div className="section-heading">
+          <p className="eyebrow">Used in practice</p>
+          <h2>From harness to a real Site build.</h2>
+          <p className="section-copy">
+            The USB Website Platform used Bounded Agent Harness while building and verifying
+            deterministic Site artifacts for DFW Metro and the disposable DFWMow review lab.
+            The harness carried the handoffs, checkpoints, focused proof, and rollback awareness;
+            production Site generation itself remained deterministic and model-free.
+          </p>
+        </div>
+        <div className="case-grid">
+          {continuation.map(([title, detail]) => (
+            <article key={title}>
+              <span>USB / CONTROL PLANE</span>
+              <h3>{title}</h3>
+              <p>{detail}</p>
+            </article>
+          ))}
+        </div>
+        <div className="case-links">
+          <a href="https://github.com/cexplayer01/USB-Website-platform">Inspect the USB build ↗</a>
+          <a href="https://dfwmetro.net">Visit DFW Metro ↗</a>
         </div>
       </section>
 

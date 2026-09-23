@@ -119,6 +119,17 @@ h1 em { color: var(--muted); font-style: normal; font-weight: 420; }
 .boundary-card li::before { content: "—"; margin-right: 10px; color: #6d7f85; }
 .boundary-card > span { color: #71838a; font-size: 11px; }
 
+.case-study { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 120px 0; border-top: 1px solid var(--line); }
+.case-study > .section-heading { max-width: 780px; }
+.case-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 64px; border: 1px solid var(--line); }
+.case-grid article { min-height: 270px; padding: 32px; border-right: 1px solid var(--line); background: rgba(11,18,22,.55); }
+.case-grid article:last-child { border-right: 0; }
+.case-grid article > span { color: var(--amber); font: 700 10px/1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .09em; }
+.case-grid h3 { margin: 70px 0 14px; font-size: 21px; }
+.case-grid p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.case-links { display: flex; gap: 28px; margin-top: 26px; }
+.case-links a { color: var(--cyan); font-size: 12px; font-weight: 750; }
+
 .commercial { padding: 120px 0; border-top: 1px solid var(--line); }
 .commercial-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 64px; border: 1px solid var(--line); }
 .commercial-grid article { min-height: 330px; padding: 34px; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: rgba(11,18,22,.55); }
@@ -172,7 +183,7 @@ footer > div { display: flex; justify-content: flex-end; gap: 24px; }
   .button { width: 100%; }
   .nodes { padding: 18px; }
   .proof, .how { width: min(100% - 32px, 1180px); }
-  .failure-section, .honest-section, .commercial, .support, footer { width: min(100% - 32px, 1180px); }
+  .failure-section, .honest-section, .case-study, .commercial, .support, footer { width: min(100% - 32px, 1180px); }
   .proof-grid { gap: 16px; }
   .proof-grid div { padding: 0 0 0 12px; }
   .proof-grid strong { font-size: 23px; }
@@ -180,6 +191,10 @@ footer > div { display: flex; justify-content: flex-end; gap: 24px; }
   .failure-grid article { min-height: 205px; }
   .failure-grid h3 { margin-top: 50px; }
   .commercial-grid article { padding: 28px; }
+  .case-grid { grid-template-columns: 1fr; }
+  .case-grid article { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .case-grid article:last-child { border-bottom: 0; }
+  .case-links { flex-direction: column; gap: 14px; }
   .support-links { grid-template-columns: 1fr; }
   .support-links a { border-right: 0; border-bottom: 1px solid var(--line); }
   .support-links a:nth-last-child(2) { border-bottom: 1px solid var(--line); }
