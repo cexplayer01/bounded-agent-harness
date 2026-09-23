@@ -2,6 +2,7 @@ import { assert } from "./errors.mjs";
 
 export const STEP_STATES = Object.freeze({
   PENDING: "PENDING",
+  WAITING_FOR_APPROVAL: "WAITING_FOR_APPROVAL",
   AUTHORIZED: "AUTHORIZED",
   LEASED: "LEASED",
   INVOKING: "INVOKING",
@@ -16,6 +17,7 @@ export const STEP_STATES = Object.freeze({
 
 export const STEP_EVENTS = Object.freeze({
   AUTHORIZE: "AUTHORIZE",
+  WAIT_FOR_APPROVAL: "WAIT_FOR_APPROVAL",
   ACQUIRE_LEASE: "ACQUIRE_LEASE",
   START_INVOCATION: "START_INVOCATION",
   SUCCEED: "SUCCEED",
@@ -31,6 +33,11 @@ export const STEP_EVENTS = Object.freeze({
 
 const TRANSITIONS = Object.freeze({
   [STEP_STATES.PENDING]: Object.freeze({
+    [STEP_EVENTS.WAIT_FOR_APPROVAL]: STEP_STATES.WAITING_FOR_APPROVAL,
+    [STEP_EVENTS.AUTHORIZE]: STEP_STATES.AUTHORIZED,
+    [STEP_EVENTS.PARK]: STEP_STATES.PARKED
+  }),
+  [STEP_STATES.WAITING_FOR_APPROVAL]: Object.freeze({
     [STEP_EVENTS.AUTHORIZE]: STEP_STATES.AUTHORIZED,
     [STEP_EVENTS.PARK]: STEP_STATES.PARKED
   }),
@@ -93,7 +100,7 @@ export function reduceStepEvents(events, initialState = STEP_STATES.PENDING) {
 }
 
 export function classifyExecutionPlane(event) {
-  if ([STEP_EVENTS.AUTHORIZE, STEP_EVENTS.ACQUIRE_LEASE, STEP_EVENTS.PARK].includes(event)) return "control";
+  if ([STEP_EVENTS.AUTHORIZE, STEP_EVENTS.WAIT_FOR_APPROVAL, STEP_EVENTS.ACQUIRE_LEASE, STEP_EVENTS.PARK].includes(event)) return "control";
   if ([STEP_EVENTS.START_INVOCATION, STEP_EVENTS.SUCCEED, STEP_EVENTS.FAIL_RETRYABLE, STEP_EVENTS.FAIL_FINAL, STEP_EVENTS.AMBIGUOUS_EFFECT].includes(event)) return "execution";
   if ([STEP_EVENTS.START_RECONCILIATION, STEP_EVENTS.RECONCILE_SUCCEEDED, STEP_EVENTS.RECONCILE_FAILED, STEP_EVENTS.COMPLETE].includes(event)) return "reconciliation";
   assert(false, "INVALID_STEP_EVENT", `unknown step event: ${event}`);

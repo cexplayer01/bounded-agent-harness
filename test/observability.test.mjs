@@ -30,3 +30,12 @@ test("run summaries remain deterministic regardless of input run order", () => {
   ]);
   assert.deepEqual(summaries.map((run) => run.runId), ["alpha", "zeta"]);
 });
+
+test("approval waits remain visible and resumable rather than failures", () => {
+  const [summary] = summarizeEvents([
+    { type: "run.started", runId: "waiting", workflowDigest: "sha256:a", at: "2026-01-01T00:00:00Z" },
+    { type: "run.awaiting-approval", runId: "waiting", stepId: "publish", gateId: "owner.publish", workflowDigest: "sha256:a", at: "2026-01-01T00:00:01Z" }
+  ]);
+  assert.equal(summary.status, "awaiting_approval");
+  assert.deepEqual(summary.waitingFor, { gateId: "owner.publish", stepId: "publish", workflowDigest: "sha256:a" });
+});

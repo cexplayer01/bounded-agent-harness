@@ -15,11 +15,23 @@ export function summarizeEvents(events) {
       run.status = "running";
       run.workflowDigest = event.workflowDigest;
       run.startedAt = event.at;
+    } else if (event.type === "run.resumed") {
+      run.status = "running";
+      run.waitingFor = null;
+    } else if (event.type === "run.awaiting-approval") {
+      run.status = "awaiting_approval";
+      run.waitingFor = {
+        gateId: event.gateId,
+        stepId: event.stepId,
+        workflowDigest: event.workflowDigest
+      };
     } else if (event.type === "run.completed") {
       run.status = "completed";
+      run.waitingFor = null;
     } else if (event.type === "run.failed") {
       run.status = "failed";
       run.failure = { code: event.code, message: event.message };
+      run.waitingFor = null;
     } else if (event.type === "step.completed") {
       run.completedSteps += 1;
       run.spentCostUnits += event.costUnits;
@@ -30,6 +42,7 @@ export function summarizeEvents(events) {
   return [...runs.values()].sort((left, right) => left.runId.localeCompare(right.runId)).map((run) => ({
     ...run,
     savedCostUnits: run.reservedCostUnits - run.spentCostUnits,
+    waitingFor: run.waitingFor || null,
     providers: run.providers.sort((left, right) => `${left.name}@${left.version}`.localeCompare(`${right.name}@${right.version}`))
   }));
 }

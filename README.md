@@ -65,6 +65,8 @@ Step lifecycle is now a closed state machine instead of an implied event-story. 
 
 Plans may place a named approval gate on any step. Execution accepts an approval only when its gate, step, decision, and complete workflow digest match exactly, then records gate verification before invoking the adapter. An approval from an older compilation cannot authorize changed work.
 
+Missing or stale approval is resumable work, not a failed run. The executor records an `awaiting_approval` checkpoint and returns the exact gate, step, and workflow digest required for a later resume; already completed work is not repeated. This keeps the human boundary intact without making an owner wait terminate the broader workflow.
+
 Deterministic specialist routing filters by capability and authority before considering outcomes. It prefers verified accepted-output rates, labels profiles with no history as unproven, retains limitations in its rationale, and uses stable ID ordering for ties. Model branding and persuasive self-description do not influence selection.
 
 The compiled artifact fingerprints every selected specialist's complete profile and records its adapter ID. Changing declared capability, authority, limitation, evidence, or adapter therefore produces a different workflow identity and invalidates approvals or resume artifacts bound to the older compilation.

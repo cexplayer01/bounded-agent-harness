@@ -7,7 +7,7 @@ export function heartbeatStatus({ lastReceiptAt, now, leaseMs }) {
   return { state: ageMs <= leaseMs ? "alive" : "expired", ageMs, leaseMs, recoveryRequired: ageMs > leaseMs };
 }
 
-export function recoveryCheckpoint({ run, reason, now }) {
+export function recoveryCheckpoint({ run, reason, now, status, waitingFor }) {
   assert(run && typeof run === "object", "INVALID_RUN", "run is required");
   return {
     format: "agent-harness.recovery.v1",
@@ -17,7 +17,9 @@ export function recoveryCheckpoint({ run, reason, now }) {
     pendingSteps: [...run.pendingSteps],
     spentCostUnits: run.spentCostUnits,
     reason,
-    recordedAt: new Date(now).toISOString()
+    recordedAt: new Date(now).toISOString(),
+    ...(status ? { status } : {}),
+    ...(waitingFor ? { waitingFor } : {})
   };
 }
 

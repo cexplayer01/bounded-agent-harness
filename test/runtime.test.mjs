@@ -229,8 +229,14 @@ test("approval gates are bound to the exact step and workflow digest", async () 
     gated.steps[0].approval = { required: true, gateId: "owner.publish" };
     const contracts = new ContractRegistry().register("evidence.v1", (v) => Array.isArray(v.sources));
     const adapters = new AdapterRegistry().register("mcp.fake", { invoke: async () => ({ sources: [] }) });
-    await assert.rejects(() => executeWorkflow({ workflow: gated, contracts, adapters, memory: new FileMemoryStore(join(root, "missing")), runId: "gate-missing" }), /requires approval gate/);
-    await assert.rejects(() => executeWorkflow({ workflow: gated, contracts, adapters, memory: new FileMemoryStore(join(root, "stale")), runId: "gate-stale", approvals: [{ gateId: "owner.publish", stepId: "find", workflowDigest: "sha256:other", decision: "approved" }] }), /requires approval gate/);
+    const missingMemory = new FileMemoryStore(join(root, "missing"));
+    const missing = await executeWorkflow({ workflow: gated, contracts, adapters, memory: missingMemory, runId: "gate-missing" });
+    assert.equal(missing.status, "awaiting_approval");
+    assert.equal((await missingMemory.readCheckpoint()).status, "awaiting_approval");
+    const staleMemory = new FileMemoryStore(join(root, "stale"));
+    const stale = await executeWorkflow({ workflow: gated, contracts, adapters, memory: staleMemory, runId: "gate-stale", approvals: [{ gateId: "owner.publish", stepId: "find", workflowDigest: "sha256:other", decision: "approved" }] });
+    assert.equal(stale.status, "awaiting_approval");
+    assert.equal((await staleMemory.events()).some((event) => event.type === "run.awaiting-approval"), true);
     const memory = new FileMemoryStore(join(root, "approved"));
     const result = await executeWorkflow({ workflow: gated, contracts, adapters, memory, runId: "gate-approved", approvals: [{ gateId: "owner.publish", stepId: "find", workflowDigest: gated.digest, decision: "approved" }] });
     assert.equal(result.status, "completed");

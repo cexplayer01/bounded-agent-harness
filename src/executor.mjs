@@ -60,7 +60,21 @@ export async function executeWorkflow({ workflow, contracts, adapters, memory, r
       if (signal?.aborted) throw new HarnessError("RUN_ABORTED", "run was aborted");
       if (step.approval?.required) {
         const approval = approvals.find((item) => item.gateId === step.approval.gateId && item.stepId === step.id && item.workflowDigest === workflow.digest && item.decision === "approved");
-        assert(approval, "APPROVAL_REQUIRED", `${step.id} requires approval gate ${step.approval.gateId} bound to this workflow`);
+        if (!approval) {
+          const waitingFor = { type: "approval", gateId: step.approval.gateId, stepId: step.id, workflowDigest: workflow.digest };
+          await memory.append({ type: "run.awaiting-approval", runId, stepId: step.id, gateId: step.approval.gateId, workflowDigest: workflow.digest, at: new Date(now()).toISOString() });
+          await memory.checkpoint(recoveryCheckpoint({ run, reason: "APPROVAL_REQUIRED", status: "awaiting_approval", waitingFor, now: now() }));
+          return {
+            status: "awaiting_approval",
+            runId,
+            workflowDigest: workflow.digest,
+            spentCostUnits: run.spentCostUnits,
+            completedSteps: [...run.completedSteps],
+            pendingSteps: [...run.pendingSteps],
+            waitingFor,
+            outputs
+          };
+        }
         await memory.append({ type: "step.approval-verified", runId, stepId: step.id, gateId: step.approval.gateId, workflowDigest: workflow.digest, at: new Date(now()).toISOString() });
       }
       if (prior?.ambiguous.includes(step.id) && step.effect === "external") {

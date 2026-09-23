@@ -26,6 +26,14 @@ test("happy path requires authorization, lease, invocation, success, and complet
   assert.equal(isTerminalStepState(state), true);
 });
 
+test("approval waiting is resumable and is not terminal", () => {
+  const waiting = transitionStepState(STEP_STATES.PENDING, STEP_EVENTS.WAIT_FOR_APPROVAL);
+  assert.equal(waiting, STEP_STATES.WAITING_FOR_APPROVAL);
+  assert.equal(isTerminalStepState(waiting), false);
+  assert.equal(transitionStepState(waiting, STEP_EVENTS.AUTHORIZE), STEP_STATES.AUTHORIZED);
+  assert.equal(classifyExecutionPlane(STEP_EVENTS.WAIT_FOR_APPROVAL), "control");
+});
+
 test("ambiguous external effects enter reconciliation before completion", () => {
   const state = reduceStepEvents([
     STEP_EVENTS.AUTHORIZE,
