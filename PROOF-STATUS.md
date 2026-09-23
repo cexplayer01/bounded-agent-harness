@@ -1,6 +1,6 @@
 # Bounded Agent Harness proof status
 
-Recorded 2026-09-23 for development package version `0.2.0` and tested source commit `cb9cfad57d3754d3f23c6cd5433fb5bd4792934d`.
+Recorded 2026-09-23 for development package version `0.2.0` and tested source commit `284085a`.
 
 Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.6`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
 

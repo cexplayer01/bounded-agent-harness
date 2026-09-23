@@ -5,7 +5,7 @@
     "repository": "https://github.com/cexplayer01/bounded-agent-harness",
     "version": "0.2.0",
     "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.6",
-    "tested_commit": "cb9cfad57d3754d3f23c6cd5433fb5bd4792934d"
+    "tested_commit": "284085a"
   },
   "overall": {
     "status": "PROVEN_WITHIN_DECLARED_SCOPE",
