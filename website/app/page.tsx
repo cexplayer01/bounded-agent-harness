@@ -164,6 +164,7 @@ export default function Home() {
         <div className="case-links">
           <a href="https://github.com/cexplayer01/USB-Website-platform">Inspect the USB build ↗</a>
           <a href="https://dfwmetro.net">Visit DFW Metro ↗</a>
+          <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/PROOF-STATUS.md">Read the scoped proof ↗</a>
         </div>
       </section>
 
