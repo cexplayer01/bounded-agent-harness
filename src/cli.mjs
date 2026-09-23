@@ -12,6 +12,7 @@ import { declarativeContracts, localAdapters } from "./declarative-runtime.mjs";
 import { executeWorkflow } from "./executor.mjs";
 import { summarizeEvents } from "./observability.mjs";
 import { scanChangeImpact } from "./change-impact.mjs";
+import { evaluateProofRelease, PROOF_OBSERVATIONS_FORMAT } from "./proof-release.mjs";
 
 const json = async (path) => JSON.parse(await readFile(resolve(path), "utf8"));
 
@@ -100,5 +101,17 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     io.out(JSON.stringify(result, null, 2));
     return result;
   }
-  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact> [options]");
+  if (command === "proof-release") {
+    assert(args.release && args.observations, "CLI_ARGUMENT", "proof-release requires --release and --observations");
+    const release = await json(args.release);
+    const observationPacket = await json(args.observations);
+    assert(Array.isArray(observationPacket) || observationPacket?.schema_version === PROOF_OBSERVATIONS_FORMAT, "CLI_ARGUMENT", `--observations must use ${PROOF_OBSERVATIONS_FORMAT}`);
+    const observations = Array.isArray(observationPacket) ? observationPacket : observationPacket.observations;
+    assert(Array.isArray(observations), "CLI_ARGUMENT", "--observations must contain an observations array");
+    const result = evaluateProofRelease({ release, observations, now: args.now || new Date() });
+    io.out(JSON.stringify(result, null, 2));
+    if (!result.valid) process.exitCode = 1;
+    return result;
+  }
+  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact|proof-release> [options]");
 }

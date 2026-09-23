@@ -10,9 +10,20 @@ From `agent-harness/`:
 npm test
 npm run audit
 npm run demo:mcp
+npm run proof:release
 ```
 
 Expected result: all tests pass, the package audit reports `valid: true`, and the MCP demo completes two specialist steps with pinned provider identities and bounded cost.
+
+## Publish proof without stale live claims
+
+Before updating a proof receipt, create a claim file from the exact state you intend to publish and obtain a fresh read-only observation packet from the relevant host adapter. Run:
+
+```powershell
+node bin/harness.mjs proof-release --release proof-release.v1.json --observations proof-observations.v1.json --now 2026-09-23T19:00:00.000Z
+```
+
+Publish only on `READY_TO_PUBLISH`. A `BLOCKED` result is useful evidence: update the claim from the observation, mark the old deployment `HISTORICAL` or `SUPERSEDED`, or repair the observed-field contract. Do not change the checker to make a mismatch disappear. The host adapter owns network access; the harness gate only compares the supplied packets and stores no credentials.
 
 ## Run a zero-side-effect workflow
 
@@ -55,6 +66,7 @@ The local adapter manifest admits only literal outputs. It cannot execute a comm
 | `EVENT_LOG_CORRUPT` | Event history failed sequence or hash validation. | Preserve the files and investigate; do not continue the run. |
 | `EVENT_LOG_LOCKED` | Another writer owns the ledger lock. | Use `lock-status`; do not delete a live lock. |
 | `RUN_ALREADY_COMPLETED` | A terminal run was asked to resume. | Start a newly compiled/new-ID run only if new work is intended. |
+| `PROOF_RELEASE_BLOCKED` / `DEPLOYMENT_DRIFT` / `STALE_OBSERVATION` | A current proof claim is not backed by a matching fresh observation. | Keep the release blocked; reconcile live state, update the claim, or mark the old evidence historical/superseded. |
 
 ## Before any external integration
 

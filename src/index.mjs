@@ -31,3 +31,4 @@ export { pollOwnerWake } from "./owner-timeout-runner.mjs";
 export { CHANGE_KINDS, TIERS as CHANGE_IMPACT_TIERS, analyzeChangeImpact, scanChangeImpact } from "./change-impact.mjs";
 export { WORK_EXECUTION_MODES, decideWorkLoop } from "./work-loop-policy.mjs";
 export { CHECKPOINT_SCHEMA_VERSION, validateTakeoverCheckpoint } from "./takeover-checkpoint.mjs";
+export { PROOF_RELEASE_FORMAT, PROOF_OBSERVATIONS_FORMAT, assertProofRelease, evaluateProofRelease, validateProofRelease } from "./proof-release.mjs";

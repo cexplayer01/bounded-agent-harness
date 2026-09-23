@@ -1,0 +1,18 @@
+{
+  "schema_version": "bounded-agent-harness-proof-release.v1",
+  "release_id": "example-2026-09-23",
+  "claims": [
+    {
+      "id": "example-site-current",
+      "target": "https://example.invalid",
+      "claim_state": "CURRENT",
+      "observed_at": "2026-09-23T18:00:00.000Z",
+      "freshness": { "max_age_seconds": 86400 },
+      "deployment": { "id": "deploy-current", "rollback_id": "deploy-rollback" },
+      "expected": {
+        "industry": "LANDSCAPING",
+        "routes": { "/": 200 }
+      }
+    }
+  ]
+}

@@ -23,7 +23,7 @@ The first slice implements a zero-dependency Node.js workflow compiler. It valid
 
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro integration evidence, and remaining limits. The direct local proof is currently 120/120 tests, a clean package audit, a deterministic compiler demo, and a two-provider in-process MCP compatibility demo. DFW Metro and DFWMow are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro integration evidence, and remaining limits. The direct local proof is currently 126/126 tests, a clean package audit, a deterministic compiler demo, and a two-provider in-process MCP compatibility demo. DFW Metro and DFWMow are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness
@@ -31,6 +31,7 @@ npm test
 npm run demo
 npm run demo:mcp
 npm run audit
+npm run proof:release
 ```
 
 The CLI exposes the control-plane primitives without contacting a provider:
@@ -45,7 +46,14 @@ node bin/harness.mjs beat --memory .agent-harness/run-1 --run-id demo-1 --worker
 node bin/harness.mjs leases --memory .agent-harness/run-1 --lease-ms 60000
 node bin/harness.mjs lock-status --memory .agent-harness/run-1 --stale-after-ms 60000
 node bin/harness.mjs impact --root . --request examples/change-impact-request.json --output change-impact.json
+node bin/harness.mjs proof-release --release examples/proof-release.v1.json --observations examples/proof-observations.v1.json --now 2026-09-23T19:00:00.000Z
 ```
+
+### Proof release gate
+
+Reconciliation is now a publication gate, not a paragraph an agent can update from memory. A proof release contains explicit claims with `CURRENT`, `HISTORICAL`, or `SUPERSEDED` state. A separate read-only observation packet must match every `CURRENT` claim's target, exact deployment and rollback IDs, timestamp, freshness window, and expected fields. Field names are compared exactly, including case; the gate never guesses whether `Industry` means `industry`.
+
+`proof-release` returns `READY_TO_PUBLISH` only when all current claims are freshly reconciled. Missing observations, stale timestamps, deployment drift, rollback drift, field-name drift, unknown observations, and malformed claims return `BLOCKED`. Historical and superseded records remain available for audit, but cannot satisfy a current-state claim. The gate has no network or credential access: a provider-specific host adapter must produce the observation packet separately.
 
 The source for [boundedagentharness.com](https://boundedagentharness.com) is kept in [`website/`](website/). Build output, provider credentials, deployment identity, and local hosting state are intentionally excluded.
 
