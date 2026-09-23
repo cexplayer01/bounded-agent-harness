@@ -1,0 +1,95 @@
+{
+  "schema_version": "bounded-agent-harness-proof-status.v1",
+  "recorded_on": "2026-09-23",
+  "subject": {
+    "repository": "https://github.com/cexplayer01/bounded-agent-harness",
+    "version": "0.1.0",
+    "tested_commit": "cb9cfad57d3754d3f23c6cd5433fb5bd4792934d"
+  },
+  "overall": {
+    "status": "PROVEN_WITHIN_DECLARED_SCOPE",
+    "statement": "The deterministic local control plane, zero-side-effect execution path, bounded continuation controls, and in-process MCP compatibility path are directly reproducibly proven. USB/DFW Metro is a documented integration case, not a claim that this package is deployed as DFW Metro runtime infrastructure.",
+    "commercial_hosted_service": "NOT_PROVEN"
+  },
+  "direct_proof": [
+    {
+      "id": "automated-suite",
+      "status": "PASS",
+      "command": "npm test",
+      "result": {
+        "tests": 120,
+        "passed": 120,
+        "failed": 0,
+        "skipped": 0
+      },
+      "proves": "The checked-in control-plane, contract, execution, recovery, continuation, checkpoint, governance, and adapter behaviors pass their automated tests.",
+      "does_not_prove": "Independent external-provider trust, hosted distributed operation, or commercial production readiness."
+    },
+    {
+      "id": "package-audit",
+      "status": "PASS",
+      "command": "npm run audit",
+      "result": {
+        "valid": true,
+        "findings": []
+      },
+      "proves": "The extracted package passes its secret, path, dependency, and publication-surface audit.",
+      "does_not_prove": "That an external deployment has been secured or that a provider has authenticated the package."
+    },
+    {
+      "id": "deterministic-demo",
+      "status": "PASS",
+      "command": "npm run demo",
+      "result": {
+        "workflow_format": "agent-harness.workflow.v1",
+        "compiled_cost_units": 7,
+        "max_cost_units": 8,
+        "digest": "sha256:75905e7bfa749029f0992c7e0c5f4808b9ef67aaad3b048a6d66e3033507dec0"
+      },
+      "proves": "A closed example plan compiles to a deterministic, digest-bound workflow.",
+      "does_not_prove": "Model quality or live provider behavior."
+    },
+    {
+      "id": "mcp-compatibility-demo",
+      "status": "PASS",
+      "command": "npm run demo:mcp",
+      "result": {
+        "status": "completed",
+        "specialists": 2,
+        "evidence_events": 6,
+        "spent_cost_units": 5,
+        "network": "NONE",
+        "model": "NONE"
+      },
+      "proves": "Two intentionally different in-process MCP client shapes can complete one compiled workflow through the bounded adapter boundary.",
+      "does_not_prove": "Trustworthiness or compatibility of a particular external MCP provider."
+    }
+  ],
+  "integration_evidence": {
+    "consumer": {
+      "name": "USB Website Platform",
+      "repository": "https://github.com/cexplayer01/USB-Website-platform",
+      "visibility": "PRIVATE",
+      "integration_commit": "5cec9b5",
+      "role": "USB used the harness for bounded continuation, checkpointing, focused verification selection, approval boundaries, handoffs, and rollback-aware evidence while building deterministic Site artifacts."
+    },
+    "dfwmetro": {
+      "status": "EXTERNAL_INTEGRATION_EVIDENCE",
+      "statement": "The harness was used during USB development and verification work for DFW Metro and the disposable DFWMow review lab. The generated customer-Site artifacts remained deterministic and model-free.",
+      "production_target": "https://dfwmetro.net",
+      "production_deploy_id": "6ab2942e25bdceaae9957a56",
+      "production_rollback_deploy_id": "6ab286fa2f85736581654303",
+      "production_evidence_scope": "External DFW Metro state reported by the integration workflow and partially verified by browser readback; it is not proof that this package is deployed inside DFW Metro or that every production mutation was harness-executed.",
+      "lab_target": "https://dfwmow.app",
+      "lab_deploy_id": "6ab3ae36c48beb67fba5f13f",
+      "lab_rollback_deploy_id": "6ab30ab46f75142052f49c05",
+      "lab_evidence_scope": "Disposable visibility-only lab deployment with live_lead_save=false and booking_payment_active=false; public routes and approved function boundaries were postflight-checked."
+    }
+  },
+  "limitations": [
+    "The package is a source-available extraction prototype, not a hosted service or published npm package.",
+    "Distributed leasing, hosted scheduling, external provider authentication, and real-provider compatibility remain separate work.",
+    "DFW Metro production state and DFWMow lab deployments are external evidence and remain governed by their own deployment, database, provider, and rollback rules.",
+    "The proof receipt records reproducible scope and boundaries; it does not grant authority to deploy, mutate data, contact a provider, or publish a customer Site."
+  ]
+}

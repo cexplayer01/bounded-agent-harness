@@ -21,6 +21,10 @@ It packages the useful reliability mechanisms without requiring chat transcripts
 
 The first slice implements a zero-dependency Node.js workflow compiler. It validates a closed plan, specialist profiles, contract references, dependency order, authority, capability, and cost budget. Identical inputs produce an identical canonical artifact and SHA-256 digest.
 
+## Proof status
+
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro integration evidence, and remaining limits. The direct local proof is currently 120/120 tests, a clean package audit, a deterministic compiler demo, and a two-provider in-process MCP compatibility demo. DFW Metro and DFWMow are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+
 ```powershell
 cd agent-harness
 npm test
