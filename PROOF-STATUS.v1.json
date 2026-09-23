@@ -5,11 +5,11 @@
     "repository": "https://github.com/cexplayer01/bounded-agent-harness",
     "version": "0.2.0",
     "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.6",
-    "tested_commit": "284085a"
+    "tested_commit": "0a2fd22"
   },
   "overall": {
     "status": "PROVEN_WITHIN_DECLARED_SCOPE",
-    "statement": "The deterministic local control plane, zero-side-effect execution path, bounded continuation controls, and in-process MCP compatibility path are directly reproducibly proven. USB/DFW Metro is a documented integration case, not a claim that this package is deployed as DFW Metro runtime infrastructure.",
+    "statement": "The deterministic local control plane, zero-side-effect execution path, bounded continuation controls, in-process MCP compatibility path, and proof publication reconciliation gate are directly reproducibly proven. USB/DFW Metro is a documented integration case, not a claim that this package is deployed as DFW Metro runtime infrastructure.",
     "commercial_hosted_service": "NOT_PROVEN"
   },
   "direct_proof": [
@@ -18,8 +18,8 @@
       "status": "PASS",
       "command": "npm test",
       "result": {
-        "tests": 120,
-        "passed": 120,
+        "tests": 126,
+        "passed": 126,
         "failed": 0,
         "skipped": 0
       },
@@ -64,8 +64,32 @@
       },
       "proves": "Two intentionally different in-process MCP client shapes can complete one compiled workflow through the bounded adapter boundary.",
       "does_not_prove": "Trustworthiness or compatibility of a particular external MCP provider."
+    },
+    {
+      "id": "proof-release-gate",
+      "status": "PASS",
+      "command": "npm run proof:release",
+      "result": {
+        "status": "READY_TO_PUBLISH",
+        "current_claims": 1,
+        "blocking_cases_tested": [
+          "missing observation",
+          "deployment or rollback drift",
+          "expired observation",
+          "field-name casing drift"
+        ]
+      },
+      "proves": "A proof receipt cannot publish a CURRENT claim unless a fresh exact read-only observation matches its target, deployment, rollback, timestamp, and fields.",
+      "does_not_prove": "That a host adapter's supplied observation is truthful, or that a provider accepted a deployment."
     }
   ],
+  "proof_release_gate": {
+    "format": "bounded-agent-harness-proof-release.v1",
+    "implemented_commit": "0a2fd22",
+    "current_claim_rule": "CURRENT requires an exact matching fresh observation; otherwise publication is BLOCKED.",
+    "historical_rule": "HISTORICAL and SUPERSEDED evidence remains traceable but does not satisfy a CURRENT claim.",
+    "provider_boundary": "Host adapters supply read-only observations; the gate makes no network calls and stores no credentials."
+  },
   "integration_evidence": {
     "consumer": {
       "name": "USB Website Platform",
