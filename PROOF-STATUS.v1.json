@@ -82,9 +82,31 @@
       "production_rollback_deploy_id": "6ab286fa2f85736581654303",
       "production_evidence_scope": "External DFW Metro state reported by the integration workflow and partially verified by browser readback; it is not proof that this package is deployed inside DFW Metro or that every production mutation was harness-executed.",
       "lab_target": "https://dfwmow.app",
-      "lab_deploy_id": "6ab3ae36c48beb67fba5f13f",
-      "lab_rollback_deploy_id": "6ab30ab46f75142052f49c05",
-      "lab_evidence_scope": "Disposable visibility-only lab deployment with live_lead_save=false and booking_payment_active=false; public routes and approved function boundaries were postflight-checked."
+      "lab_deploy_id": "6ab3d15578d1a74798a1ffaa",
+      "lab_rollback_deploy_id": "6ab3ae36c48beb67fba5f13f",
+      "lab_previous_deploy_id": "6ab3ae36c48beb67fba5f13f",
+      "lab_previous_rollback_deploy_id": "6ab30ab46f75142052f49c05",
+      "lab_evidence_scope": "Latest disposable control-plane lab deployment: the three approved functions remained, public root, /usb-lab/, and preserved offline download returned 200, and an unauthenticated private-route probe returned 404. The earlier visibility-only deployment remains historical evidence."
+    },
+    "live_reconciliation": {
+      "status": "DEMONSTRATED_WITH_DRIFT",
+      "workflow": "dfwmetro-reconciliation-v1",
+      "execution_source": "OWNER_CONTROLLED_MUSE_RUN",
+      "result": {
+        "events": 17,
+        "compiled_cost_units": 10,
+        "spent_cost_units": 7,
+        "checks_passed": 5,
+        "checks_failed": 1,
+        "finding": "The prior DFWMow lab deployment reference was stale; live had advanced to 6ab3d15578d1a74798a1ffaa."
+      },
+      "confirmed": [
+        "DFW Metro published deploy matches 6ab2942e25bdceaae9957a56.",
+        "dfw-cities.json contains 138 municipalities.",
+        "All four agent-discovery documents serve.",
+        "The agent manifest declares submit_listing on POST /mcp."
+      ],
+      "scope": "Demonstrates digest-bound, contract-validated, budgeted, hash-chained live reconciliation and drift reporting; the raw run remains owner-controlled and this does not prove hosted operation, authenticated providers, commercial readiness, or harness execution of every DFW mutation."
     }
   },
   "limitations": [
