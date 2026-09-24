@@ -1,5 +1,5 @@
 const proof = [
-  ["130/130", "checked-in tests"],
+  ["139/139", "checked-in tests"],
   ["0", "runtime dependencies"],
   ["READY", "proof-release gate"],
 ];
@@ -7,7 +7,7 @@ const proof = [
 const flow = [
   { mark: "01", label: "Validate", detail: "Contracts, authority, capability, budget" },
   { mark: "02", label: "Compile", detail: "One deterministic workflow identity" },
-  { mark: "03", label: "Execute", detail: "Bounded specialists through MCP adapters" },
+  { mark: "03", label: "Execute", detail: "MCP adapters with token-capacity gates" },
   { mark: "04", label: "Continue", detail: "Continuous run; heartbeat monitors and recovers" },
 ];
 
@@ -123,7 +123,7 @@ export default function Home() {
         <div className="honest-copy">
           <p className="eyebrow">What exists now</p>
           <h2>A working control-plane foundation—not a production claim.</h2>
-          <p>Version 0.3.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, and an explicit work-loop policy that keeps continuous execution separate from heartbeat recovery.</p>
+          <p>Version 0.3.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, and a token-capacity gate that estimates prompt plus response usage and blocks stale or exhausted provider windows before invocation.</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Run the five-minute demo ↗</a>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/THREAT-MODEL.md">Read the threat model ↗</a>
