@@ -13,6 +13,10 @@ It packages the useful reliability mechanisms without requiring chat transcripts
 - MCP providers are adapters; they do not silently acquire authority.
 - Heartbeats prove liveness and trigger bounded recovery, not busywork.
 - Each step reserves a cost ceiling; verified provider usage may lower the recorded charge but can never exceed that ceiling.
+- Provider hosts can run a token-capacity gate before invocation. It uses a fresh provider/account observation, a
+  conservative prompt estimate, an explicit response ceiling, and protected headroom; unknown, stale, reset, or
+  insufficient capacity returns an error before the provider call. A red-zone result remains visible even when the
+  request fits, so a host can reserve or defer it instead of spending blindly.
 - Validated plans compile deterministically before execution.
 - Runtime execution can be mostly non-LLM; models are invoked only for steps that require them.
 - Every meaningful transition produces inspectable, hash-chained evidence.
@@ -44,6 +48,16 @@ This closes durable coordination through shared Git. It does not claim to create
 ## Current runnable slice
 
 The first slice implements a zero-dependency Node.js workflow compiler. It validates a closed plan, specialist profiles, contract references, dependency order, authority, capability, and cost budget. Identical inputs produce an identical canonical artifact and SHA-256 digest.
+
+### Token-capacity gate
+
+Provider hosts that share an account or rolling token window can wrap an adapter with `withTokenCapacityGate`. The
+host must supply a fresh observation containing the provider, window ID, remaining tokens, observation time, and reset
+time; the workflow step must declare `tokenBudget.maxOutputTokens`. The gate conservatively estimates the prompt,
+adds the response ceiling and reserve, rejects stale/unknown/reset/insufficient observations, and requires an atomic
+`reserveCapacity` callback before the provider call. A red-zone result is allowed only after that reservation succeeds;
+otherwise the call is rejected before it reaches the provider. The harness cannot discover a provider's private quota by
+itself, so a host that cannot read and reserve the shared account window must fail closed.
 
 ## Proof status
 

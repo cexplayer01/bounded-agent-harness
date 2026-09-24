@@ -67,6 +67,21 @@ test("MCP adapter preserves valid provider usage for executor enforcement", asyn
   assert.deepEqual(result.usage, { costUnits: 2, source: "provider-reported" });
 });
 
+test("MCP adapter can enforce shared token capacity before the provider call", async () => {
+  let calls = 0;
+  const adapter = mcpAdapter({ callTool: async () => { calls += 1; return { structuredContent: { findings: [] } }; } }, {
+    server: "s",
+    tool: "review",
+    capacity: {
+      readCapacity: async () => ({ provider: "shared", windowId: "daily", remainingTokens: 500, observedAt: "2026-09-24T12:00:00.000Z", resetsAt: "2026-09-25T00:00:00.000Z" }),
+      reserveCapacity: async () => ({ reservationId: "r-1" }),
+      now: Date.parse("2026-09-24T12:01:00.000Z")
+    }
+  });
+  await assert.rejects(() => adapter.invoke({ ...request, tokenBudget: { maxOutputTokens: 1_000 } }), /exceed remaining capacity/);
+  assert.equal(calls, 0);
+});
+
 test("MCP adapter fails closed on missing tools, tool errors, and prose-only output", async () => {
   const missing = mcpAdapter({ listTools: async () => ({ tools: [] }), callTool: async () => ({}) }, { server: "s", tool: "review" });
   await assert.rejects(() => missing.invoke(request), /was not advertised/);

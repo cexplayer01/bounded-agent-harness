@@ -23,6 +23,7 @@ export { FLOOR_MANIFEST_FORMAT, assertPlanWithinFloor, floorDigest, validateFloo
 export { CONTINUATION_REVIEW_ROLES, evaluateContinuationGate, validateReviewRecord } from "./continuation-gate.mjs";
 export { CONTINUATION_FORK_FORMAT, createContinuationFork, resolveContinuationFork, validateContinuationFork } from "./continuation-fork.mjs";
 export { MODEL_TIER_COSTS, selectModelTier } from "./model-policy.mjs";
+export { DEFAULT_TOKEN_CAPACITY_POLICY, TOKEN_CAPACITY_FORMAT, estimateTokenCount, estimateTokenRequest, evaluateTokenCapacity, withTokenCapacityGate } from "./token-capacity.mjs";
 export { decideContinuation } from "./continuation-controller.mjs";
 export { ownerTimeoutWatchdog } from "./owner-timeout-watchdog.mjs";
 export { OWNER_WAKE_FORMAT, armOwnerTimeout, buildOwnerWakeRecord } from "./continuation-scheduler.mjs";

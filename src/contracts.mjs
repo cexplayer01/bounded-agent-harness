@@ -15,6 +15,10 @@ function strings(value, label) {
   assert(Array.isArray(value) && value.every((item) => typeof item === "string"), "INVALID_TYPE", `${label} must be a string array`);
 }
 
+function nonNegativeInteger(value, label) {
+  assert(Number.isSafeInteger(value) && value >= 0, "INVALID_TYPE", `${label} must be a non-negative integer`);
+}
+
 export function validateSpecialist(profile) {
   closedObject(profile, ["id", "version", "description", "strengths", "limitations", "capabilities", "authority", "adapter", "evidence"], "specialist");
   id(profile.id, "specialist.id");
@@ -41,7 +45,7 @@ export function validatePlan(plan) {
   assert(Array.isArray(plan.steps) && plan.steps.length > 0, "INVALID_STEPS", "plan.steps must not be empty");
   const seen = new Set();
   for (const [index, step] of plan.steps.entries()) {
-    closedObject(step, ["id", "specialist", "capability", "authority", "dependsOn", "contextProjection", "input", "inputContract", "outputContract", "costUnits", "effect", "idempotencyKey", "approval"], `plan.steps[${index}]`);
+    closedObject(step, ["id", "specialist", "capability", "authority", "dependsOn", "contextProjection", "input", "inputContract", "outputContract", "costUnits", "effect", "idempotencyKey", "approval", "tokenBudget"], `plan.steps[${index}]`);
     id(step.id, `plan.steps[${index}].id`);
     assert(!seen.has(step.id), "DUPLICATE_STEP", `duplicate step ${step.id}`);
     seen.add(step.id);
@@ -61,6 +65,12 @@ export function validatePlan(plan) {
     assert(Number.isSafeInteger(step.costUnits) && step.costUnits >= 0, "INVALID_COST", `${step.id}.costUnits must be a non-negative integer`);
     assert(step.input && typeof step.input === "object" && !Array.isArray(step.input), "INVALID_INPUT", `${step.id}.input must be an object`);
     assert(["read", "local", "external"].includes(step.effect), "INVALID_EFFECT", `${step.id}.effect must be read, local, or external`);
+    if (step.tokenBudget !== undefined) {
+      closedObject(step.tokenBudget, ["maxOutputTokens", "reserveTokens"], `${step.id}.tokenBudget`);
+      nonNegativeInteger(step.tokenBudget.maxOutputTokens, `${step.id}.tokenBudget.maxOutputTokens`);
+      assert(step.tokenBudget.maxOutputTokens > 0, "TOKEN_RESPONSE_BUDGET_REQUIRED", `${step.id}.tokenBudget.maxOutputTokens must be greater than zero`);
+      if (step.tokenBudget.reserveTokens !== undefined) nonNegativeInteger(step.tokenBudget.reserveTokens, `${step.id}.tokenBudget.reserveTokens`);
+    }
     if (step.effect === "external") {
       assert(typeof step.idempotencyKey === "string" && step.idempotencyKey.length >= 8, "IDEMPOTENCY_REQUIRED", `${step.id} requires a stable idempotencyKey`);
     } else {

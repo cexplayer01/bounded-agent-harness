@@ -1,5 +1,6 @@
 import { assert } from "./errors.mjs";
 import { validateCapabilityEnvelope } from "./capability-envelope.mjs";
+import { withTokenCapacityGate } from "./token-capacity.mjs";
 
 export class AdapterRegistry {
   #adapters = new Map();
@@ -15,11 +16,11 @@ export class AdapterRegistry {
   }
 }
 
-export function mcpAdapter(client, { server, tool, expectedServer }) {
+export function mcpAdapter(client, { server, tool, expectedServer, capacity } = {}) {
   assert(typeof client?.callTool === "function", "INVALID_MCP_CLIENT", "MCP client must expose callTool(request)");
   let verified = false;
   let provider = null;
-  return {
+  const adapter = {
     async invoke(request) {
       if (!provider) {
         if (expectedServer) {
@@ -65,4 +66,5 @@ export function mcpAdapter(client, { server, tool, expectedServer }) {
       };
     }
   };
+  return capacity ? withTokenCapacityGate(adapter, capacity) : adapter;
 }

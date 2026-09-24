@@ -38,6 +38,15 @@
           "costUnits": { "type": "integer", "minimum": 0 },
           "effect": { "enum": ["read", "local", "external"] },
           "idempotencyKey": { "type": "string", "minLength": 8 },
+          "tokenBudget": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["maxOutputTokens"],
+            "properties": {
+              "maxOutputTokens": { "type": "integer", "exclusiveMinimum": 0 },
+              "reserveTokens": { "type": "integer", "minimum": 0 }
+            }
+          },
           "approval": {
             "type": "object",
             "additionalProperties": false,

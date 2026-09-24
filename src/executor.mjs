@@ -116,6 +116,7 @@ export async function executeWorkflow({ workflow, contracts, adapters, memory, r
         signal,
         idempotencyKey: step.idempotencyKey,
         resumed: Boolean(prior),
+        tokenBudget: step.tokenBudget,
         reservedCostUnits: step.costUnits
       });
       const wrapped = adapterValue?.format === "agent-harness.adapter-result.v1";
