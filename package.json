@@ -1,6 +1,6 @@
 {
   "name": "bounded-agent-harness",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "bin": { "agent-harness": "bin/harness.mjs" },
@@ -14,6 +14,7 @@
   },
   "scripts": {
     "demo": "node bin/demo.mjs",
+    "demo:shared-task": "node bin/demo-shared-task.mjs",
     "demo:mcp": "node bin/demo-mcp.mjs",
     "harness": "node bin/harness.mjs",
     "audit": "node bin/audit-package.mjs",

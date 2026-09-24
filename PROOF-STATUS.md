@@ -1,12 +1,12 @@
 # Bounded Agent Harness proof status
 
-Recorded 2026-09-23 for development package version `0.2.0` and tested source commit `0a2fd22`.
+Recorded 2026-09-23 for development package version `0.3.0` and tested source commit `d46764964a27894d61e33f415406ff9ba41721e9`.
 
 Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.6`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
 
 ## Bottom line
 
-Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 126/126 tests, the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
+Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 130/130 tests, the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
 
 This is not a claim that the package is already a hosted production service or that an external provider has been independently authenticated.
 
@@ -16,12 +16,14 @@ The machine-readable record is [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json). I
 
 | Area | Result | Evidence | Boundary |
 |---|---|---|---|
-| Automated behavior | PASS | `npm test` — 126/126 | Checked-in local behavior, not hosted operation |
+| Automated behavior | PASS | `npm test` — 130/130 | Checked-in local behavior, not hosted operation |
 | Package safety surface | PASS | `npm run audit` — `valid: true`, no findings | Does not authenticate an external deployment |
 | Deterministic compilation | PASS | `npm run demo` | Closed example inputs and local compiler |
 | MCP adapter compatibility | PASS | `npm run demo:mcp` — 2 specialists, 6 evidence events, 5 cost units | In-process client shapes; no claim about a named external provider |
 | Continuation and recovery | PASS | Automated tests for approvals, checkpoints, wakes, forks, work-loop policy, and reconciliation | Host scheduling and external authority remain injected boundaries |
 | Proof publication gate | PASS | `npm run proof:release` — `READY_TO_PUBLISH`; stale deployment, stale observation, missing observation, and field-name drift are tested as blocking cases | The host adapter must still supply truthful read-only observations |
+| Shared repository agent bridge | PASS | `shared-task-queue.test.mjs` — deterministic identity, one fixed claim, overlapping-scope rejection, disjoint-scope admission, digest-bound result, path scope, lease expiry, and release | Does not itself provide a direct Muse chat/MCP channel or hosted queue |
+| Shared-agent concurrency rehearsal | PASS | `npm run demo:shared-task` — overlapping scope blocked, disjoint scope claimed, released scope reclaimed; temporary synthetic queue only | Does not prove DFW repository access or direct Muse messaging |
 | Live reconciliation exercise | DEMONSTRATED WITH DRIFT | Owner-controlled `dfwmetro-reconciliation-v1` run — 17 hash-chained events, 10 compiled cost units, 7 spent, 5 checks passed, 1 stale-claim finding | Demonstrates detection and reporting of live drift; not a clean all-live proof or hosted-service proof |
 
 Reproduce the direct proof from the repository root:
@@ -42,7 +44,7 @@ The gate is intentionally provider-neutral. A Netlify, DFW Metro, or other host 
 
 ## USB and DFW Metro integration
 
-USB used the harness while building and verifying deterministic Site artifacts for DFW Metro and the disposable DFWMow review lab. In that integration, the harness supplied bounded continuation decisions, portable takeover checkpoints, focused change-impact verification, approval boundaries, handoff state, and rollback-aware evidence. USB's production Site generation remained deterministic and model-free.
+USB used the harness while building and verifying deterministic Site artifacts for DFW Metro and the disposable DFWMow review lab. In that integration, the harness supplied bounded continuation decisions, portable takeover checkpoints, focused change-impact verification, approval boundaries, handoff state, rollback-aware evidence, and now the repository-native task/claim/result bridge. USB's production Site generation remained deterministic and model-free.
 
 The DFW work is integral integration evidence, but it is not silently promoted into a stronger claim:
 

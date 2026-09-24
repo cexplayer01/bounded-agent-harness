@@ -32,3 +32,20 @@ export { CHANGE_KINDS, TIERS as CHANGE_IMPACT_TIERS, analyzeChangeImpact, scanCh
 export { WORK_EXECUTION_MODES, decideWorkLoop } from "./work-loop-policy.mjs";
 export { CHECKPOINT_SCHEMA_VERSION, validateTakeoverCheckpoint } from "./takeover-checkpoint.mjs";
 export { PROOF_RELEASE_FORMAT, PROOF_OBSERVATIONS_FORMAT, assertProofRelease, evaluateProofRelease, validateProofRelease } from "./proof-release.mjs";
+export {
+  SHARED_TASK_FORMAT,
+  SHARED_CLAIM_FORMAT,
+  SHARED_RESULT_FORMAT,
+  SHARED_RESERVATION_FORMAT,
+  buildSharedTask,
+  validateSharedTask,
+  buildTaskClaim,
+  validateTaskClaim,
+  buildTaskResult,
+  validateTaskResult,
+  enqueueSharedTask,
+  claimSharedTask,
+  completeSharedTask,
+  inspectSharedTasks,
+  sharedTaskDirectory,
+} from "./shared-task-queue.mjs";

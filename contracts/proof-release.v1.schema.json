@@ -5,47 +5,14 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "release_id", "claims"],
-  "properties": {
-    "schema_version": { "const": "bounded-agent-harness-proof-release.v1" },
-    "release_id": { "type": "string", "minLength": 1 },
-    "claims": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/$defs/claim" }
-    }
-  },
+  "properties": { "schema_version": { "const": "bounded-agent-harness-proof-release.v1" }, "release_id": { "type": "string", "minLength": 1 }, "claims": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/claim" } } },
   "$defs": {
-    "deployment": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "rollback_id"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "rollback_id": { "type": "string", "minLength": 1 }
-      }
-    },
+    "deployment": { "type": "object", "additionalProperties": false, "required": ["id", "rollback_id"], "properties": { "id": { "type": "string", "minLength": 1 }, "rollback_id": { "type": "string", "minLength": 1 } } },
     "claim": {
-      "type": "object",
-      "additionalProperties": false,
+      "type": "object", "additionalProperties": false,
       "required": ["id", "target", "claim_state", "observed_at", "freshness", "deployment", "expected"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "target": { "type": "string", "minLength": 1 },
-        "claim_state": { "enum": ["CURRENT", "HISTORICAL", "SUPERSEDED"] },
-        "observed_at": { "type": "string", "format": "date-time" },
-        "freshness": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["max_age_seconds"],
-          "properties": { "max_age_seconds": { "type": "integer", "exclusiveMinimum": 0 } }
-        },
-        "deployment": { "$ref": "#/$defs/deployment" },
-        "expected": { "type": "object" },
-        "superseded_by": { "type": "string", "minLength": 1 }
-      },
-      "allOf": [
-        { "if": { "properties": { "claim_state": { "const": "SUPERSEDED" } } }, "then": { "required": ["superseded_by"] } }
-      ]
+      "properties": { "id": { "type": "string", "minLength": 1 }, "target": { "type": "string", "minLength": 1 }, "claim_state": { "enum": ["CURRENT", "HISTORICAL", "SUPERSEDED"] }, "observed_at": { "type": "string", "format": "date-time" }, "freshness": { "type": "object", "additionalProperties": false, "required": ["max_age_seconds"], "properties": { "max_age_seconds": { "type": "integer", "exclusiveMinimum": 0 } } }, "deployment": { "$ref": "#/$defs/deployment" }, "expected": { "type": "object" }, "superseded_by": { "type": "string", "minLength": 1 } },
+      "allOf": [{ "if": { "properties": { "claim_state": { "const": "SUPERSEDED" } } }, "then": { "required": ["superseded_by"] } }]
     }
   }
 }

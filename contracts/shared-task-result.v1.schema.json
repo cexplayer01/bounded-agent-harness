@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boundedagentharness.com/contracts/shared-task-result.v1.schema.json",
+  "title": "Bounded Agent Harness shared task result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "taskId", "taskDigest", "agentId", "status", "startedAt", "completedAt", "sourceCommit", "resultCommit", "changedPaths", "tests", "externalState", "nextAction", "rollback", "notes", "resultDigest"],
+  "properties": {
+    "format": { "const": "agent-harness.shared-task-result.v1" },
+    "version": { "const": 1 },
+    "taskId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,80}$" },
+    "taskDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "agentId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,40}$" },
+    "status": { "enum": ["COMPLETED", "BLOCKED"] },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "sourceCommit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "resultCommit": { "type": ["string", "null"], "pattern": "^[a-f0-9]{40}$" },
+    "changedPaths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "tests": { "type": "array", "items": { "type": "object" } },
+    "externalState": { "enum": ["NOT_EXECUTED", "DRAFT_ONLY", "LIVE_VERIFIED"] },
+    "nextAction": { "type": "string", "minLength": 1 },
+    "rollback": { "type": "string", "minLength": 1 },
+    "notes": { "type": "string" },
+    "resultDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}

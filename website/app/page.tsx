@@ -1,7 +1,7 @@
 const proof = [
-  ["Fail-closed", "governed execution"],
+  ["130/130", "checked-in tests"],
   ["0", "runtime dependencies"],
-  ["Portable", "takeover checkpoints"],
+  ["READY", "proof-release gate"],
 ];
 
 const flow = [
@@ -41,7 +41,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.1.0 · portable handoffs</p>
+          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.3.0 · portable handoffs</p>
           <h1>Agents move fast.<br /><em>The workflow should hold.</em></h1>
           <p className="lede">
             A deterministic control plane for multi-agent work: versioned memory,
@@ -60,9 +60,9 @@ export default function Home() {
         <div className="control-card" aria-label="Example compiled workflow">
           <div className="card-top">
             <span>workflow / review-release</span>
-            <span className="verified">verified</span>
+            <span className="verified">local proof</span>
           </div>
-          <div className="digest">sha256:7bf9…a214</div>
+          <div className="digest">sha256:7590…7dec0</div>
           <div className="nodes">
             <div className="node active"><b>plan.validate</b><small>contracts · authority · cost</small></div>
             <div className="rail"><span /></div>
@@ -72,7 +72,7 @@ export default function Home() {
           </div>
           <div className="card-foot">
             <span><i className="pulse" /> continuous run active</span>
-            <span>cost 5 / 8 units</span>
+            <span>cost 7 / 8 units</span>
           </div>
         </div>
       </section>
@@ -123,7 +123,7 @@ export default function Home() {
         <div className="honest-copy">
           <p className="eyebrow">What exists now</p>
           <h2>A working control-plane foundation—not a production claim.</h2>
-          <p>Version 0.1.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, and an explicit work-loop policy that keeps continuous execution separate from heartbeat recovery.</p>
+          <p>Version 0.3.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, and an explicit work-loop policy that keeps continuous execution separate from heartbeat recovery.</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Run the five-minute demo ↗</a>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/THREAT-MODEL.md">Read the threat model ↗</a>
@@ -148,7 +148,8 @@ export default function Home() {
           <p className="section-copy">
             The USB Website Platform used Bounded Agent Harness while building and verifying
             deterministic Site artifacts for DFW Metro and the disposable DFWMow review lab.
-            The harness carried the handoffs, checkpoints, focused proof, and rollback awareness;
+            The harness carried shared Git task packets, scope reservations, handoffs, checkpoints,
+            focused proof, and rollback awareness;
             production Site generation itself remained deterministic and model-free.
           </p>
         </div>

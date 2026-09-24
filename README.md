@@ -17,13 +17,37 @@ It packages the useful reliability mechanisms without requiring chat transcripts
 - Runtime execution can be mostly non-LLM; models are invoked only for steps that require them.
 - Every meaningful transition produces inspectable, hash-chained evidence.
 
+## Shared repository bridge
+
+The harness now includes a repository-native bridge for agents that do not share a chat or MCP server. It is intentionally a transport protocol, not a second agent runtime: one agent publishes an immutable task packet, the assigned agent claims the one fixed claim path, and the worker publishes one result packet bound to the task digest and full Git commit SHAs.
+
+The queue is designed for a private Git repository such as `cexplayer01/dfwmetro`:
+
+```powershell
+node bin/harness.mjs task-create --queue .agent-harness/tasks --task task.json
+git add .agent-harness/tasks/ready && git commit -m "Publish shared agent task" && git push
+
+node bin/harness.mjs task-claim --queue .agent-harness/tasks --task-id dfw-source-sync --agent-id muse
+git add .agent-harness/tasks/claims && git commit -m "Claim shared agent task" && git push
+
+node bin/harness.mjs task-complete --queue .agent-harness/tasks --result result.json
+git add .agent-harness/tasks/results && git commit -m "Record shared agent result" && git push
+node bin/harness.mjs task-inspect --queue .agent-harness/tasks
+```
+
+The fixed claim filename and shared `scope-reservations.v1.json` ledger make competing claims collide at Git push instead of silently allowing two workers to proceed. Same or overlapping file/directory scopes are rejected; disjoint scopes may proceed after their control-branch claims are recorded. Workers use separate branches/worktrees for source edits and never edit the canonical source branch directly. Tasks declare exact writable paths, forbidden actions, acceptance evidence, external-effect level, repository base commit, and expected outputs. Results declare changed paths, source/result commits, tests, external state, next action, and rollback. A result outside the declared scope, after lease expiry, or with a changed digest fails closed. Task and result packets must contain no secret values; environment variable names and secret references are permitted.
+
+Run the local concurrency rehearsal with `npm run demo:shared-task`. It uses a temporary synthetic queue and proves three behaviors in one run: an overlapping claim is rejected with `TASK_SCOPE_RESERVED`, a disjoint claim is admitted, and the overlapping scope can be claimed after the first worker completes. It performs no Git, network, provider, database, deployment, or customer-Site action.
+
+This closes durable coordination through shared Git. It does not claim to create a direct Muse chat channel: direct prompting still requires a Muse MCP connector or an authenticated browser session supplied by the host.
+
 ## Current runnable slice
 
 The first slice implements a zero-dependency Node.js workflow compiler. It validates a closed plan, specialist profiles, contract references, dependency order, authority, capability, and cost budget. Identical inputs produce an identical canonical artifact and SHA-256 digest.
 
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro integration evidence, and remaining limits. The direct local proof is currently 126/126 tests, a clean package audit, a deterministic compiler demo, and a two-provider in-process MCP compatibility demo. DFW Metro and DFWMow are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro integration evidence, and remaining limits. The direct local proof is currently 130/130 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, and a repository-native shared-agent bridge. DFW Metro and DFWMow are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness
@@ -205,4 +229,4 @@ Code contributions are temporarily closed while contributor and relicensing term
 
 ## Status
 
-Development package version `0.2.0` is a source-available extraction prototype, not a published npm package or hosted service. The package version identifies the source/package line; it is not a production-readiness score. Current capability maturity is `LOCAL_CONTROL_PLANE_MILESTONE_1.6`, with direct proof recorded in [PROOF-STATUS.md](PROOF-STATUS.md). It includes a complete zero-side-effect CLI loop and an end-to-end two-provider MCP compatibility demo, contract-bound revisioned shared memory, a multi-writer-safe tamper-evident event log and atomic checkpoints, heartbeat lease evaluation, provider-neutral MCP adapters with optional identity pinning, versioned structured handoffs, contract-checked outputs, cost enforcement, recovery evidence, explicit resume, and non-destructive lock diagnosis. Completed runs are terminal. Next: external MCP client configuration, owner-authorized orphan-lock recovery, cryptographic provider authentication, and a real-provider compatibility proof.
+Development package version `0.3.0` is a source-available extraction prototype, not a published npm package or hosted service. The package version identifies the source/package line; it is not a production-readiness score. Current capability maturity is `LOCAL_CONTROL_PLANE_MILESTONE_1.6`, with direct proof recorded in [PROOF-STATUS.md](PROOF-STATUS.md). It includes a complete zero-side-effect CLI loop and an end-to-end two-provider MCP compatibility demo, contract-bound revisioned shared memory, a multi-writer-safe tamper-evident event log and atomic checkpoints, heartbeat lease evaluation, provider-neutral MCP adapters with optional identity pinning, versioned structured handoffs, the repository-native shared-agent task/claim/result bridge, contract-checked outputs, cost enforcement, recovery evidence, explicit resume, and non-destructive lock diagnosis. Completed runs are terminal. Next: external MCP client configuration, private-repository adoption by Muse, owner-authorized orphan-lock recovery, cryptographic provider authentication, and a real-provider compatibility proof.

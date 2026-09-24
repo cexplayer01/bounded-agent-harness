@@ -1,16 +1,4 @@
 {
   "schema_version": "bounded-agent-harness-proof-observations.v1",
-  "observations": [
-    {
-      "id": "example-site-current",
-      "target": "https://example.invalid",
-      "observed_at": "2026-09-23T18:00:00.000Z",
-      "reconciled_by": "owner-controlled-read-only-check",
-      "deployment": { "id": "deploy-current", "rollback_id": "deploy-rollback" },
-      "observed": {
-        "industry": "LANDSCAPING",
-        "routes": { "/": 200 }
-      }
-    }
-  ]
+  "observations": [{ "id": "example-site-current", "target": "https://example.invalid", "observed_at": "2026-09-23T18:00:00.000Z", "reconciled_by": "owner-controlled-read-only-check", "deployment": { "id": "deploy-current", "rollback_id": "deploy-rollback" }, "observed": { "industry": "LANDSCAPING", "routes": { "/": 200 } } }]
 }

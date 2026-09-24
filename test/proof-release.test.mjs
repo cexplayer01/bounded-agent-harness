@@ -3,66 +3,12 @@ import assert from "node:assert/strict";
 import { evaluateProofRelease, PROOF_RELEASE_FORMAT } from "../src/index.mjs";
 
 const observedAt = "2026-09-23T18:00:00.000Z";
-const release = (overrides = {}) => ({
-  schema_version: PROOF_RELEASE_FORMAT,
-  release_id: "test-release",
-  claims: [{
-    id: "site-current",
-    target: "https://example.invalid",
-    claim_state: "CURRENT",
-    observed_at: observedAt,
-    freshness: { max_age_seconds: 3600 },
-    deployment: { id: "deploy-2", rollback_id: "deploy-1" },
-    expected: { industry: "LANDSCAPING", routes: { "/": 200 } },
-    ...overrides
-  }]
-});
-const observation = (overrides = {}) => ({
-  id: "site-current",
-  target: "https://example.invalid",
-  observed_at: observedAt,
-  reconciled_by: "read-only-check",
-  deployment: { id: "deploy-2", rollback_id: "deploy-1" },
-  observed: { industry: "LANDSCAPING", routes: { "/": 200 } },
-  ...overrides
-});
+const release = (overrides = {}) => ({ schema_version: PROOF_RELEASE_FORMAT, release_id: "test-release", claims: [{ id: "site-current", target: "https://example.invalid", claim_state: "CURRENT", observed_at: observedAt, freshness: { max_age_seconds: 3600 }, deployment: { id: "deploy-2", rollback_id: "deploy-1" }, expected: { industry: "LANDSCAPING", routes: { "/": 200 } }, ...overrides }] });
+const observation = (overrides = {}) => ({ id: "site-current", target: "https://example.invalid", observed_at: observedAt, reconciled_by: "read-only-check", deployment: { id: "deploy-2", rollback_id: "deploy-1" }, observed: { industry: "LANDSCAPING", routes: { "/": 200 } }, ...overrides });
 
-test("fresh exact observation makes a current proof claim publishable", () => {
-  const result = evaluateProofRelease({ release: release(), observations: [observation()], now: "2026-09-23T19:00:00.000Z" });
-  assert.equal(result.status, "READY_TO_PUBLISH");
-  assert.equal(result.claims[0].status, "CURRENT_VERIFIED");
-  assert.deepEqual(result.findings, []);
-});
-
-test("a stale deployment or rollback ID blocks a current claim", () => {
-  const result = evaluateProofRelease({ release: release(), observations: [observation({ deployment: { id: "deploy-3", rollback_id: "deploy-2" } })], now: "2026-09-23T19:00:00.000Z" });
-  assert.equal(result.status, "BLOCKED");
-  assert.ok(result.findings.some((item) => item.code === "DEPLOYMENT_DRIFT"));
-});
-
-test("expired observations cannot keep a current proof green", () => {
-  const result = evaluateProofRelease({ release: release({ freshness: { max_age_seconds: 60 } }), observations: [observation()], now: "2026-09-23T19:00:00.000Z" });
-  assert.equal(result.status, "BLOCKED");
-  assert.ok(result.findings.some((item) => item.code === "STALE_OBSERVATION"));
-});
-
-test("missing observations fail closed", () => {
-  const result = evaluateProofRelease({ release: release(), observations: [], now: "2026-09-23T19:00:00.000Z" });
-  assert.equal(result.status, "BLOCKED");
-  assert.ok(result.findings.some((item) => item.code === "MISSING_OBSERVATION"));
-});
-
-test("field-name casing drift is reported instead of guessed away", () => {
-  const result = evaluateProofRelease({ release: release(), observations: [observation({ observed: { Industry: "LANDSCAPING", routes: { "/": 200 } } })], now: "2026-09-23T19:00:00.000Z" });
-  assert.equal(result.status, "BLOCKED");
-  assert.ok(result.findings.some((item) => item.code === "FIELD_NAME_MISMATCH"));
-});
-
-test("historical and superseded evidence stay traceable without being treated as current", () => {
-  const historical = release({ claim_state: "HISTORICAL" });
-  historical.claims[0].claim_state = "SUPERSEDED";
-  historical.claims[0].superseded_by = "site-current-v2";
-  const result = evaluateProofRelease({ release: historical, observations: [], now: "2026-09-23T19:00:00.000Z" });
-  assert.equal(result.status, "READY_TO_PUBLISH");
-  assert.equal(result.claims[0].status, "SUPERSEDED");
-});
+test("fresh exact observation makes a current proof claim publishable", () => { const result = evaluateProofRelease({ release: release(), observations: [observation()], now: "2026-09-23T19:00:00.000Z" }); assert.equal(result.status, "READY_TO_PUBLISH"); assert.equal(result.claims[0].status, "CURRENT_VERIFIED"); assert.deepEqual(result.findings, []); });
+test("a stale deployment or rollback ID blocks a current claim", () => { const result = evaluateProofRelease({ release: release(), observations: [observation({ deployment: { id: "deploy-3", rollback_id: "deploy-2" } })], now: "2026-09-23T19:00:00.000Z" }); assert.equal(result.status, "BLOCKED"); assert.ok(result.findings.some((item) => item.code === "DEPLOYMENT_DRIFT")); });
+test("expired observations cannot keep a current proof green", () => { const result = evaluateProofRelease({ release: release({ freshness: { max_age_seconds: 60 } }), observations: [observation()], now: "2026-09-23T19:00:00.000Z" }); assert.equal(result.status, "BLOCKED"); assert.ok(result.findings.some((item) => item.code === "STALE_OBSERVATION")); });
+test("missing observations fail closed", () => { const result = evaluateProofRelease({ release: release(), observations: [], now: "2026-09-23T19:00:00.000Z" }); assert.equal(result.status, "BLOCKED"); assert.ok(result.findings.some((item) => item.code === "MISSING_OBSERVATION")); });
+test("field-name casing drift is reported instead of guessed away", () => { const result = evaluateProofRelease({ release: release(), observations: [observation({ observed: { Industry: "LANDSCAPING", routes: { "/": 200 } } })], now: "2026-09-23T19:00:00.000Z" }); assert.equal(result.status, "BLOCKED"); assert.ok(result.findings.some((item) => item.code === "FIELD_NAME_MISMATCH")); });
+test("historical and superseded evidence stay traceable without being treated as current", () => { const historical = release({ claim_state: "HISTORICAL" }); historical.claims[0].claim_state = "SUPERSEDED"; historical.claims[0].superseded_by = "site-current-v2"; const result = evaluateProofRelease({ release: historical, observations: [], now: "2026-09-23T19:00:00.000Z" }); assert.equal(result.status, "READY_TO_PUBLISH"); assert.equal(result.claims[0].status, "SUPERSEDED"); });

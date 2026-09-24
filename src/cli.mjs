@@ -13,6 +13,7 @@ import { executeWorkflow } from "./executor.mjs";
 import { summarizeEvents } from "./observability.mjs";
 import { scanChangeImpact } from "./change-impact.mjs";
 import { evaluateProofRelease, PROOF_OBSERVATIONS_FORMAT } from "./proof-release.mjs";
+import { claimSharedTask, completeSharedTask, enqueueSharedTask, inspectSharedTasks } from "./shared-task-queue.mjs";
 
 const json = async (path) => JSON.parse(await readFile(resolve(path), "utf8"));
 
@@ -113,5 +114,38 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     if (!result.valid) process.exitCode = 1;
     return result;
   }
-  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact|proof-release> [options]");
+  if (command === "task-create") {
+    assert(args.task && args.queue, "CLI_ARGUMENT", "task-create requires --task and --queue");
+    const task = await json(args.task);
+    const path = await enqueueSharedTask(resolve(args.queue), task);
+    const result = { created: true, taskId: task.taskId, taskDigest: task.taskDigest, path };
+    io.out(JSON.stringify(result, null, 2));
+    return result;
+  }
+  if (command === "task-claim") {
+    assert(args.queue && args["task-id"] && args["agent-id"], "CLI_ARGUMENT", "task-claim requires --queue, --task-id, and --agent-id");
+    const claim = await claimSharedTask(resolve(args.queue), {
+      taskId: args["task-id"],
+      agentId: args["agent-id"],
+      claimedAt: args["claimed-at"],
+      leaseMs: args["lease-ms"] ? Number(args["lease-ms"]) : undefined,
+    });
+    io.out(JSON.stringify(claim, null, 2));
+    return claim;
+  }
+  if (command === "task-complete") {
+    assert(args.queue && args.result, "CLI_ARGUMENT", "task-complete requires --queue and --result");
+    const result = await json(args.result);
+    const path = await completeSharedTask(resolve(args.queue), result);
+    const output = { completed: true, taskId: result.taskId, resultDigest: result.resultDigest, path };
+    io.out(JSON.stringify(output, null, 2));
+    return output;
+  }
+  if (command === "task-inspect") {
+    assert(args.queue, "CLI_ARGUMENT", "task-inspect requires --queue");
+    const result = await inspectSharedTasks(resolve(args.queue));
+    io.out(JSON.stringify(result, null, 2));
+    return result;
+  }
+  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact|proof-release|task-create|task-claim|task-complete|task-inspect> [options]");
 }
