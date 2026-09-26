@@ -102,3 +102,12 @@ After the rollback, a local rebuild showed that provider-local Netlify state cou
 `website/.netlify/` was not excluded from the release tree. The release script now excludes `.netlify`, and a focused
 test proves that adding a synthetic `.netlify/state.json` does not change the source digest. This repair is local and
 review-branch-only; it does not reopen or redeploy the declined candidate.
+
+## Signed provider-compatibility follow-up
+
+This review-branch change adds a release-gated provider-compatibility receipt. It binds the exact source commit,
+workflow identity, read-only authority, provider identity, request/response digests, and usage. Synthetic rehearsals verify
+as `REHEARSAL_ONLY` and cannot satisfy the real-provider gate. Host-observed receipts require an Ed25519 attestation from a
+trusted host key; the verifier makes no network call and stores no provider secret. Focused proof is 4/4 and the full suite
+is 154/154. This improves the trust boundary without claiming the missing actual host-provider run, so no new comparative
+score or production deployment is claimed yet.

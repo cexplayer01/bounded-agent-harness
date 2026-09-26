@@ -3,7 +3,7 @@
   "version": 1,
   "executionMode": "SYNTHETIC_REHEARSAL",
   "status": "REHEARSAL_ONLY",
-  "sourceCommit": "7eac98fc406696b82fbc5f702c39b917d4f38f24",
+  "sourceCommit": "d4f919edc8f82e12a4947be7b0ee9012c17bae53",
   "observedAt": "2026-09-26T06:00:00.000Z",
   "runId": "provider-proof-example",
   "workflowDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -29,5 +29,5 @@
     "source": "provider-reported"
   },
   "attestation": null,
-  "receiptDigest": "sha256:3b7f75d41a01d39a6c46396945982a0fee5158773e3987c88bb7ea3c81090ddb"
+  "receiptDigest": "sha256:ceee077ea415b6a1438ffd43117c47251b24a1a7aa8105d812358cd98dfdc0dc"
 }

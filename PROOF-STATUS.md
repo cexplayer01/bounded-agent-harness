@@ -1,14 +1,14 @@
 # Bounded Agent Harness proof status
 
-Recorded 2026-09-26 for development package version `0.4.1`. The code-bearing verification commit is
-`a5a2ab666e0a5ef35f71fb780d301672c578ea34`; any later public release commit is explicitly allowed to be a
+Recorded 2026-09-26 for development package version `0.4.2`. The code-bearing verification commit is
+`d4f919edc8f82e12a4947be7b0ee9012c17bae53`; any later public release commit is explicitly allowed to be a
 documentation-only follow-up and must not be treated as a different code proof.
 
-Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.8`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
+Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.9`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
 
 ## Bottom line
 
-Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 149/149 tests, the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, the token-efficiency utilities pass their focused proof, the adoption scorecard and repeatable evaluation matrix pass their focused proof, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
+Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 154/154 tests, the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, the token-efficiency utilities pass their focused proof, the adoption scorecard and repeatable evaluation matrix pass their focused proof, the signed provider-compatibility receipt verifier keeps synthetic evidence non-publishable, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
 
 This is not a claim that the package is already a hosted production service or that an external provider has been independently authenticated.
 
@@ -18,10 +18,11 @@ The machine-readable record is [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json). I
 
 | Area | Result | Evidence | Boundary |
 |---|---|---|---|
-| Automated behavior | PASS | `npm test` — 149/149 | Checked-in local behavior, not hosted operation |
+| Automated behavior | PASS | `npm test` — 154/154 | Checked-in local behavior, not hosted operation |
 | Package safety surface | PASS | `npm run audit` — `valid: true`, no findings | Does not authenticate an external deployment |
 | Deterministic compilation | PASS | `npm run demo` | Closed example inputs and local compiler |
 | MCP adapter compatibility | PASS | `npm run demo:mcp` — 2 specialists, 6 evidence events, 5 cost units | In-process client shapes; no claim about a named external provider |
+| Provider-compatibility proof boundary | PASS WITH LIMITS | `node --test test/provider-compatibility-proof.test.mjs` — 4/4; synthetic evidence stays `REHEARSAL_ONLY`, signed host evidence verifies only with a trusted Ed25519 key, tampering and non-read authority block | No actual host-provider run has been executed; a valid receipt does not prove provider business correctness |
 | Continuation and recovery | PASS | Automated tests for approvals, checkpoints, wakes, forks, work-loop policy, and reconciliation | Host scheduling and external authority remain injected boundaries |
 | Proof publication gate | PASS | `npm run proof:release` — `READY_TO_PUBLISH`; stale deployment, stale observation, missing observation, and field-name drift are tested as blocking cases | The host adapter must still supply truthful read-only observations |
 | Shared repository agent bridge | PASS | `shared-task-queue.test.mjs` — deterministic identity, one fixed claim, overlapping-scope rejection, disjoint-scope admission, digest-bound result, path scope, lease expiry, and release | Does not itself provide a direct Muse chat/MCP channel or hosted queue |
@@ -46,6 +47,13 @@ npm run proof:release
 The release gate in `src/proof-release.mjs` separates a proof claim from the read-only observation that supports it. A `CURRENT` claim is publishable only when its target, exact deployment ID, exact rollback ID, observation timestamp, freshness window, and expected field names and values match the observation packet. `HISTORICAL` and `SUPERSEDED` evidence remains traceable but cannot satisfy a current-state claim. Missing observations, drift, expired observations, unknown observations, and casing changes such as `Industry` versus `industry` return `BLOCKED`.
 
 The gate is intentionally provider-neutral. A Netlify, DFW Metro, or other host adapter may obtain the observation, but the adapter cannot make an old claim current by itself and no credentials enter the proof packet. This prevents the specific stale-DFWMow-reference failure from silently becoming a green proof receipt while preserving the useful finding when drift is detected.
+
+The provider-compatibility proof adds a separate release check for the other trust boundary. A synthetic rehearsal receipt is
+valid evidence of the local adapter path but is explicitly `REHEARSAL_ONLY` and cannot satisfy a real-provider gate. A
+host-observed receipt must bind the exact source commit, workflow, read-only capability, request/response digests, provider
+identity, and usage, then verify an Ed25519 signature against a trusted host key. The verifier is offline and token-free; it
+does not store credentials or make the provider call. The current repository proves the boundary and negative cases, not an
+actual external-provider execution.
 
 ## USB and DFW Metro integration
 
@@ -94,6 +102,7 @@ The following should remain visible rather than being hidden by the positive pro
 - cryptographic authentication of external providers;
 - independent real-provider compatibility;
 - a real-provider MCP run through an actual host client;
+- a successful signed provider-compatibility receipt from an actual host client;
 - a hosted approval/scheduling service;
 - commercial production readiness as a managed service;
 - the claim that every DFW Metro production action was executed by this harness.
