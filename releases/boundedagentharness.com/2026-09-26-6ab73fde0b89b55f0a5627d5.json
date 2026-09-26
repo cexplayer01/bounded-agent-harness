@@ -1,0 +1,35 @@
+{
+  "format": "bounded-agent-harness-public-deployment-receipt.v1",
+  "site": "https://boundedagentharness.com",
+  "siteId": "f1f89409-622f-4266-ae98-a42c5d541422",
+  "deployId": "6ab73fde0b89b55f0a5627d5",
+  "deployUrl": "https://6ab73fde0b89b55f0a5627d5--bounded-agent-harness.netlify.app",
+  "rollbackDeployId": "6ab73deda90f2949e975eb8c",
+  "sourceRepository": "https://github.com/cexplayer01/bounded-agent-harness",
+  "sourceCommit": "34556040bcfbf290e332950bf1b08e43c919b099",
+  "releaseReceiptUrl": "https://boundedagentharness.com/release.json",
+  "releaseReceiptSha256": "940280f118716496a76ed29075a36ea2dddfe00a0b82702c6e022da448ae6665",
+  "websiteSourceSha256": "004a97ca566948f87c5c63317b58ad985be0421fac327003061454acc58e61f6",
+  "proofStatusSha256": "e9cd601d681aa7f18a33efa560bdedfde677a23e601181ba7aa4a4778c9b7a9a",
+  "publishedAt": "2026-09-26T03:45:36.686Z",
+  "verifiedAt": "2026-09-26T03:45:42.326Z",
+  "checks": {
+    "sourceCommitMatchesLiveReceipt": true,
+    "releaseReceiptHttp200": true,
+    "homepageHttp200": true,
+    "homepageLinksReleaseReceipt": true,
+    "freeVibeAppsProofVisible": true,
+    "freeVibeAppsLinkVisible": true,
+    "deployState": "ready",
+    "externalEffects": "PUBLIC_NETLIFY_DEPLOY_ONLY",
+    "databaseChanged": false,
+    "providerChanged": false,
+    "customerSitesChanged": false,
+    "dnsChanged": false,
+    "secretsChanged": false
+  },
+  "rollback": {
+    "method": "Republish Netlify deploy 6ab73deda90f2949e975eb8c for site f1f89409-622f-4266-ae98-a42c5d541422",
+    "verifiedBeforePublish": true
+  }
+}
