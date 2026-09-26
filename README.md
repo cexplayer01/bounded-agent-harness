@@ -61,7 +61,7 @@ itself, so a host that cannot read and reserve the shared account window must fa
 
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro integration evidence, and remaining limits. The direct local proof is currently 130/130 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, and a repository-native shared-agent bridge. DFW Metro and DFWMow are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 140/140 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, and a repository-native shared-agent bridge. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness

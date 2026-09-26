@@ -1,12 +1,12 @@
 # Bounded Agent Harness proof status
 
-Recorded 2026-09-23 for development package version `0.3.0` and tested source commit `d46764964a27894d61e33f415406ff9ba41721e9`.
+Recorded 2026-09-25 for development package version `0.3.0` and tested source commit `4a85213c8bfa61c28d60395e6134da6c9ed2ee69`.
 
 Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.6`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
 
 ## Bottom line
 
-Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 130/130 tests, the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
+Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 140/140 tests, the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
 
 This is not a claim that the package is already a hosted production service or that an external provider has been independently authenticated.
 
@@ -25,6 +25,7 @@ The machine-readable record is [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json). I
 | Shared repository agent bridge | PASS | `shared-task-queue.test.mjs` — deterministic identity, one fixed claim, overlapping-scope rejection, disjoint-scope admission, digest-bound result, path scope, lease expiry, and release | Does not itself provide a direct Muse chat/MCP channel or hosted queue |
 | Shared-agent concurrency rehearsal | PASS | `npm run demo:shared-task` — overlapping scope blocked, disjoint scope claimed, released scope reclaimed; temporary synthetic queue only | Does not prove DFW repository access or direct Muse messaging |
 | Live reconciliation exercise | DEMONSTRATED WITH DRIFT | Owner-controlled `dfwmetro-reconciliation-v1` run — 17 hash-chained events, 10 compiled cost units, 7 spent, 5 checks passed, 1 stale-claim finding | Demonstrates detection and reporting of live drift; not a clean all-live proof or hosted-service proof |
+| FreeVibeApps integration | OWNER-ATTESTED WITH LIVE READBACK | Harness-mounted USB build through deterministic sidecar proof, deployment preflight, and same-origin pilot; focused proofs 9/9, 10/10, and 14/14 | Source and raw run records remain owner-controlled; does not claim hosted harness runtime or least-privilege credentials |
 
 Reproduce the direct proof from the repository root:
 
@@ -59,6 +60,27 @@ Muse ran a read-only `dfwmetro-reconciliation-v1` workflow through the harness i
 The same run confirmed the claimed DFW Metro production deploy, the 138-city `dfw-cities.json` content, four agent-discovery documents, and the manifest's `submit_listing` declaration on `POST /mcp`. The first industry-name mismatch was corrected as a checker expectation (`industry`, not `Industry`) and was not treated as a Site defect. The raw run remains owner-controlled rather than copied into this public repository, so this is integration evidence for reconciliation behavior, not a replacement for reproducible package tests.
 
 The exact IDs and effect boundaries are also recorded in [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json). They are evidence references, not deployment authority.
+
+## FreeVibeApps integration evidence
+
+The owner attests that Bounded Agent Harness was mounted before FreeVibeApps work began and remained mounted throughout
+the intake, grouped-directory, headless-sidecar, submission/review, and same-origin production-pilot work. This is
+recorded as an owner-attested continuity fact, not inferred from a late test run.
+
+The public evidence is scoped to the parts that can be stated without exposing the private USB repository or secrets:
+
+- The deterministic FreeVibeApps headless sidecar proof passed `9/9`; its manifest was bound to the intended public
+  listing table and event function, and the browser used injected API configuration rather than direct database calls.
+- The combined FreeVibeApps/headless preflight and regression proof passed `14/14`.
+- The same-origin production pilot passed `10/10` focused tests and live readback for the homepage/runtime, public API,
+  exact CORS and preflight, arbitrary-origin rejection, protected admin access, and invalid submission rejection.
+- The published pilot is deploy `6ab72d616482efce5606aa34` at [freevibeapps.com](https://freevibeapps.com); the recorded
+  rollback is `6ab6ca26ee52574fa30c527d`.
+
+This demonstrates the harness being used as the bounded control plane around a real site build and production pilot.
+It does not claim that every individual FreeVibeApps mutation is independently replayable from this public repository,
+that the harness itself is the hosted FreeVibeApps runtime, or that the current shared backend credential is least
+privilege. The source and raw owner-controlled run records remain private in USB.
 
 ## What remains unproven
 

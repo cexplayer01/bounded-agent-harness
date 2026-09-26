@@ -1,5 +1,5 @@
 const proof = [
-  ["139/139", "checked-in tests"],
+  ["140/140", "checked-in tests"],
   ["0", "runtime dependencies"],
   ["READY", "proof-release gate"],
 ];
@@ -22,6 +22,7 @@ const continuation = [
   ["Resume, don't fail", "Missing or stale approval becomes a durable checkpoint with the exact gate and workflow identity required to continue later."],
   ["Spend proof where it matters", "Change-impact cards choose focused verification so documentation and local edits do not trigger needless full-suite work."],
   ["Keep safe work moving", "A blocked gated action pauses that action; unrelated local work can continue until a real boundary or proven completion."],
+  ["FreeVibeApps / real integration", "The owner kept the harness mounted through a real deterministic site build, sidecar proof, deployment preflight, and same-origin production pilot."],
 ];
 
 export default function Home() {
@@ -167,6 +168,7 @@ export default function Home() {
         <div className="case-links">
           <a href="https://github.com/cexplayer01/USB-Website-platform">Inspect the USB build ↗</a>
           <a href="https://dfwmetro.net">Visit DFW Metro ↗</a>
+          <a href="https://freevibeapps.com">Visit FreeVibeApps ↗</a>
           <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/PROOF-STATUS.md">Read the scoped proof ↗</a>
         </div>
       </section>
