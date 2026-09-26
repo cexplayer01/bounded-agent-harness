@@ -111,3 +111,10 @@ as `REHEARSAL_ONLY` and cannot satisfy the real-provider gate. Host-observed rec
 trusted host key; the verifier makes no network call and stores no provider secret. Focused proof is 4/4 and the full suite
 is 154/154. This improves the trust boundary without claiming the missing actual host-provider run, so no new comparative
 score or production deployment is claimed yet.
+
+## DeepSeek bridge follow-up
+
+The review branch now contains an optional DeepSeek function-calling client and a one-request read-only probe. It uses the
+existing adapter boundary, reports provider-reported token usage, rejects write authority and malformed output, and keeps
+`DEEPSEEK_API_KEY` process-local. This is deliberately labeled a function-calling bridge rather than native DeepSeek MCP.
+The fake-client proof is 3/3; no live DeepSeek request was made because the key was not configured in this environment.

@@ -3,13 +3,13 @@
   "recorded_on": "2026-09-26",
   "subject": {
     "repository": "https://github.com/cexplayer01/bounded-agent-harness",
-    "version": "0.4.2",
-    "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.9",
-    "tested_commit": "d4f919edc8f82e12a4947be7b0ee9012c17bae53"
+    "version": "0.4.3",
+    "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_2.0",
+    "tested_commit": "ddf37b08a68196bb4ffeece614c38ff1ad50d576"
   },
   "overall": {
     "status": "PROVEN_WITHIN_DECLARED_SCOPE",
-    "statement": "The deterministic local control plane, zero-side-effect execution path, bounded continuation controls, in-process MCP compatibility path, signed provider-compatibility receipt boundary, proof publication reconciliation gate, repository-native shared-agent bridge, local shared-agent concurrency rehearsal, and additive token-efficiency layer are directly reproducibly proven. USB/DFW Metro and FreeVibeApps are documented integration cases, not claims that this package is deployed as their hosted runtime infrastructure.",
+    "statement": "The deterministic local control plane, zero-side-effect execution path, bounded continuation controls, in-process MCP compatibility path, signed provider-compatibility receipt boundary, optional DeepSeek function-calling bridge, proof publication reconciliation gate, repository-native shared-agent bridge, local shared-agent concurrency rehearsal, and additive token-efficiency layer are directly reproducibly proven. USB/DFW Metro and FreeVibeApps are documented integration cases, not claims that this package is deployed as their hosted runtime infrastructure.",
     "commercial_hosted_service": "NOT_PROVEN"
   },
   "direct_proof": [
@@ -17,7 +17,7 @@
       "id": "automated-suite",
       "status": "PASS",
       "command": "npm test",
-      "result": { "tests": 154, "passed": 154, "failed": 0, "skipped": 0 },
+      "result": { "tests": 157, "passed": 157, "failed": 0, "skipped": 0 },
       "proves": "The checked-in control-plane, contract, execution, recovery, continuation, checkpoint, governance, adapter, shared-agent bridge, and token-efficiency utility behaviors pass their automated tests.",
       "does_not_prove": "Independent external-provider trust, hosted distributed operation, or commercial production readiness."
     },
@@ -52,6 +52,14 @@
       "result": { "tests": 4, "passed": 4, "failed": 0, "synthetic_publishable": false, "signed_host_verification": true, "network": "NONE" },
       "proves": "Provider-compatibility receipts bind source, workflow, read-only authority, provider identity, request/response digests, and usage; synthetic evidence cannot satisfy the real-provider gate; signed host evidence verifies only against a trusted Ed25519 key.",
       "does_not_prove": "That an actual external provider was contacted, that the provider is honest or correct, or that a host trust key is appropriate without an external key-management decision."
+    },
+    {
+      "id": "deepseek-function-bridge",
+      "status": "PASS_WITH_LIMITS",
+      "command": "node --test test/deepseek-function-client.test.mjs",
+      "result": { "tests": 3, "passed": 3, "failed": 0, "network": "NONE", "owner_key_configured": false },
+      "proves": "The optional DeepSeek function-calling bridge normalizes one structured call through the existing adapter boundary, reports provider token usage, and rejects missing keys, write authority, prose, and multiple calls before accepting work.",
+      "does_not_prove": "That DeepSeek was contacted in this release, native DeepSeek MCP support, or permission to modify files, databases, deployments, or customer Sites."
     },
     {
       "id": "shared-agent-bridge",
@@ -100,6 +108,7 @@
     "current_claim_rule": "CURRENT requires an exact matching fresh observation; otherwise publication is BLOCKED.",
     "historical_rule": "HISTORICAL and SUPERSEDED evidence remains traceable but does not satisfy a CURRENT claim.",
     "provider_boundary": "Host adapters supply read-only observations; the gate makes no network calls and stores no credentials.",
+    "deepseek_boundary": "The optional DeepSeek bridge accepts one read-only structured function call and keeps DEEPSEEK_API_KEY process-local; no live request was part of this proof.",
     "provider_compatibility_boundary": "Synthetic provider receipts remain rehearsal-only; host-observed receipts require a trusted Ed25519 attestation and remain separately gated from publication."
   },
   "integration_evidence": {
@@ -169,6 +178,7 @@
     "A cross-provider production benchmark of token savings remains unproven; the new layer records measurements but does not invent comparative results.",
     "DFW Metro production state and DFWMow lab deployments are external evidence and remain governed by their own deployment, database, provider, and rollback rules.",
     "The proof receipt records reproducible scope and boundaries; it does not grant authority to deploy, mutate data, contact a provider, or publish a customer Site.",
-    "A successful local signed-receipt test is not an actual external-provider compatibility run."
+    "A successful local signed-receipt test is not an actual external-provider compatibility run.",
+    "The optional DeepSeek bridge has not made a live request because no local DEEPSEEK_API_KEY was available during this proof run."
   ]
 }

@@ -16,7 +16,7 @@
     "demo": "node bin/demo.mjs",
     "demo:shared-task": "node bin/demo-shared-task.mjs",
     "demo:mcp": "node bin/demo-mcp.mjs",
-    "deepseek:probe": "node bin/deepseek-readonly-probe.mjs",
+    "deepseek:probe": "node --env-file=.env bin/deepseek-readonly-probe.mjs",
     "harness": "node bin/harness.mjs",
     "audit": "node bin/audit-package.mjs",
     "proof:release": "node bin/harness.mjs proof-release --release examples/proof-release.v1.json --observations examples/proof-observations.v1.json --now 2026-09-23T19:00:00.000Z",

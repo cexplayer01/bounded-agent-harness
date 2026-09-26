@@ -1,0 +1,8 @@
+# Local credentials; never commit these files.
+.env
+.env.*
+!.env.example
+
+# Rebuildable local output.
+node_modules/
+coverage/
