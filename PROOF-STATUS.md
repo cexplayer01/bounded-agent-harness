@@ -1,7 +1,8 @@
 # Bounded Agent Harness proof status
 
-Recorded 2026-09-26 for development package version `0.4.1`. The source verification commit is recorded in the release
-receipt after the candidate is committed; the release record itself may be a documentation-only follow-up commit.
+Recorded 2026-09-26 for development package version `0.4.1`. The code-bearing verification commit is
+`a5a2ab666e0a5ef35f71fb780d301672c578ea34`; any later public release commit is explicitly allowed to be a
+documentation-only follow-up and must not be treated as a different code proof.
 
 Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.8`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
 
