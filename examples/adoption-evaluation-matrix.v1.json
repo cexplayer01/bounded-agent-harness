@@ -1,0 +1,15 @@
+{
+  "format": "bounded-agent-harness-adoption-evaluation-matrix.v1",
+  "version": 1,
+  "purpose": "Repeatable local evaluation across representative tasks and ordinary failure/retry/restart boundaries.",
+  "heldBack": ["crash fault-injection for interrupted writes, stale checkpoints, duplicate messages, and partial external effects"],
+  "scenarios": [
+    { "id": "deterministic-compile", "class": "representative", "command": "node --test test/workflow-compiler.test.mjs", "expected": "PASS" },
+    { "id": "mcp-handoff-and-provider-shape", "class": "representative", "command": "node --test test/mcp-adapter.test.mjs test/mcp-compatibility-demo.test.mjs", "expected": "PASS" },
+    { "id": "approval-wait-and-resume", "class": "failure-retry", "command": "node --test test/continuation-gate.test.mjs test/runtime.test.mjs", "expected": "PASS" },
+    { "id": "bounded-retry-and-ambiguous-effect", "class": "failure-retry", "command": "node --test test/recovery-policy.test.mjs test/step-state-machine.test.mjs", "expected": "PASS" },
+    { "id": "process-restart-wake", "class": "restart", "command": "node --test test/file-wake-store.test.mjs test/owner-timeout-runner.test.mjs", "expected": "PASS" },
+    { "id": "scope-and-authority-bypass", "class": "boundary", "command": "node --test test/capability-envelope.test.mjs test/mcp-adapter.test.mjs test/floor-policy.test.mjs", "expected": "PASS" },
+    { "id": "full-regression", "class": "milestone", "command": "node --test", "expected": "PASS" }
+  ]
+}

@@ -24,6 +24,20 @@ It packages the useful reliability mechanisms without requiring chat transcripts
   lazy-load full tool contracts, artifact references pass digests instead of copying large payloads, deterministic
   pruning reports every omission, and usage records make cached/uncached input and accepted-result efficiency measurable.
 
+### Adoption evidence and rollback guard
+
+`src/adoption-evaluation.mjs` fixes the comparison surface to LangGraph, OpenAI Agents SDK, Google ADK, Microsoft Agent
+Framework, and CrewAI. It uses six weighted dimensions: token efficiency (15%), boundaries and authority (25%), recovery
+and resume (20%), real-provider evidence (15%), adoption and ecosystem (15%), and documentation/operator path (10%).
+`compareAdoptionScorecards` marks a comparative decline when the subject's relative margin against the comparator mean
+falls or its rank worsens. The intended host action is to restore the recorded baseline deployment before accepting the
+new release.
+
+The repeatable local evaluation matrix is [`examples/adoption-evaluation-matrix.v1.json`](examples/adoption-evaluation-matrix.v1.json).
+The baseline scorecard is [`examples/adoption-baseline-scorecard.v1.json`](examples/adoption-baseline-scorecard.v1.json),
+and the decision boundary is documented in [`ADOPTION-REVIEW.md`](ADOPTION-REVIEW.md). These records are evidence, not
+authority to deploy or contact a provider.
+
 ## Shared repository bridge
 
 The harness now includes a repository-native bridge for agents that do not share a chat or MCP server. It is intentionally a transport protocol, not a second agent runtime: one agent publishes an immutable task packet, the assigned agent claims the one fixed claim path, and the worker publishes one result packet bound to the task digest and full Git commit SHAs.
@@ -81,7 +95,7 @@ compare the same task before and after context optimization.
 
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 145/145 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 149/149 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, token-efficiency utility proofs, and the fixed adoption scorecard. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness
@@ -282,4 +296,4 @@ Code contributions are temporarily closed while contributor and relicensing term
 
 ## Status
 
-Development package version `0.4.0` is a source-available extraction prototype, not a published npm package or hosted service. The package version identifies the source/package line; it is not a production-readiness score. Current capability maturity is `LOCAL_CONTROL_PLANE_MILESTONE_1.7`, with direct proof recorded in [PROOF-STATUS.md](PROOF-STATUS.md). It includes a complete zero-side-effect CLI loop and an end-to-end two-provider MCP compatibility demo, contract-bound revisioned shared memory, a multi-writer-safe tamper-evident event log and atomic checkpoints, heartbeat lease evaluation, provider-neutral MCP adapters with optional identity pinning, versioned structured handoffs, the repository-native shared-agent task/claim/result bridge, contract-checked outputs, cost enforcement, recovery evidence, explicit resume, non-destructive lock diagnosis, lazy capability descriptors, digest-bound artifact references, deterministic context pruning, and token usage measurement. Completed runs are terminal. Next: external MCP client configuration, private-repository adoption by Muse, owner-authorized orphan-lock recovery, cryptographic provider authentication, a real-provider compatibility proof, and a cross-provider production token benchmark.
+Development package version `0.4.1` is a source-available extraction prototype, not a published npm package or hosted service. The package version identifies the source/package line; it is not a production-readiness score. Current capability maturity is `LOCAL_CONTROL_PLANE_MILESTONE_1.8`, with direct proof recorded in [PROOF-STATUS.md](PROOF-STATUS.md). It includes a complete zero-side-effect CLI loop and an end-to-end two-provider MCP compatibility demo, contract-bound revisioned shared memory, a multi-writer-safe tamper-evident event log and atomic checkpoints, heartbeat lease evaluation, provider-neutral MCP adapters with optional identity pinning, versioned structured handoffs, the repository-native shared-agent task/claim/result bridge, contract-checked outputs, cost enforcement, recovery evidence, explicit resume, non-destructive lock diagnosis, lazy capability descriptors, digest-bound artifact references, deterministic context pruning, token usage measurement, a fixed five-system adoption scorecard, and a repeatable local evaluation matrix. Completed runs are terminal. Next: external MCP client configuration, private-repository adoption by Muse, owner-authorized orphan-lock recovery, cryptographic provider authentication, a real-provider compatibility proof, and crash fault-injection recovery.

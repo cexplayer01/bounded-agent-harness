@@ -1,0 +1,36 @@
+{
+  "format": "bounded-agent-harness-adoption-evaluation.v1",
+  "version": 1,
+  "reviewId": "baseline-20260926",
+  "reviewedAt": "2026-09-26T00:00:00.000Z",
+  "reviewer": "independent-clean-memory-reviewer",
+  "comparisonSet": [
+    { "id": "langgraph", "name": "LangGraph", "evidenceUrl": "https://langchain-ai.github.io/langgraph/" },
+    { "id": "openai-agents-sdk", "name": "OpenAI Agents SDK", "evidenceUrl": "https://openai.github.io/openai-agents-python/" },
+    { "id": "google-adk", "name": "Google ADK", "evidenceUrl": "https://google.github.io/adk-docs/" },
+    { "id": "microsoft-agent-framework", "name": "Microsoft Agent Framework", "evidenceUrl": "https://learn.microsoft.com/agent-framework" },
+    { "id": "crewai", "name": "CrewAI", "evidenceUrl": "https://docs.crewai.com/" }
+  ],
+  "rubric": [
+    { "id": "token_efficiency", "label": "Token efficiency", "weight": 0.15 },
+    { "id": "boundaries", "label": "Boundaries and authority", "weight": 0.25 },
+    { "id": "recovery", "label": "Recovery and resume", "weight": 0.2 },
+    { "id": "provider_evidence", "label": "Real-provider evidence", "weight": 0.15 },
+    { "id": "adoption", "label": "Adoption and ecosystem", "weight": 0.15 },
+    { "id": "documentation", "label": "Documentation and operator path", "weight": 0.1 }
+  ],
+  "scores": [
+    { "systemId": "bounded-agent-harness", "dimensions": { "token_efficiency": 9, "boundaries": 9, "recovery": 8, "provider_evidence": 3, "adoption": 1, "documentation": 7 }, "notes": "Strong local controls; limited external-provider and adoption evidence." },
+    { "systemId": "langgraph", "dimensions": { "token_efficiency": 7, "boundaries": 7, "recovery": 9, "provider_evidence": 6, "adoption": 9, "documentation": 9 }, "notes": "Strong checkpointing and adoption." },
+    { "systemId": "openai-agents-sdk", "dimensions": { "token_efficiency": 6, "boundaries": 7, "recovery": 6, "provider_evidence": 6, "adoption": 8, "documentation": 9 }, "notes": "Strong docs/tracing; narrower recovery comparison." },
+    { "systemId": "google-adk", "dimensions": { "token_efficiency": 9, "boundaries": 7, "recovery": 8, "provider_evidence": 7, "adoption": 8, "documentation": 9 }, "notes": "Strong context and token-management documentation." },
+    { "systemId": "microsoft-agent-framework", "dimensions": { "token_efficiency": 7, "boundaries": 8, "recovery": 8, "provider_evidence": 8, "adoption": 8, "documentation": 9 }, "notes": "Strong enterprise workflow and durable-hosting story." },
+    { "systemId": "crewai", "dimensions": { "token_efficiency": 5, "boundaries": 6, "recovery": 7, "provider_evidence": 7, "adoption": 10, "documentation": 8 }, "notes": "Strong visible community adoption; fewer explicit authority guarantees." }
+  ],
+  "evidence": [
+    { "kind": "live", "url": "https://boundedagentharness.com/release.json", "sourceCommit": "a236bf71227d3a0dcdf200991103076abf851c25" },
+    { "kind": "source", "url": "https://github.com/cexplayer01/bounded-agent-harness/tree/0f0b44ec176cacd5ee3b8b81edf6e268514e1b59" },
+    { "kind": "local", "command": "node --test", "result": "145/145" },
+    { "kind": "local", "command": "node bin/audit-package.mjs", "result": "valid: true; findings: none" }
+  ]
+}

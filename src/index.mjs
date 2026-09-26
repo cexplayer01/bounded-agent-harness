@@ -26,6 +26,7 @@ export { MODEL_TIER_COSTS, selectModelTier } from "./model-policy.mjs";
 export { DEFAULT_TOKEN_CAPACITY_POLICY, TOKEN_CAPACITY_FORMAT, estimateTokenCount, estimateTokenRequest, evaluateTokenCapacity, withTokenCapacityGate } from "./token-capacity.mjs";
 export { CAPABILITY_INDEX_FORMAT, CAPABILITY_DESCRIPTOR_FORMAT, createCapabilityDescriptor, buildCapabilityIndex, verifyCapabilityIndex, resolveCapability } from "./capability-index.mjs";
 export { CONTEXT_PACKET_FORMAT, CONTEXT_PRUNING_FORMAT, ARTIFACT_REFERENCE_FORMAT, TOKEN_USAGE_FORMAT, TOKEN_EFFICIENCY_REPORT_FORMAT, buildArtifactReference, buildContextPacket, verifyContextPacket, renderContextPacket, pruneContextRecords, buildTokenUsageRecord, summarizeTokenUsage, compareTokenEfficiency, contextPacketTokenEstimate, contextPacketCanonicalText } from "./token-efficiency.mjs";
+export { ADOPTION_EVALUATION_FORMAT, ADOPTION_COMPARISON_SET, ADOPTION_RUBRIC, buildAdoptionScorecard, verifyAdoptionScorecard, compareAdoptionScorecards } from "./adoption-evaluation.mjs";
 export { decideContinuation } from "./continuation-controller.mjs";
 export { ownerTimeoutWatchdog } from "./owner-timeout-watchdog.mjs";
 export { OWNER_WAKE_FORMAT, armOwnerTimeout, buildOwnerWakeRecord } from "./continuation-scheduler.mjs";

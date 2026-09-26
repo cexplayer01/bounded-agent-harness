@@ -1,10 +1,10 @@
 {
   "schema_version": "bounded-agent-harness-proof-status.v1",
-  "recorded_on": "2026-09-25",
+  "recorded_on": "2026-09-26",
   "subject": {
     "repository": "https://github.com/cexplayer01/bounded-agent-harness",
-    "version": "0.4.0",
-    "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.7",
+    "version": "0.4.1",
+    "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.8",
     "tested_commit": "f00db320c65926628dd8dc737079f613043bd30c"
   },
   "overall": {
@@ -17,7 +17,7 @@
       "id": "automated-suite",
       "status": "PASS",
       "command": "npm test",
-      "result": { "tests": 145, "passed": 145, "failed": 0, "skipped": 0 },
+      "result": { "tests": 149, "passed": 149, "failed": 0, "skipped": 0 },
       "proves": "The checked-in control-plane, contract, execution, recovery, continuation, checkpoint, governance, adapter, shared-agent bridge, and token-efficiency utility behaviors pass their automated tests.",
       "does_not_prove": "Independent external-provider trust, hosted distributed operation, or commercial production readiness."
     },
@@ -68,6 +68,14 @@
       "result": { "tests": 5, "passed": 5, "failed": 0, "skipped": 0 },
       "proves": "Capability descriptors can be loaded lazily and verified by digest; artifact references, stable/delta context packets, deterministic pruning, and token usage comparisons are contract-shaped and tamper-evident.",
       "does_not_prove": "A cross-provider production token benchmark, provider billing equivalence, or permission to bypass capacity, authority, approval, or deployment gates."
+    },
+    {
+      "id": "adoption-evaluation",
+      "status": "PASS_WITH_LIMITS",
+      "command": "node --test test/adoption-evaluation.test.mjs",
+      "result": { "tests": 4, "passed": 4, "failed": 0, "comparison_set": ["LangGraph", "OpenAI Agents SDK", "Google ADK", "Microsoft Agent Framework", "CrewAI"], "baseline_subject": 6.5, "baseline_comparator_mean": 7.52, "baseline_relative_margin": -1.02 },
+      "proves": "The comparison surface, weighted rubric, digest-bound scorecards, relative-margin calculation, and comparative rollback decision are deterministic.",
+      "does_not_prove": "A neutral benchmark, a real-provider MCP run, legal compliance, or fault-injection recovery for partial external effects."
     },
     {
       "id": "proof-release-gate",
@@ -147,6 +155,8 @@
   "limitations": [
     "The package is a source-available extraction prototype, not a hosted service or published npm package.",
     "Distributed leasing, hosted scheduling, external provider authentication, and real-provider compatibility remain separate work.",
+    "The adoption review documents an AGPL/commercial-license decision point but is not legal advice; counsel is required for a proprietary network deployment.",
+    "Crash/fault-injection recovery for interrupted writes, stale checkpoints, duplicate messages, and partial external effects is intentionally held back from this milestone.",
     "A cross-provider production benchmark of token savings remains unproven; the new layer records measurements but does not invent comparative results.",
     "DFW Metro production state and DFWMow lab deployments are external evidence and remain governed by their own deployment, database, provider, and rollback rules.",
     "The proof receipt records reproducible scope and boundaries; it does not grant authority to deploy, mutate data, contact a provider, or publish a customer Site."

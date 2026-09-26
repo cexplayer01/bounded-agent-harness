@@ -152,6 +152,17 @@ Status: local host-neutral utilities and negative tests implemented. They optimi
 capacity, authority, approval, evidence, and deployment gates remain unchanged. A production benchmark across real
 provider hosts remains future evidence rather than an implied claim.
 
+## 1.8 — adoption evidence and comparative rollback guard
+
+- Fixed five-system comparison surface and weighted 1-to-10 rubric.
+- Digest-bound scorecards compare relative margin and rank instead of trusting a raw headline score.
+- Repeatable local evaluation matrix covers representative work, provider-shape handling, approval waits, bounded retries, process restart, and authority bypass attempts.
+- AGPL adoption risks and commercial-license decision points are recorded without presenting legal advice as a legal opinion.
+- A real-provider MCP run remains explicitly unexecuted until a host supplies an actual provider client through the adapter boundary.
+- Crash/fault-injection testing for interrupted writes, stale checkpoints, duplicate messages, and partial external effects remains held back.
+
+Status: local adoption-evidence layer implemented and documented; external provider authentication and fault-injection recovery remain separate evidence.
+
 ## Commercial path
 
 - Community edition: AGPL-3.0-or-later.

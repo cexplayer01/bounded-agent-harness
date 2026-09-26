@@ -89,6 +89,17 @@ h1 em { color: var(--muted); font-style: normal; font-weight: 420; }
 .proof-grid span { margin-top: 8px; color: #788a90; font-size: 11px; }
 .proof > a { color: var(--cyan); font-size: 12px; font-weight: 700; }
 
+.evaluation-section { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 110px 0; display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; border-bottom: 1px solid var(--line); }
+.evaluation-panel { align-self: end; padding: 28px; border: 1px solid #34474d; background: rgba(13,22,26,.72); }
+.evaluation-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.evaluation-grid div { min-height: 120px; padding: 22px 18px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.evaluation-grid strong, .evaluation-grid span { display: block; }
+.evaluation-grid strong { color: var(--amber); font: 650 30px/1 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.evaluation-grid span { margin-top: 12px; color: var(--muted); font-size: 11px; line-height: 1.35; }
+.evaluation-note { margin: 24px 0 0; color: #a8b5b9; font-size: 13px; line-height: 1.6; }
+.evaluation-links { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 22px; }
+.evaluation-links a { color: var(--cyan); font-size: 12px; font-weight: 750; }
+
 .how { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 120px 0; display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; }
 .section-heading h2 { margin: 0; font-size: clamp(34px, 4vw, 56px); line-height: 1.04; letter-spacing: -.045em; }
 .flow { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
@@ -161,7 +172,7 @@ footer > div { display: flex; justify-content: flex-end; gap: 24px; }
   .control-card { max-width: 560px; }
   .proof { grid-template-columns: 1fr; gap: 28px; }
   .proof-grid div:first-child { padding-left: 0; border-left: 0; }
-  .how { grid-template-columns: 1fr; gap: 48px; padding: 88px 0; }
+  .evaluation-section, .how { grid-template-columns: 1fr; gap: 48px; padding: 88px 0; }
   .failure-grid { grid-template-columns: repeat(2, 1fr); }
   .honest-section { grid-template-columns: 1fr; gap: 54px; }
   .commercial-grid { grid-template-columns: 1fr; }
@@ -183,10 +194,12 @@ footer > div { display: flex; justify-content: flex-end; gap: 24px; }
   .button { width: 100%; }
   .nodes { padding: 18px; }
   .proof, .how { width: min(100% - 32px, 1180px); }
-  .failure-section, .honest-section, .case-study, .commercial, .support, footer { width: min(100% - 32px, 1180px); }
+  .evaluation-section, .failure-section, .honest-section, .case-study, .commercial, .support, footer { width: min(100% - 32px, 1180px); }
   .proof-grid { gap: 16px; }
   .proof-grid div { padding: 0 0 0 12px; }
   .proof-grid strong { font-size: 23px; }
+  .evaluation-grid { grid-template-columns: 1fr; }
+  .evaluation-panel { padding: 18px; }
   .failure-grid { grid-template-columns: 1fr; }
   .failure-grid article { min-height: 205px; }
   .failure-grid h3 { margin-top: 50px; }

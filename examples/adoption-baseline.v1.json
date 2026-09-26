@@ -1,0 +1,31 @@
+{
+  "format": "bounded-agent-harness-adoption-baseline.v1",
+  "version": 1,
+  "reviewer": "independent-clean-memory-reviewer",
+  "reviewedAt": "2026-09-26T00:00:00.000Z",
+  "sourceCommit": "0f0b44ec176cacd5ee3b8b81edf6e268514e1b59",
+  "liveDeployId": "6ab744b468ad7d2c44b2ccf5",
+  "rollbackDeployId": "6ab73fde0b89b55f0a5627d5",
+  "comparisonSet": ["langgraph", "openai-agents-sdk", "google-adk", "microsoft-agent-framework", "crewai"],
+  "rubric": [
+    { "id": "token_efficiency", "weight": 0.15 },
+    { "id": "boundaries", "weight": 0.25 },
+    { "id": "recovery", "weight": 0.2 },
+    { "id": "provider_evidence", "weight": 0.15 },
+    { "id": "adoption", "weight": 0.15 },
+    { "id": "documentation", "weight": 0.1 }
+  ],
+  "scores": {
+    "bounded-agent-harness": { "token_efficiency": 9, "boundaries": 9, "recovery": 8, "provider_evidence": 3, "adoption": 1, "documentation": 7, "aggregate": 6.5 },
+    "langgraph": { "aggregate": 7.8 },
+    "openai-agents-sdk": { "aggregate": 6.9 },
+    "google-adk": { "aggregate": 7.9 },
+    "microsoft-agent-framework": { "aggregate": 8.0 },
+    "crewai": { "aggregate": 7.0 }
+  },
+  "subjectAggregate": 6.5,
+  "comparatorMean": 7.52,
+  "relativeMargin": -1.02,
+  "source": "Independent read-only review of boundedagentharness.com and current authoritative documentation.",
+  "uncertainty": ["Scores are comparative judgments, not a neutral benchmark.", "No external provider was authenticated through the harness during this baseline."]
+}

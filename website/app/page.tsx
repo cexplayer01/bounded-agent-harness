@@ -1,7 +1,13 @@
 const proof = [
-  ["145/145", "checked-in tests"],
+  ["149/149", "checked-in tests"],
   ["0", "runtime dependencies"],
   ["READY", "proof-release gate"],
+];
+
+const evaluation = [
+  ["6.5", "harness baseline"],
+  ["7.52", "comparator mean"],
+  ["−1.02", "relative margin"],
 ];
 
 const flow = [
@@ -42,7 +48,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.4.0 · portable handoffs</p>
+          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.4.1 · portable handoffs</p>
           <h1>Agents move fast.<br /><em>The workflow should hold.</em></h1>
           <p className="lede">
             A deterministic control plane for multi-agent work: versioned memory,
@@ -90,6 +96,33 @@ export default function Home() {
         <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Inspect the runnable slice ↗</a>
       </section>
 
+      <section className="evaluation-section" aria-label="Adoption evaluation">
+        <div className="section-heading">
+          <p className="eyebrow">Adoption review / frozen comparison</p>
+          <h2>Strong boundaries.<br />Honest reach.</h2>
+          <p className="section-copy">
+            An independent clean-memory review compared the harness with LangGraph, OpenAI Agents SDK, Google ADK,
+            Microsoft Agent Framework, and CrewAI using the same six weighted dimensions. These are comparative judgments,
+            not a neutral benchmark. The same surface is locked for the post-update review.
+          </p>
+        </div>
+        <div className="evaluation-panel">
+          <div className="evaluation-grid">
+            {evaluation.map(([value, label]) => (
+              <div key={label}><strong>{value}</strong><span>{label}</span></div>
+            ))}
+          </div>
+          <p className="evaluation-note">
+            Baseline: 6.5 harness vs 7.52 comparator mean. If the follow-up reviewer finds a lower relative margin or a
+            worse rank, the recorded baseline deployment is restored before accepting the candidate.
+          </p>
+          <div className="evaluation-links">
+            <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/ADOPTION-REVIEW.md">Read the rubric ↗</a>
+            <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/examples/adoption-baseline-scorecard.v1.json">Inspect the scorecard ↗</a>
+          </div>
+        </div>
+      </section>
+
       <section className="how" id="how">
         <div className="section-heading">
           <p className="eyebrow">The control loop</p>
@@ -126,7 +159,7 @@ export default function Home() {
         <div className="honest-copy">
           <p className="eyebrow">What exists now</p>
           <h2>A working control-plane foundation—not a production claim.</h2>
-          <p>Version 0.4.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, and an additive token-efficiency layer for lazy capability loading, digest-bound artifact references, deterministic context pruning, and measured cache savings.</p>
+          <p>Version 0.4.1 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, an additive token-efficiency layer, and a digest-bound adoption scorecard with a repeatable evaluation matrix and comparative rollback rule.</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Run the five-minute demo ↗</a>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/THREAT-MODEL.md">Read the threat model ↗</a>
@@ -138,6 +171,7 @@ export default function Home() {
             <li>Production-ready hosted service</li>
             <li>Cryptographic provider authentication</li>
             <li>Real-provider compatibility proof</li>
+            <li>Crash fault-injection recovery proof</li>
             <li>General autonomous-agent framework</li>
           </ul>
           <span>Those boundaries are deliberate and documented.</span>
