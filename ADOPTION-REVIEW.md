@@ -95,3 +95,10 @@ artifact identity.
 
 The declined candidate is preserved on Git branch `review/adoption-evaluation-20260926`; GitHub `main` remains aligned with
 the known-good live baseline until a future review produces a non-declining result.
+
+## Receipt reproducibility repair
+
+After the rollback, a local rebuild showed that provider-local Netlify state could enter `websiteSourceSha256` because
+`website/.netlify/` was not excluded from the release tree. The release script now excludes `.netlify`, and a focused
+test proves that adding a synthetic `.netlify/state.json` does not change the source digest. This repair is local and
+review-branch-only; it does not reopen or redeploy the declined candidate.

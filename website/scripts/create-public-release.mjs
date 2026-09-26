@@ -8,7 +8,9 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const websiteRoot = path.resolve(scriptDirectory, "..");
 const repositoryRoot = path.resolve(websiteRoot, "..");
 const outputPath = path.join(websiteRoot, "public", "release.json");
-const ignoredDirectories = new Set([".next", ".vinext", "node_modules", "out", ".wrangler", ".vercel"]);
+// Hosting CLIs create provider-local state here. It is not part of the source
+// that the public release receipt is meant to identify.
+const ignoredDirectories = new Set([".next", ".vinext", "node_modules", "out", ".wrangler", ".vercel", ".netlify"]);
 const ignoredFiles = new Set(["release.json"]);
 
 function sha256(value) {
@@ -43,7 +45,7 @@ async function filesUnder(root, relative = "") {
   return files;
 }
 
-async function treeDigest(root) {
+export async function treeDigest(root) {
   const files = await filesUnder(root);
   const hash = createHash("sha256");
   for (const relative of files) {
