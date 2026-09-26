@@ -95,6 +95,25 @@ Reconciliation is now a publication gate, not a paragraph an agent can update fr
 
 The source for [boundedagentharness.com](https://boundedagentharness.com) is kept in [`website/`](website/). Build output, provider credentials, deployment identity, and local hosting state are intentionally excluded.
 
+### Public-site release binding
+
+Every public build runs `website/scripts/create-public-release.mjs` before the static build. It writes an ignored
+`website/public/release.json` containing the exact source commit, package versions, capability maturity, website-source
+digest, and proof-status digest. The live site exposes that receipt at `/release.json`; it is not a claim of deployment
+authority.
+
+After publishing a build, verify the live binding before recording the deploy:
+
+```powershell
+cd website
+pnpm run build:netlify
+pnpm run verify:release -- --url https://boundedagentharness.com --commit <source-commit>
+```
+
+The deployment receipt belongs in `releases/boundedagentharness.com/` and records the deployed source commit, deploy
+ID, rollback deploy ID, receipt URL, and postflight checks. A later repository commit containing the receipt is not
+silently presented as the source of the already-published artifact; the receipt names the exact deployed commit.
+
 Compilation refuses to overwrite an existing artifact. `run` and `resume` currently accept only declarative literal adapters, providing a safe zero-side-effect end-to-end proof without executing arbitrary code or contacting a provider. `inspect` verifies the complete event hash chain, then reports deterministic per-run status, failure, actual/reserved cost, savings, provider identity, ledger head, and checkpoint.
 
 MCP adapters optionally verify that their configured tool is advertised, pass a versioned handoff envelope containing the exact workflow, specialist, capability, authority, and output-contract identity, and accept only `structuredContent`. Tool errors and prose-only responses fail closed.

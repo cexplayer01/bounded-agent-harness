@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
-    "build:netlify": "next build",
+    "prepare:release": "node scripts/create-public-release.mjs",
+    "build:netlify": "pnpm run prepare:release && next build",
+    "verify:release": "node scripts/verify-public-site-release.mjs",
     "start": "vinext start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out --ignore-pattern .vinext --ignore-pattern .wrangler --ignore-pattern .codex-site-package-stage"
   },

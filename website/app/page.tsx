@@ -84,6 +84,8 @@ export default function Home() {
             <div key={label}><strong>{value}</strong><span>{label}</span></div>
           ))}
         </div>
+        <p className="section-copy">Every public build exposes a machine-readable release receipt binding the live page to its exact source commit and proof record.</p>
+        <a href="/release.json">Inspect the live release receipt ↗</a>
         <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Inspect the runnable slice ↗</a>
       </section>
 
@@ -222,7 +224,7 @@ export default function Home() {
       <footer>
         <a className="brand" href="#top"><span className="brand-mark" aria-hidden="true"><i /><i /><i /></span><span>Bounded Agent Harness</span></a>
         <p>Compile. Constrain. Recover.</p>
-        <div><a href="https://github.com/cexplayer01/bounded-agent-harness">GitHub</a><a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/LICENSE">AGPL license</a></div>
+        <div><a href="https://github.com/cexplayer01/bounded-agent-harness">GitHub</a><a href="/release.json">Release receipt</a><a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/LICENSE">AGPL license</a></div>
       </footer>
     </main>
   );
