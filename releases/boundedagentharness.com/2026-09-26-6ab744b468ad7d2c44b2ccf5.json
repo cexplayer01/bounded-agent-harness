@@ -1,0 +1,34 @@
+{
+  "format": "bounded-agent-harness-public-deployment-receipt.v1",
+  "site": "https://boundedagentharness.com",
+  "siteId": "f1f89409-622f-4266-ae98-a42c5d541422",
+  "deployId": "6ab744b468ad7d2c44b2ccf5",
+  "deployUrl": "https://6ab744b468ad7d2c44b2ccf5--bounded-agent-harness.netlify.app",
+  "rollbackDeployId": "6ab73fde0b89b55f0a5627d5",
+  "sourceRepository": "https://github.com/cexplayer01/bounded-agent-harness",
+  "sourceCommit": "a236bf71227d3a0dcdf200991103076abf851c25",
+  "releaseReceiptUrl": "https://boundedagentharness.com/release.json",
+  "releaseReceiptSha256": "4637d3e959f12f5fe08f98620b819c58cc82e2600238e85a9d3736c8bfc5f84f",
+  "websiteSourceSha256": "e4cd8608cc11352d50501840235e1ceee3290cfdbd8162a5df1c98cb114c8c2d",
+  "proofStatusSha256": "81bb3f849ed978f528ccd1fb539859716aa786a6129651fecaa9ceff2371d3d8",
+  "publishedAt": "2026-09-26T04:07:18.054Z",
+  "verifiedAt": "2026-09-26T04:07:18.054Z",
+  "checks": {
+    "sourceCommitMatchesLiveReceipt": true,
+    "releaseReceiptHttp200": true,
+    "homepageHttp200": true,
+    "homepageLinksReleaseReceipt": true,
+    "capabilityMaturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.7",
+    "deployState": "ready",
+    "externalEffects": "PUBLIC_NETLIFY_DEPLOY_ONLY",
+    "databaseChanged": false,
+    "providerChanged": false,
+    "customerSitesChanged": false,
+    "dnsChanged": false,
+    "secretsChanged": false
+  },
+  "rollback": {
+    "method": "Republish Netlify deploy 6ab73fde0b89b55f0a5627d5 for site f1f89409-622f-4266-ae98-a42c5d541422",
+    "verifiedBeforePublish": true
+  }
+}
