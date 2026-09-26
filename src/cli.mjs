@@ -14,6 +14,7 @@ import { summarizeEvents } from "./observability.mjs";
 import { scanChangeImpact } from "./change-impact.mjs";
 import { evaluateProofRelease, PROOF_OBSERVATIONS_FORMAT } from "./proof-release.mjs";
 import { claimSharedTask, completeSharedTask, enqueueSharedTask, inspectSharedTasks } from "./shared-task-queue.mjs";
+import { verifyProviderCompatibilityReceipt } from "./provider-compatibility-proof.mjs";
 
 const json = async (path) => JSON.parse(await readFile(resolve(path), "utf8"));
 
@@ -114,6 +115,19 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     if (!result.valid) process.exitCode = 1;
     return result;
   }
+  if (command === "provider-proof") {
+    assert(args.receipt, "CLI_ARGUMENT", "provider-proof requires --receipt");
+    const receipt = await json(args.receipt);
+    const trustedPublicKeys = {};
+    if (args["public-key"]) {
+      assert(receipt.attestation?.keyId, "CLI_ARGUMENT", "--public-key requires an attested receipt with keyId");
+      trustedPublicKeys[receipt.attestation.keyId] = await readFile(resolve(args["public-key"]), "utf8");
+    }
+    const result = verifyProviderCompatibilityReceipt(receipt, { trustedPublicKeys });
+    io.out(JSON.stringify(result, null, 2));
+    if (!result.valid || (args["require-real"] !== undefined && !result.publishable)) process.exitCode = 1;
+    return result;
+  }
   if (command === "task-create") {
     assert(args.task && args.queue, "CLI_ARGUMENT", "task-create requires --task and --queue");
     const task = await json(args.task);
@@ -147,5 +161,5 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     io.out(JSON.stringify(result, null, 2));
     return result;
   }
-  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact|proof-release|task-create|task-claim|task-complete|task-inspect> [options]");
+  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact|proof-release|provider-proof|task-create|task-claim|task-complete|task-inspect> [options]");
 }

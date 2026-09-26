@@ -1,5 +1,5 @@
 const proof = [
-  ["149/149", "checked-in tests"],
+  ["154/154", "checked-in tests"],
   ["0", "runtime dependencies"],
   ["READY", "proof-release gate"],
 ];
@@ -48,7 +48,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.4.1 · portable handoffs</p>
+          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.4.2 · portable handoffs</p>
           <h1>Agents move fast.<br /><em>The workflow should hold.</em></h1>
           <p className="lede">
             A deterministic control plane for multi-agent work: versioned memory,
@@ -159,7 +159,7 @@ export default function Home() {
         <div className="honest-copy">
           <p className="eyebrow">What exists now</p>
           <h2>A working control-plane foundation—not a production claim.</h2>
-          <p>Version 0.4.1 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, an additive token-efficiency layer, and a digest-bound adoption scorecard with a repeatable evaluation matrix and comparative rollback rule.</p>
+          <p>Version 0.4.2 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, an additive token-efficiency layer, a digest-bound adoption scorecard with a repeatable evaluation matrix and comparative rollback rule, and a signed provider-compatibility receipt that keeps synthetic rehearsals separate from real-provider evidence.</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Run the five-minute demo ↗</a>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/THREAT-MODEL.md">Read the threat model ↗</a>

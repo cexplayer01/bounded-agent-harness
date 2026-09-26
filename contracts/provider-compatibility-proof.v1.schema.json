@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boundedagentharness.com/contracts/provider-compatibility-proof.v1.schema.json",
+  "title": "Bounded Agent Harness provider compatibility proof",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "executionMode", "status", "sourceCommit", "observedAt", "runId", "workflowDigest", "adapterId", "server", "tool", "boundary", "provider", "requestDigest", "responseDigest", "usage", "attestation", "receiptDigest"],
+  "properties": {
+    "format": { "const": "bounded-agent-harness-provider-compatibility.v1" },
+    "version": { "const": 1 },
+    "executionMode": { "enum": ["SYNTHETIC_REHEARSAL", "HOST_OBSERVED"] },
+    "status": { "enum": ["REHEARSAL_ONLY", "ATTESTATION_PENDING"] },
+    "sourceCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "runId": { "type": "string", "minLength": 1 },
+    "workflowDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "adapterId": { "type": "string", "minLength": 1 },
+    "server": { "type": "string", "minLength": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "boundary": {
+      "type": "object", "additionalProperties": false, "required": ["capability", "authority", "effect", "maxEffects"],
+      "properties": { "capability": { "type": "string", "minLength": 1 }, "authority": { "type": "string", "minLength": 1 }, "effect": { "const": "read" }, "maxEffects": { "const": 0 } }
+    },
+    "provider": {
+      "type": "object", "additionalProperties": false, "required": ["name", "version", "identity", "assuranceLevel"],
+      "properties": { "name": { "type": "string", "minLength": 1 }, "version": { "type": ["string", "null"] }, "identity": { "type": "string", "minLength": 1 }, "assuranceLevel": { "type": "string", "minLength": 1 } }
+    },
+    "requestDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "responseDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "usage": { "type": "object", "additionalProperties": false, "required": ["costUnits", "source"], "properties": { "costUnits": { "type": "integer", "minimum": 0 }, "source": { "type": "string", "minLength": 1 } } },
+    "attestation": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "object", "additionalProperties": false, "required": ["format", "keyId", "algorithm", "payloadDigest", "signature"], "properties": { "format": { "const": "bounded-agent-harness-provider-compatibility.v1.attestation" }, "keyId": { "type": "string", "minLength": 1 }, "algorithm": { "const": "ed25519" }, "payloadDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }, "signature": { "type": "string", "minLength": 1 } } }
+      ]
+    },
+    "receiptDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

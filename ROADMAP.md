@@ -163,6 +163,15 @@ provider hosts remains future evidence rather than an implied claim.
 
 Status: local adoption-evidence layer implemented and documented; external provider authentication and fault-injection recovery remain separate evidence.
 
+## 1.9 — signed provider-compatibility evidence
+
+- Release-gated provider-compatibility receipt binds source commit, workflow identity, read-only authority, provider identity, request/response digests, and observed usage.
+- Synthetic rehearsals remain explicitly `REHEARSAL_ONLY` and can never satisfy a real-provider release gate.
+- Host-observed receipts require a trusted Ed25519 attestation; tampering, an unknown trust root, non-read authority, and missing proof fail closed.
+- Verification is offline and token-free; the host supplies the actual MCP client and never places provider secrets in the receipt.
+
+Status: receipt builder, schema, verifier, CLI, and negative tests implemented locally; an actual host-provider run remains unexecuted.
+
 ## Commercial path
 
 - Community edition: AGPL-3.0-or-later.

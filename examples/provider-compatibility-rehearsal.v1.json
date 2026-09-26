@@ -1,0 +1,33 @@
+{
+  "format": "bounded-agent-harness-provider-compatibility.v1",
+  "version": 1,
+  "executionMode": "SYNTHETIC_REHEARSAL",
+  "status": "REHEARSAL_ONLY",
+  "sourceCommit": "7eac98fc406696b82fbc5f702c39b917d4f38f24",
+  "observedAt": "2026-09-26T06:00:00.000Z",
+  "runId": "provider-proof-example",
+  "workflowDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "adapterId": "mcp.research",
+  "server": "research",
+  "tool": "find-primary-sources",
+  "boundary": {
+    "capability": "research.primary-sources",
+    "authority": "read.external",
+    "effect": "read",
+    "maxEffects": 0
+  },
+  "provider": {
+    "name": "rehearsal-research",
+    "version": "1.0.0",
+    "identity": "pinned",
+    "assuranceLevel": "configuration-only"
+  },
+  "requestDigest": "sha256:217f1d4afd6fc5c24659d1f091451dc431b72617f358746a42366f23707c7eb9",
+  "responseDigest": "sha256:07d4c16466580b872ff14c6d99a0791c624449b7a7035967fa50f5dc66853e53",
+  "usage": {
+    "costUnits": 2,
+    "source": "provider-reported"
+  },
+  "attestation": null,
+  "receiptDigest": "sha256:3b7f75d41a01d39a6c46396945982a0fee5158773e3987c88bb7ea3c81090ddb"
+}
