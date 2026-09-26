@@ -16,6 +16,8 @@ test("DeepSeek function client converts one structured function call to the MCP 
   assert.deepEqual(result, { structuredContent: { answer: "bounded result" }, _meta: { costUnits: 23, source: "provider-reported-tokens" } });
   assert.equal(request.url, "https://api.deepseek.com/chat/completions");
   assert.equal(request.options.headers.authorization, "Bearer test-key");
+  const body = JSON.parse(request.options.body);
+  assert.deepEqual(body.thinking, { type: "disabled" });
   assert.match(request.options.body, /bounded_readonly_work/);
 });
 

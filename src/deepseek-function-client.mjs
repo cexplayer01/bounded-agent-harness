@@ -60,6 +60,7 @@ export function createDeepSeekFunctionClient({ apiKey = process.env.DEEPSEEK_API
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
           model,
+          thinking: { type: "disabled" },
           temperature: 0,
           max_tokens: request?.arguments?.maxOutputTokens ?? 512,
           messages: [
