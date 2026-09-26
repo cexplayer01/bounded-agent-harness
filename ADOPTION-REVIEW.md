@@ -70,3 +70,28 @@ node bin/audit-package.mjs
 
 The public website may summarize this review, but the repository scorecard and its digest are the authoritative comparison
 record. Deployment remains separately gated.
+
+## Post-update review and automatic rollback
+
+The second clean-memory reviewer inspected the candidate live release before rollback and used the exact frozen surface:
+
+- subject: **6.0**;
+- comparator mean: **7.66**;
+- relative margin: **−1.66**;
+- rank: **6 of 6**;
+- margin delta: **−0.64** from the baseline.
+
+Because the relative margin declined, `automaticRollback` was true. The candidate deploy `6ab7506da3cdaba07881a86e`
+was not accepted. The frozen baseline was republished as deploy `6ab7533a3d8845c1ad07aad9`, verified live with source
+commit `0f0b44ec176cacd5ee3b8b81edf6e268514e1b59` and maturity `LOCAL_CONTROL_PLANE_MILESTONE_1.7`. The full follow-up
+scorecard is [`examples/adoption-followup-20260926.v1.json`](examples/adoption-followup-20260926.v1.json); deployment
+receipts record both the candidate and rollback.
+
+The first baseline republish (`6ab7533a…`) was semantically correct but generated a different release receipt because the
+rebuild was not byte-identical to the historical deploy. It was superseded in the evidence record. The final exact
+historical receipt/static-output republish is `6ab7542de0a386f0d1ec894f`, whose live `/release.json` SHA is the original
+`4637d3e9…`. This distinction is preserved so a later agent does not mistake a provider-success response for exact
+artifact identity.
+
+The declined candidate is preserved on Git branch `review/adoption-evaluation-20260926`; GitHub `main` remains aligned with
+the known-good live baseline until a future review produces a non-declining result.

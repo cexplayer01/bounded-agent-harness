@@ -1,0 +1,25 @@
+{
+  "format": "bounded-agent-harness-public-rollback-receipt.v1",
+  "site": "https://boundedagentharness.com",
+  "siteId": "f1f89409-622f-4266-ae98-a42c5d541422",
+  "rollbackOfDeployId": "6ab7506da3cdaba07881a86e",
+  "baselineDeployId": "6ab744b468ad7d2c44b2ccf5",
+  "rollbackDeployId": "6ab7542de0a386f0d1ec894f",
+  "rollbackDeployUrl": "https://6ab7542de0a386f0d1ec894f--bounded-agent-harness.netlify.app",
+  "baselineSourceCommit": "a236bf71227d3a0dcdf200991103076abf851c25",
+  "reason": "Comparative adoption guard: subject score 6.0, comparator mean 7.66, relative margin -1.66 versus baseline margin -1.02.",
+  "method": "Republish the exact historical baseline release receipt and static output with --no-build.",
+  "verifiedAt": "2026-09-26T05:10:24.540Z",
+  "releaseReceiptSha256": "4637d3e959f12f5fe08f98620b819c58cc82e2600238e85a9d3736c8bfc5f84f",
+  "checks": {
+    "homepageHttp200": true,
+    "releaseReceiptHttp200": true,
+    "sourceCommitMatchesBaseline": true,
+    "capabilityMaturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.7",
+    "databaseChanged": false,
+    "providerChanged": false,
+    "customerSitesChanged": false,
+    "dnsChanged": false,
+    "secretsChanged": false
+  }
+}
