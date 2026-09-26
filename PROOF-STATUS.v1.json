@@ -5,7 +5,7 @@
     "repository": "https://github.com/cexplayer01/bounded-agent-harness",
     "version": "0.4.3",
     "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_2.0",
-    "tested_commit": "ddf37b08a68196bb4ffeece614c38ff1ad50d576"
+    "tested_commit": "1e8ff44dd4eac4f5187bce5b503c4fca6aac3da1"
   },
   "overall": {
     "status": "PROVEN_WITHIN_DECLARED_SCOPE",
@@ -57,9 +57,25 @@
       "id": "deepseek-function-bridge",
       "status": "PASS_WITH_LIMITS",
       "command": "node --test test/deepseek-function-client.test.mjs",
-      "result": { "tests": 3, "passed": 3, "failed": 0, "network": "NONE", "owner_key_configured": false },
-      "proves": "The optional DeepSeek function-calling bridge normalizes one structured call through the existing adapter boundary, reports provider token usage, and rejects missing keys, write authority, prose, and multiple calls before accepting work.",
-      "does_not_prove": "That DeepSeek was contacted in this release, native DeepSeek MCP support, or permission to modify files, databases, deployments, or customer Sites."
+      "result": {
+        "tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "network": "ONE_LIVE_READ_ONLY_REQUEST_COMPLETED",
+        "owner_key_configured": true,
+        "live_probe": {
+          "date": "2026-09-26",
+          "model": "deepseek-flash",
+          "max_output_tokens": 512,
+          "reserved_token_budget": 768,
+          "provider_reported_tokens": 544,
+          "successful_structured_calls": 1,
+          "earlier_provider_responses_rejected_as_malformed": 2,
+          "usage_for_malformed_responses": "NOT_CAPTURED"
+        }
+      },
+      "proves": "The optional DeepSeek function-calling bridge passes its fake-client boundary suite and completed one actual bounded, read-only function-calling request, returning structured output and provider-reported usage. Named tool calls explicitly disable DeepSeek thinking mode.",
+      "does_not_prove": "Native DeepSeek MCP support, repeated reliability, signed host-observed provider compatibility, correctness of model advice, or permission to modify files, databases, deployments, or customer Sites."
     },
     {
       "id": "shared-agent-bridge",
@@ -108,7 +124,7 @@
     "current_claim_rule": "CURRENT requires an exact matching fresh observation; otherwise publication is BLOCKED.",
     "historical_rule": "HISTORICAL and SUPERSEDED evidence remains traceable but does not satisfy a CURRENT claim.",
     "provider_boundary": "Host adapters supply read-only observations; the gate makes no network calls and stores no credentials.",
-    "deepseek_boundary": "The optional DeepSeek bridge accepts one read-only structured function call and keeps DEEPSEEK_API_KEY process-local; no live request was part of this proof.",
+    "deepseek_boundary": "The optional DeepSeek bridge accepts one read-only structured function call and keeps DEEPSEEK_API_KEY process-local. One local live smoke request completed; it is not a signed host-observed compatibility receipt.",
     "provider_compatibility_boundary": "Synthetic provider receipts remain rehearsal-only; host-observed receipts require a trusted Ed25519 attestation and remain separately gated from publication."
   },
   "integration_evidence": {
@@ -179,6 +195,6 @@
     "DFW Metro production state and DFWMow lab deployments are external evidence and remain governed by their own deployment, database, provider, and rollback rules.",
     "The proof receipt records reproducible scope and boundaries; it does not grant authority to deploy, mutate data, contact a provider, or publish a customer Site.",
     "A successful local signed-receipt test is not an actual external-provider compatibility run.",
-    "The optional DeepSeek bridge has not made a live request because no local DEEPSEEK_API_KEY was available during this proof run."
+    "One live DeepSeek read-only request completed on the review branch. Two earlier successful HTTP responses contained malformed function arguments; provider usage was not captured for those responses, so the successful call's 544 reported tokens are not a total-spend figure."
   ]
 }

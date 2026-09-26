@@ -16,7 +16,7 @@
     "demo": "node bin/demo.mjs",
     "demo:shared-task": "node bin/demo-shared-task.mjs",
     "demo:mcp": "node bin/demo-mcp.mjs",
-    "deepseek:configure": "powershell -NoProfile -ExecutionPolicy Bypass -File bin/configure-local-deepseek.ps1",
+    "deepseek:configure": "powershell -NoProfile -STA -ExecutionPolicy Bypass -File bin/configure-local-deepseek.ps1",
     "deepseek:probe": "node --env-file=.env bin/deepseek-readonly-probe.mjs",
     "harness": "node bin/harness.mjs",
     "audit": "node bin/audit-package.mjs",

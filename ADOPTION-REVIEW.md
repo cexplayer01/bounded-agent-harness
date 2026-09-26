@@ -114,7 +114,10 @@ score or production deployment is claimed yet.
 
 ## DeepSeek bridge follow-up
 
-The review branch now contains an optional DeepSeek function-calling client and a one-request read-only probe. It uses the
+The review branch now contains an optional DeepSeek function-calling client and a bounded read-only probe. It uses the
 existing adapter boundary, reports provider-reported token usage, rejects write authority and malformed output, and keeps
-`DEEPSEEK_API_KEY` process-local. This is deliberately labeled a function-calling bridge rather than native DeepSeek MCP.
-The fake-client proof is 3/3; no live DeepSeek request was made because the key was not configured in this environment.
+`DEEPSEEK_API_KEY` process-local. Named tool calls explicitly disable thinking mode, as required by DeepSeek's current API.
+The fake-client proof is 3/3 and the full suite is 157/157. One live `deepseek-flash` request completed with valid
+structured output and 544 provider-reported tokens under a 768-token reservation. Two earlier HTTP-success responses
+contained malformed function arguments; their usage was not captured, so total spend is unknown. This remains a local
+smoke run, not native DeepSeek MCP or signed host-attested compatibility evidence.
