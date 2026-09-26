@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boundedagentharness.com/contracts/capability-index.v1.schema.json",
+  "title": "Bounded Agent Harness capability index v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "capabilities", "digest"],
+  "properties": {
+    "format": { "const": "agent-harness.capability-index.v1" },
+    "version": { "const": 1 },
+    "capabilities": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/descriptor" }
+    },
+    "digest": { "$ref": "#/$defs/digest" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "id", "summary", "contractId", "authority", "effects", "payloadDigest", "estimatedSchemaTokens", "loaderKey"],
+      "properties": {
+        "format": { "const": "agent-harness.capability-descriptor.v1" },
+        "id": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "contractId": { "type": "string", "minLength": 1 },
+        "authority": { "type": "string", "minLength": 1 },
+        "effects": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "payloadDigest": { "$ref": "#/$defs/digest" },
+        "estimatedSchemaTokens": { "type": "integer", "minimum": 0 },
+        "loaderKey": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

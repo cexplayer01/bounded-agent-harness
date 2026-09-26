@@ -20,6 +20,9 @@ It packages the useful reliability mechanisms without requiring chat transcripts
 - Validated plans compile deterministically before execution.
 - Runtime execution can be mostly non-LLM; models are invoked only for steps that require them.
 - Every meaningful transition produces inspectable, hash-chained evidence.
+- Token-efficiency helpers reduce unnecessary context transfer without becoming an authority source: capability indexes
+  lazy-load full tool contracts, artifact references pass digests instead of copying large payloads, deterministic
+  pruning reports every omission, and usage records make cached/uncached input and accepted-result efficiency measurable.
 
 ## Shared repository bridge
 
@@ -59,9 +62,26 @@ adds the response ceiling and reserve, rejects stale/unknown/reset/insufficient 
 otherwise the call is rejected before it reaches the provider. The harness cannot discover a provider's private quota by
 itself, so a host that cannot read and reserve the shared account window must fail closed.
 
+### Token-efficiency adapter
+
+The token-efficiency layer is deliberately additive and non-authoritative. `buildCapabilityIndex` creates a small,
+digest-bound descriptor list; `resolveCapability` loads one full contract only after the host has classified the step
+as needing it, then verifies the loaded payload before use. `buildArtifactReference` lets a handoff point to a large
+artifact by ID, repository/URI, contract, and SHA-256 rather than copying the artifact into every prompt.
+
+`buildContextPacket` separates a cache-stable `stable` section from the current `delta`, binds both sections to
+digests, and renders them only after verification. `pruneContextRecords` performs deterministic budgeted selection
+before any optional AI summarization; required records never disappear, and every omitted record is reported. The
+pruning result is an active-prompt decision, not deletion of repository history or Project Brain evidence.
+
+`buildTokenUsageRecord`, `summarizeTokenUsage`, and `compareTokenEfficiency` record provider observations such as
+input, cached input, output, retries, reservations, and accepted outcomes. They measure savings but never grant
+capacity, authority, approval, or permission to bypass `withTokenCapacityGate`. Hosts may use the resulting report to
+compare the same task before and after context optimization.
+
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 140/140 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, and a repository-native shared-agent bridge. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 145/145 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness

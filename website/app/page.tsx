@@ -1,5 +1,5 @@
 const proof = [
-  ["140/140", "checked-in tests"],
+  ["145/145", "checked-in tests"],
   ["0", "runtime dependencies"],
   ["READY", "proof-release gate"],
 ];
@@ -42,7 +42,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.3.0 · portable handoffs</p>
+          <p className="eyebrow"><span /> Open-source agent infrastructure · v0.4.0 · portable handoffs</p>
           <h1>Agents move fast.<br /><em>The workflow should hold.</em></h1>
           <p className="lede">
             A deterministic control plane for multi-agent work: versioned memory,
@@ -126,7 +126,7 @@ export default function Home() {
         <div className="honest-copy">
           <p className="eyebrow">What exists now</p>
           <h2>A working control-plane foundation—not a production claim.</h2>
-          <p>Version 0.3.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, and a token-capacity gate that estimates prompt plus response usage and blocks stale or exhausted provider windows before invocation.</p>
+          <p>Version 0.4.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, and an additive token-efficiency layer for lazy capability loading, digest-bound artifact references, deterministic context pruning, and measured cache savings.</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Run the five-minute demo ↗</a>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/THREAT-MODEL.md">Read the threat model ↗</a>

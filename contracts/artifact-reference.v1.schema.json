@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boundedagentharness.com/contracts/artifact-reference.v1.schema.json",
+  "title": "Bounded Agent Harness artifact reference v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "id", "digest", "mediaType"],
+  "properties": {
+    "format": { "const": "agent-harness.artifact-reference.v1" },
+    "version": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "uri": { "type": "string", "minLength": 1 },
+    "mediaType": { "type": "string", "minLength": 1 },
+    "bytes": { "type": "integer", "minimum": 0 },
+    "contractId": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 }
+  }
+}

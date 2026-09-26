@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boundedagentharness.com/contracts/token-usage.v1.schema.json",
+  "title": "Bounded Agent Harness token usage v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "runId", "stepId", "provider", "attempt", "inputTokens", "cachedInputTokens", "uncachedInputTokens", "outputTokens", "reasoningTokens", "reservedTokens", "totalTokens", "savedByCacheTokens", "outcome", "digest"],
+  "properties": {
+    "format": { "const": "agent-harness.token-usage.v1" },
+    "version": { "const": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "stepId": { "type": "string", "minLength": 1 },
+    "provider": { "type": "string", "minLength": 1 },
+    "model": { "type": "string", "minLength": 1 },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "inputTokens": { "type": "integer", "minimum": 0 },
+    "cachedInputTokens": { "type": "integer", "minimum": 0 },
+    "uncachedInputTokens": { "type": "integer", "minimum": 0 },
+    "outputTokens": { "type": "integer", "minimum": 0 },
+    "reasoningTokens": { "type": "integer", "minimum": 0 },
+    "reservedTokens": { "type": "integer", "minimum": 0 },
+    "totalTokens": { "type": "integer", "minimum": 0 },
+    "savedByCacheTokens": { "type": "integer", "minimum": 0 },
+    "outcome": { "enum": ["accepted", "rejected", "failed", "unreviewed"] },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

@@ -141,6 +141,17 @@ Status: local analyzer, CLI, contracts, and focused tests implemented. It recomm
 
 Status: pure host-neutral policy and negative tests implemented. Concrete continuous-host adapters remain platform integrations rather than hidden package behavior.
 
+## 1.7 — token-efficiency adapter
+
+- Compact capability indexes with digest-verified lazy contract loading.
+- Digest-bound artifact references and cache-shaped stable/delta context packets.
+- Deterministic active-context pruning that preserves required records and reports omissions.
+- Provider usage ledger and before/after efficiency reports for input, cached input, output, retries, reservations, and accepted outcomes.
+
+Status: local host-neutral utilities and negative tests implemented. They optimize prompt assembly and measurement only;
+capacity, authority, approval, evidence, and deployment gates remain unchanged. A production benchmark across real
+provider hosts remains future evidence rather than an implied claim.
+
 ## Commercial path
 
 - Community edition: AGPL-3.0-or-later.

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boundedagentharness.com/contracts/context-pruning.v1.schema.json",
+  "title": "Bounded Agent Harness context pruning result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "maxTokens", "estimatedTokens", "selected", "omitted", "digest"],
+  "properties": {
+    "format": { "const": "agent-harness.context-pruning.v1" },
+    "version": { "const": 1 },
+    "maxTokens": { "type": "integer", "minimum": 1 },
+    "estimatedTokens": { "type": "integer", "minimum": 0 },
+    "selected": { "type": "array", "items": { "$ref": "#/$defs/record" } },
+    "omitted": { "type": "array", "items": { "$ref": "#/$defs/omission" } },
+    "digest": { "$ref": "#/$defs/digest" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "tokenCount", "priority", "digest"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "text": { "type": "string", "minLength": 1 },
+        "tokenCount": { "type": "integer", "minimum": 0 },
+        "priority": { "type": "integer", "minimum": 0 },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "omission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tokenCount", "digest", "reason"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "tokenCount": { "type": "integer", "minimum": 0 },
+        "digest": { "$ref": "#/$defs/digest" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
