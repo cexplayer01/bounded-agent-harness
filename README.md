@@ -24,6 +24,10 @@ It packages the useful reliability mechanisms without requiring chat transcripts
   lazy-load full tool contracts, artifact references pass digests instead of copying large payloads, deterministic
   pruning reports every omission, and usage records make cached/uncached input and accepted-result efficiency measurable.
 
+### Proprietary sidecar inquiries
+
+**HITL Removal** and **Danger Mode** are names-only teasers for proprietary sidecars outside the public community edition. Their implementation and detailed specification are not included in this repository or public product documentation. Email James to ask about private availability.
+
 ## Shared repository bridge
 
 The harness now includes a repository-native bridge for agents that do not share a chat or MCP server. It is intentionally a transport protocol, not a second agent runtime: one agent publishes an immutable task packet, the assigned agent claims the one fixed claim path, and the worker publishes one result packet bound to the task digest and full Git commit SHAs.

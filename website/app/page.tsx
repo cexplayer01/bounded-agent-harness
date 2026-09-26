@@ -195,6 +195,12 @@ export default function Home() {
             <p>For proprietary embedding, closed modified services, support, or future managed infrastructure.</p>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/COMMERCIAL-LICENSING.md">Licensing path ↗</a>
           </article>
+          <article>
+            <span>Proprietary add-ons</span>
+            <h3>HITL Removal · Danger Mode</h3>
+            <p>Private add-ons outside the community edition. Email James to ask about availability.</p>
+            <a href="mailto:vandaelewatch@gmail.com?subject=Private%20add-on%20inquiry">Ask about private access ↗</a>
+          </article>
         </div>
       </section>
 

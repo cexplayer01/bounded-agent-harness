@@ -34,3 +34,7 @@ Licensing is AGPL-3.0-or-later with a separately negotiated commercial alternati
 Specialists are not interchangeable personas. A profile states observable capabilities, limitations, adapter, authority, and accepted/rejected outcome counts. Routing filters by capability and authority first, then prefers verified outcomes and labels missing history honestly. Model branding and fictional personality never affect selection. Provider metadata is evidence for routing; it never relaxes a contract or gate.
 
 Completed-but-unreviewed work is tracked separately from accepted or rejected outputs. The system does not turn activity volume into a false quality claim.
+
+## Proprietary sidecar inquiries
+
+**HITL Removal** and **Danger Mode** are names-only teasers for proprietary add-ons outside the public community edition. Their implementation and detailed specification are not included in this repository or public product documentation. Email James to ask about private availability.

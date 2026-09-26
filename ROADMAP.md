@@ -152,6 +152,10 @@ Status: local host-neutral utilities and negative tests implemented. They optimi
 capacity, authority, approval, evidence, and deployment gates remain unchanged. A production benchmark across real
 provider hosts remains future evidence rather than an implied claim.
 
+## Proprietary sidecar inquiries
+
+**HITL Removal** and **Danger Mode** are names-only teasers for proprietary add-ons outside the public community edition. Implementation and detailed specifications are intentionally not published here. Email James to ask about private availability.
+
 ## Commercial path
 
 - Community edition: AGPL-3.0-or-later.

@@ -131,7 +131,7 @@ h1 em { color: var(--muted); font-style: normal; font-weight: 420; }
 .case-links a { color: var(--cyan); font-size: 12px; font-weight: 750; }
 
 .commercial { padding: 120px 0; border-top: 1px solid var(--line); }
-.commercial-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 64px; border: 1px solid var(--line); }
+.commercial-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 64px; border: 1px solid var(--line); }
 .commercial-grid article { min-height: 330px; padding: 34px; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: rgba(11,18,22,.55); }
 .commercial-grid article:last-child { border-right: 0; }
 .commercial-grid article.featured { background: linear-gradient(145deg, rgba(95,227,208,.1), rgba(11,18,22,.7)); box-shadow: inset 0 3px var(--cyan); }
