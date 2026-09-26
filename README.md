@@ -158,8 +158,11 @@ Adapters also receive a versioned capability envelope that binds run ID, step ID
 
 `npm run demo:mcp` proves the provider boundary end to end with two intentionally different in-process MCP client shapes: a primary-source researcher feeds a separate contract reviewer, both identities are pinned, structured context crosses the dependency edge, actual cost is recorded, and no network or model is required. It is a compatibility proof, not evidence that a particular external provider is trustworthy.
 
-The optional DeepSeek bridge lets the owner spend a small amount of an existing DeepSeek balance on bounded read-only work:
-set `DEEPSEEK_API_KEY` in the local process environment, then run `npm run deepseek:probe -- --prompt "one bounded task"`.
+The optional DeepSeek bridge lets the owner spend a small amount of an existing DeepSeek balance on bounded read-only work.
+On Windows, `pnpm run deepseek:configure` opens a hidden-input prompt and writes the key to the ignored local `.env`
+file; the key is never printed, committed, included in task packets, or sent through chat. Then run
+`pnpm run deepseek:probe -- --prompt "one bounded task"`. The lower-level alternative is to set
+`DEEPSEEK_API_KEY` in the local process environment directly.
 The default model is `deepseek-flash`; override it with `DEEPSEEK_MODEL` if needed. The probe allows one structured
 function call, forwards no write authority, reports provider-reported token usage, and prints no key. This is a
 DeepSeek function-calling bridge behind the harness, not native DeepSeek MCP support, and it is never part of deterministic
