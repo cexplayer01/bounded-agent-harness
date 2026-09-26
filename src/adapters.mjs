@@ -47,6 +47,7 @@ export function mcpAdapter(client, { server, tool, expectedServer, capacity } = 
           handoff: request.handoff,
           input: request.input,
           context: request.context,
+          maxOutputTokens: request.tokenBudget?.maxOutputTokens,
           idempotencyKey: request.idempotencyKey,
           resumed: request.resumed
         },

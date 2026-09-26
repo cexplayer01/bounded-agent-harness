@@ -172,6 +172,15 @@ Status: local adoption-evidence layer implemented and documented; external provi
 
 Status: receipt builder, schema, verifier, CLI, and negative tests implemented locally; an actual host-provider run remains unexecuted.
 
+## 2.0 — bounded DeepSeek function-calling bridge
+
+- Optional zero-dependency DeepSeek Chat Completions client with current model override support.
+- One structured function call is normalized through the existing MCP adapter boundary.
+- The probe accepts read-only authority only, reports provider-reported token usage, and makes no repository, database, deployment, or customer-Site changes.
+- API keys remain process-local; no key is written to receipts, logs, Git, or generated Site artifacts.
+
+Status: bridge and fake-client tests implemented locally; the owner has not yet supplied a local key to execute the one-request probe.
+
 ## Commercial path
 
 - Community edition: AGPL-3.0-or-later.
