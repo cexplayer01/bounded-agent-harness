@@ -9,7 +9,10 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "prepare:release": "node scripts/create-review-downloads.mjs && node scripts/create-public-release.mjs",
-    "build:netlify": "pnpm run prepare:release && next build",
+    "build:netlify": "pnpm run prepare:release && next build && node scripts/seo-indexing.mjs generate --config seo-indexing.config.json",
+    "seo:generate": "node scripts/seo-indexing.mjs generate --config seo-indexing.config.json",
+    "seo:submit": "node scripts/seo-indexing.mjs submit --config seo-indexing.config.json",
+    "test:seo": "node --test scripts/seo-indexing.test.mjs",
     "verify:release": "node scripts/verify-public-site-release.mjs",
     "start": "vinext start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out --ignore-pattern .vinext --ignore-pattern .wrangler --ignore-pattern .codex-site-package-stage"
