@@ -154,7 +154,7 @@ h1 em { color: var(--muted); font-style: normal; font-weight: 420; }
 
 footer { min-height: 120px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 32px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
 footer > p { font: 10px/1 ui-monospace, SFMono-Regular, Consolas, monospace; text-transform: uppercase; letter-spacing: .11em; }
-footer > div { display: flex; justify-content: flex-end; gap: 24px; }
+footer > div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 24px; }
 
 @media (max-width: 850px) {
   .hero { min-height: 0; grid-template-columns: 1fr; padding-top: 68px; }
