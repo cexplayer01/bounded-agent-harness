@@ -34,6 +34,8 @@ yarn-error.log*
 next-env.d.ts
 /dist/
 /public/release.json
+/public/harness-review.txt
+/public/harness-tests.txt
 /.wrangler/
 /outputs/
 /work/

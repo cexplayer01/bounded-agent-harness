@@ -232,7 +232,7 @@ export default function Home() {
       <footer>
         <a className="brand" href="#top"><span className="brand-mark" aria-hidden="true"><i /><i /><i /></span><span>Bounded Agent Harness</span></a>
         <p>Compile. Constrain. Recover.</p>
-        <div><a href="https://github.com/cexplayer01/bounded-agent-harness">GitHub</a><a href="/release.json">Release receipt</a><a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/LICENSE">AGPL license</a></div>
+        <div><a href="https://github.com/cexplayer01/bounded-agent-harness">GitHub</a><a href="/harness-review.txt" download>Public source for AI review</a><a href="/harness-tests.txt" download>Companion tests</a><a href="/release.json">Release receipt</a><a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/LICENSE">AGPL license</a></div>
       </footer>
     </main>
   );
