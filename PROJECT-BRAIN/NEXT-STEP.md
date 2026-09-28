@@ -1,5 +1,9 @@
 # Next BAH step
 
+## Handoff availability gate — currently blocked
+
+This brain and its source-only changes are committed locally on `codex/project-brain-ownership-20260928`, but are not yet visible on GitHub. The GitHub connector denied branch creation with HTTP 403, and this checkout has no Git HTTPS remote helper. Restore an authenticated GitHub write path and publish this exact branch/commit without deploying the website or moving another branch. After GitHub readback confirms the commit, continue with the host integration below. Do not treat the local branch as portable to other machines until that readback passes.
+
 **Outcome:** make project-scoped context selection an enforced host boundary rather than a library/materializer capability that a host may forget to call.
 
 **Build:** add one host-neutral retrieval/injection adapter that reads a project's own `PROJECT-BRAIN/PROJECT.json` and scope manifest, checks the declared project ID and repository root, resolves only allowlisted sources, and keeps sibling-project pointers as references unless an exact dependency is declared and admitted by the existing scope gate.
