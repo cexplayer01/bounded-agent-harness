@@ -1,12 +1,12 @@
 # Bounded Agent Harness proof status
 
-Recorded 2026-09-25 for development package version `0.4.0` and tested source commit `f00db320c65926628dd8dc737079f613043bd30c`.
+Recorded 2026-09-27 for development package version `0.4.0`; implementation proof is tested against source commit `59ff6bfcfd607b813798af01c2f9f16c6c7daaff` (project-context scope gate). The proof-status-only follow-up records that tested implementation commit.
 
-Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.7`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
+Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.8`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
 
 ## Bottom line
 
-Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 145/145 tests, the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, the token-efficiency utilities pass their focused proof, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
+Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 155/155 tests, including 10 project-context scope tests; the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, the token-efficiency utilities pass their focused proof, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
 
 This is not a claim that the package is already a hosted production service or that an external provider has been independently authenticated.
 
@@ -16,7 +16,8 @@ The machine-readable record is [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json). I
 
 | Area | Result | Evidence | Boundary |
 |---|---|---|---|
-| Automated behavior | PASS | `npm test` — 145/145 | Checked-in local behavior, not hosted operation |
+| Automated behavior | PASS | `node --test` — 155/155 | Checked-in local behavior, not hosted operation |
+| Project-context scope gate | PASS | `node --test test/project-context-scope.test.mjs` — 10/10; unrelated-project CLI fixture returns `BLOCKED` with `selected: []` | Validates declared metadata before retrieval; does not infer semantic ownership, verify source content, or prove host integration |
 | Package safety surface | PASS | `npm run audit` — `valid: true`, no findings | Does not authenticate an external deployment |
 | Deterministic compilation | PASS | `npm run demo` | Closed example inputs and local compiler |
 | MCP adapter compatibility | PASS | `npm run demo:mcp` — 2 specialists, 6 evidence events, 5 cost units | In-process client shapes; no claim about a named external provider |
@@ -31,11 +32,12 @@ The machine-readable record is [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json). I
 Reproduce the direct proof from the repository root:
 
 ```powershell
-npm test
-npm run audit
+node --test
+node bin/audit-package.mjs
 npm run demo
 npm run demo:mcp
 npm run proof:release
+node bin/harness.mjs scope-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json
 ```
 
 ## Stale-proof prevention
@@ -93,5 +95,7 @@ The following should remain visible rather than being hidden by the positive pro
 - a hosted approval/scheduling service;
 - commercial production readiness as a managed service;
 - the claim that every DFW Metro production action was executed by this harness.
+- project-scope host wiring: the checker is implemented, but hosts must invoke it before retrieval/injection and maintain project-specific allowlists.
+- semantic ownership: the scope gate checks exact declared metadata; it cannot decide whether a source's contents or a dependency rationale are truthful.
 
 An evaluator should therefore score the harness as **proven within scope**, with explicit remaining product and deployment work—not as “unproven.”

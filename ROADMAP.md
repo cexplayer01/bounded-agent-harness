@@ -152,6 +152,17 @@ Status: local host-neutral utilities and negative tests implemented. They optimi
 capacity, authority, approval, evidence, and deployment gates remain unchanged. A production benchmark across real
 provider hosts remains future evidence rather than an implied claim.
 
+## 1.8 — project-scoped context gate
+
+- Exact project/repository/path/locator allowlists for context sources.
+- Cross-project sources require a declared dependency tied to a project capability and an explicit rationale.
+- Unknown, duplicate, or unrelated references block the complete candidate packet; no partial selection is released.
+- Deterministic CLI and schemas; no model calls or added model-visible receipts.
+
+Status: reusable local checker, CLI, schemas, fixtures, and adversarial tests implemented. Host retrieval/injection wiring
+and a real project-specific manifest are not yet proven; the checker validates declared metadata and cannot infer
+semantic ownership or the truth of a dependency rationale.
+
 ## Commercial path
 
 - Community edition: AGPL-3.0-or-later.
