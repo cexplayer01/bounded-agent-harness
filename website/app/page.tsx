@@ -22,7 +22,7 @@ const continuation = [
   ["Resume, don't fail", "Missing or stale approval becomes a durable checkpoint with the exact gate and workflow identity required to continue later."],
   ["Spend proof where it matters", "Change-impact cards choose focused verification so documentation and local edits do not trigger needless full-suite work."],
   ["Keep safe work moving", "A blocked gated action pauses that action; unrelated local work can continue until a real boundary or proven completion."],
-  ["FreeVibeApps / real integration", "Owner-attested use through a deterministic Site build, sidecar proof, deployment preflight, and same-origin pilot, with focused tests and live readback recorded. The public proof states that raw run records are owner-controlled and not every project change is independently replayable from this repository."],
+  ["FreeVibeApps / real integration", "Owner-attested use: the harness was mounted during a deterministic Site build, sidecar proof, deployment preflight, and same-origin pilot; focused tests passed and live readback was recorded. Raw run records remain owner-controlled, so this public repository cannot independently replay every project change."],
 ];
 
 export default function Home() {
@@ -79,7 +79,7 @@ export default function Home() {
       </section>
 
       <section className="proof" id="proof" aria-label="Current verified proof">
-        <p>Directly tested today. Reproducible evidence, clearly scoped.</p>
+        <p>Verified in this release candidate. Reproducible evidence, clearly scoped.</p>
         <div className="proof-grid">
           {proof.map(([value, label]) => (
             <div key={label}><strong>{value}</strong><span>{label}</span></div>
@@ -131,7 +131,7 @@ export default function Home() {
           <p className="eyebrow">Verified capabilities</p>
           <h2>A tested local control plane, with the next integration step visible.</h2>
           <p>Version 0.4.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, an additive token-efficiency layer for lazy capability loading, digest-bound artifact references, deterministic context pruning, and measured cache savings. Milestone 1.8 adds deterministic project-scope validation and local source materialization: an explicit CLI can build a digest-bound context packet from allowlisted repository files. This is not an automatic Codex or ChatGPT host integration; a host must verify the packet and pass only selected content to a model.</p>
-          <p>Direct proof: project-scope validation passes 10/10 tests; source materialization passes 9/9 runnable tests, with its symlink-path test present but skipped because this Windows host blocks test-symlink creation.</p>
+          <p>Direct proof: project-scope validation passes 10/10 tests; source materialization passes 10 tests, with one symlink-path test skipped because this Windows host blocks test-symlink creation (11 tests total).</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/README.md#current-runnable-slice">Run the five-minute demo ↗</a>
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/THREAT-MODEL.md">Read the threat model ↗</a>
