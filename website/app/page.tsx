@@ -1,5 +1,5 @@
 const proof = [
-  ["166", "checked-in tests"],
+  ["171", "checked-in tests"],
   ["0", "runtime dependencies"],
   ["READY", "proof-release gate"],
 ];
@@ -85,7 +85,7 @@ export default function Home() {
             <div key={label}><strong>{value}</strong><span>{label}</span></div>
           ))}
         </div>
-        <p className="section-copy">Current automated result: 165 passed, zero failed; one symlink-path test is skipped because this Windows host blocks test-symlink creation. Every public build exposes a machine-readable release receipt binding the live page to its exact source commit and proof record.</p>
+        <p className="section-copy">Current automated result: 170 passed, zero failed; one symlink-path test is skipped because this Windows host blocks test-symlink creation. Every public build exposes a machine-readable release receipt binding the live page to its exact source commit and proof record.</p>
         <a href="/release.json">Inspect the live release receipt ↗</a>
         <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/README.md#current-runnable-slice">Inspect the runnable slice ↗</a>
         <div className="proof-downloads" aria-label="Public source downloads">
@@ -130,7 +130,7 @@ export default function Home() {
         <div className="honest-copy">
           <p className="eyebrow">Verified capabilities</p>
           <h2>A tested local control plane, with the next integration step visible.</h2>
-          <p>Version 0.4.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, an additive token-efficiency layer for lazy capability loading, digest-bound artifact references, deterministic context pruning, and measured cache savings. Milestone 1.8 adds deterministic project-scope validation and local source materialization: an explicit CLI can build a digest-bound context packet from allowlisted repository files. This is not an automatic Codex or ChatGPT host integration; a host must verify the packet and pass only selected content to a model.</p>
+          <p>Version 0.4.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, an additive token-efficiency layer for lazy capability loading, digest-bound artifact references, deterministic context pruning, and measured cache savings. Milestone 1.8 adds deterministic project-scope validation and local source materialization: an explicit CLI can build a digest-bound context packet from allowlisted repository files. New generic takeover checkpoints also require an explicit project ID, reject a caller-supplied project mismatch, preserve legacy USB checkpoint readability, and require the host's exact checkpoint path for checkpoint-only follow-up commits. These checkpoint and BAH brain-ownership tests pass 9/9 and 2/2 respectively. This is not automatic host enforcement: a host must verify the packet and pass only selected content to a model, and no production host integration is proven.</p>
           <p>Direct proof: project-scope validation passes 10/10 tests; source materialization passes 10 tests, with one symlink-path test skipped because this Windows host blocks test-symlink creation (11 tests total).</p>
           <div className="inline-actions">
             <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/README.md#current-runnable-slice">Run the five-minute demo ↗</a>
