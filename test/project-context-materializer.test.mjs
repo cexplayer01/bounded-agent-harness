@@ -15,6 +15,15 @@ const rootsSchema = JSON.parse(await readFile(new URL("../contracts/project-cont
 const packetSchema = JSON.parse(await readFile(new URL("../contracts/project-context-packet.v1.schema.json", import.meta.url), "utf8"));
 const gitignore = await readFile(new URL("../.gitignore", import.meta.url), "utf8");
 
+function redigestPacket(packet) {
+  for (const source of packet.selected) {
+    if (Object.hasOwn(source, "contentDigest") && typeof source.content === "string") source.contentDigest = `sha256:${sha256(source.content)}`;
+  }
+  const unsigned = Object.fromEntries(Object.entries(packet).filter(([key]) => key !== "digest"));
+  packet.digest = `sha256:${sha256(unsigned)}`;
+  return packet;
+}
+
 test("published root-map and context-packet contracts are strict and versioned", () => {
   assert.equal(rootsSchema.$id.endsWith("project-context-roots.v1.schema.json"), true);
   assert.deepEqual(rootsSchema.required, ["format", "version", "repositories"]);
@@ -125,13 +134,65 @@ test("record and JSON-pointer locators resolve one exact JSON value and reject a
   assert.throws(() => extractProjectContextLocator("{\"a\":1,\"\\u0061\":2}", "json-pointer:/a"), { code: "SOURCE_JSON_DUPLICATE_KEY" });
 });
 
-test("Markdown heading locators ignore code-fence contents and reject duplicate real headings", () => {
+test("packet verifier rejects schema-invalid shapes even when packet digests are recomputed", async () => {
+  const f = await fixture();
+  try {
+    const valid = await materializeProjectContext({ manifest, sources, roots: f.roots });
+    const invalidPackets = [];
+    const wrongProjectIdType = structuredClone(valid);
+    wrongProjectIdType.projectId = 12;
+    invalidPackets.push(wrongProjectIdType);
+
+    const wrongContentType = structuredClone(valid);
+    wrongContentType.selected[0].content = { unexpected: "object" };
+    invalidPackets.push(wrongContentType);
+
+    for (const field of ["id", "projectId", "repositoryId", "path", "locator", "purpose", "content", "contentDigest"]) {
+      const missing = structuredClone(valid);
+      delete missing.selected[0][field];
+      invalidPackets.push(missing);
+    }
+
+    const extraSourceField = structuredClone(valid);
+    extraSourceField.selected[0].unpublished = true;
+    invalidPackets.push(extraSourceField);
+
+    const extraPacketField = structuredClone(valid);
+    extraPacketField.localRoot = f.base;
+    invalidPackets.push(extraPacketField);
+
+    const malformedFinding = structuredClone(valid);
+    malformedFinding.status = "BLOCKED";
+    malformedFinding.selected = [];
+    malformedFinding.findings = [{
+      code: 7,
+      sourceId: valid.selected[0].id,
+      projectId: valid.selected[0].projectId,
+      repositoryId: valid.selected[0].repositoryId,
+      path: valid.selected[0].path,
+    }];
+    invalidPackets.push(malformedFinding);
+
+    for (const [index, candidate] of invalidPackets.entries()) {
+      redigestPacket(candidate);
+      assert.throws(() => verifyProjectContextPacket(candidate), { code: "INVALID_CONTEXT_PACKET" }, `invalid packet case ${index} should fail schema validation`);
+    }
+  } finally { await rm(f.base, { recursive: true, force: true }); }
+});
+
+test("Markdown heading locators ignore code fences and HTML comments and reject duplicate real headings", () => {
   const content = "## Wanted\nactual section\n```markdown\n## Fake next section\nnot a heading here\n```\nstill included\n## End\nstop here\n";
   const selected = extractProjectContextLocator(content, "heading:Wanted");
   assert.match(selected, /## Fake next section/);
   assert.match(selected, /still included/);
   assert.doesNotMatch(selected, /stop here/);
   assert.throws(() => extractProjectContextLocator("## Wanted\none\n## Wanted\ntwo", "heading:Wanted"), { code: "LOCATOR_AMBIGUOUS" });
+
+  assert.throws(() => extractProjectContextLocator("<!--\n## Hidden\ncomment-only section\n-->", "heading:Hidden"), { code: "LOCATOR_NOT_FOUND" });
+  const commentBoundary = extractProjectContextLocator("## Visible\nbefore\n<!--\n## Hidden boundary\ncomment text\n-->\nafter\n## Real end\nstop here\n", "heading:Visible");
+  assert.match(commentBoundary, /comment text/);
+  assert.match(commentBoundary, /after/);
+  assert.doesNotMatch(commentBoundary, /stop here/);
 });
 
 test("allowlisted source symlinks block the complete packet", async (t) => {

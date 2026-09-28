@@ -157,18 +157,22 @@ function extractHeading(content, heading, sourceId) {
   const lines = content.split(/\r?\n/);
   const headings = [];
   let fence = null;
+  let inHtmlComment = false;
   for (let index = 0; index < lines.length; index += 1) {
-    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(lines[index]);
     if (fence) {
       const closing = /^ {0,3}(`{3,}|~{3,})[ \t]*$/.exec(lines[index]);
       if (closing && closing[1][0] === fence.marker && closing[1].length >= fence.length) fence = null;
       continue;
     }
+    const fenceMatch = inHtmlComment ? null : /^ {0,3}(`{3,}|~{3,})/.exec(lines[index]);
     if (fenceMatch) {
       fence = { marker: fenceMatch[1][0], length: fenceMatch[1].length };
       continue;
     }
-    const match = /^ {0,3}(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$/.exec(lines[index]);
+    const masked = maskHtmlComments(lines[index], inHtmlComment);
+    inHtmlComment = masked.inComment;
+    const visibleLine = masked.line;
+    const match = /^ {0,3}(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$/.exec(visibleLine);
     if (match) headings.push({ index, level: match[1].length, title: match[2].trim() });
   }
   const matches = headings.filter((item) => item.title === heading);
@@ -177,6 +181,36 @@ function extractHeading(content, heading, sourceId) {
   const next = headings.find((item) => item.index > selected.index && item.level <= selected.level);
   const end = next?.index ?? lines.length;
   return lines.slice(selected.index, end).join("\n");
+}
+
+function maskHtmlComments(line, initialState) {
+  let index = 0;
+  let inComment = initialState;
+  let masked = "";
+  while (index < line.length) {
+    if (inComment) {
+      const close = line.indexOf("-->", index);
+      if (close < 0) {
+        masked += " ".repeat(line.length - index);
+        index = line.length;
+        continue;
+      }
+      masked += " ".repeat(close + 3 - index);
+      index = close + 3;
+      inComment = false;
+      continue;
+    }
+    const open = line.indexOf("<!--", index);
+    if (open < 0) {
+      masked += line.slice(index);
+      index = line.length;
+      continue;
+    }
+    masked += line.slice(index, open) + " ".repeat(4);
+    index = open + 4;
+    inComment = true;
+  }
+  return { line: masked, inComment };
 }
 
 function extractJsonPointer(value, pointer, sourceId) {
@@ -286,13 +320,49 @@ export function verifyProjectContextPacket(value) {
   const keys = ["format", "version", "projectId", "status", "scopeDigest", "selected", "findings", "digest"];
   assert(Object.keys(value).length === keys.length && Object.keys(value).every((key) => keys.includes(key)), "INVALID_CONTEXT_PACKET", "packet fields do not match the contract");
   assert(value.format === PROJECT_CONTEXT_PACKET_FORMAT && value.version === 1, "INVALID_CONTEXT_PACKET", "unsupported packet version");
-  assert(["READY", "BLOCKED"].includes(value.status) && Array.isArray(value.selected) && Array.isArray(value.findings), "INVALID_CONTEXT_PACKET", "packet status or collections are invalid");
-  assert(/^sha256:[a-f0-9]{64}$/.test(value.scopeDigest) && /^sha256:[a-f0-9]{64}$/.test(value.digest), "INVALID_CONTEXT_PACKET", "packet digest fields are invalid");
+  const idPattern = /^[a-z][a-z0-9._-]{1,79}$/;
+  const digestPattern = /^sha256:[a-f0-9]{64}$/;
+  const sourceKeys = ["id", "projectId", "repositoryId", "path", "locator", "dependencyId", "purpose", "content", "contentDigest"];
+  const requiredSourceKeys = ["id", "projectId", "repositoryId", "path", "locator", "purpose", "content", "contentDigest"];
+  const findingKeys = ["code", "sourceId", "projectId", "repositoryId", "path"];
+  const validPath = (path) => typeof path === "string"
+    && path.length >= 1 && path.length <= 240
+    && !path.startsWith("/") && !/^[a-z]:/i.test(path)
+    && !/[\\:*?\[\]\0\r\n]/.test(path)
+    && !path.split("/").some((part) => !part || part === "." || part === "..");
+  const validLocator = (locator) => typeof locator === "string"
+    && locator.length <= 240
+    && /^(heading|json-pointer|record):\S[^*?\r\n]*$/.test(locator);
+  const validPurpose = (purpose) => typeof purpose === "string"
+    && purpose.length >= 12 && purpose.length <= 500
+    && !/[\0\r\n]/.test(purpose);
+
+  assert(typeof value.projectId === "string" && idPattern.test(value.projectId), "INVALID_CONTEXT_PACKET", "packet projectId is invalid");
+  assert(["READY", "BLOCKED"].includes(value.status) && Array.isArray(value.selected) && value.selected.length <= 1000 && Array.isArray(value.findings), "INVALID_CONTEXT_PACKET", "packet status or collections are invalid");
+  assert(digestPattern.test(value.scopeDigest) && digestPattern.test(value.digest), "INVALID_CONTEXT_PACKET", "packet digest fields are invalid");
   if (value.status === "READY") assert(value.findings.length === 0, "INVALID_CONTEXT_PACKET", "ready packet cannot contain findings");
   if (value.status === "BLOCKED") assert(value.selected.length === 0 && value.findings.length > 0, "INVALID_CONTEXT_PACKET", "blocked packet cannot release partial content");
   for (const source of value.selected) {
-    assert(source && typeof source === "object" && typeof source.content === "string", "INVALID_CONTEXT_PACKET", "selected source is invalid");
+    assert(source && typeof source === "object" && !Array.isArray(source), "INVALID_CONTEXT_PACKET", "selected source is invalid");
+    const sourceFields = Object.keys(source);
+    assert(requiredSourceKeys.every((key) => sourceFields.includes(key)) && sourceFields.every((key) => sourceKeys.includes(key)), "INVALID_CONTEXT_PACKET", "selected source fields do not match the contract");
+    assert(typeof source.id === "string" && idPattern.test(source.id)
+      && typeof source.projectId === "string" && idPattern.test(source.projectId)
+      && typeof source.repositoryId === "string" && idPattern.test(source.repositoryId)
+      && (source.dependencyId === undefined || (typeof source.dependencyId === "string" && idPattern.test(source.dependencyId))), "INVALID_CONTEXT_PACKET", "selected source identity is invalid");
+    assert(validPath(source.path) && validLocator(source.locator) && validPurpose(source.purpose), "INVALID_CONTEXT_PACKET", "selected source location or purpose is invalid");
+    assert(typeof source.content === "string" && digestPattern.test(source.contentDigest), "INVALID_CONTEXT_PACKET", "selected source content or digest is invalid");
     assert(source.contentDigest === `sha256:${sha256(source.content)}`, "INVALID_CONTEXT_PACKET", "selected source digest does not match its content");
+  }
+  for (const finding of value.findings) {
+    assert(finding && typeof finding === "object" && !Array.isArray(finding), "INVALID_CONTEXT_PACKET", "packet finding is invalid");
+    const fields = Object.keys(finding);
+    assert(fields.length === findingKeys.length && findingKeys.every((key) => fields.includes(key)), "INVALID_CONTEXT_PACKET", "packet finding fields do not match the contract");
+    assert(typeof finding.code === "string" && /^[A-Z][A-Z0-9_]{1,79}$/.test(finding.code)
+      && typeof finding.sourceId === "string" && idPattern.test(finding.sourceId)
+      && typeof finding.projectId === "string" && idPattern.test(finding.projectId)
+      && typeof finding.repositoryId === "string" && idPattern.test(finding.repositoryId)
+      && validPath(finding.path), "INVALID_CONTEXT_PACKET", "packet finding metadata is invalid");
   }
   const unsigned = Object.fromEntries(keys.filter((key) => key !== "digest").map((key) => [key, value[key]]));
   assert(value.digest === `sha256:${sha256(unsigned)}`, "INVALID_CONTEXT_PACKET", "packet digest does not match its content");
