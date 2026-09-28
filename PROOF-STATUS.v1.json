@@ -5,7 +5,7 @@
     "repository": "https://github.com/cexplayer01/bounded-agent-harness",
     "version": "0.4.0",
     "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.8",
-    "tested_commit": "177215547c1785c2b7317df370fe500b1d425fad"
+    "tested_commit": "93a13f3bec4ad486c692d692ecbc3a70bb9d87a6"
   },
   "overall": {
     "status": "PROVEN_WITHIN_DECLARED_SCOPE",
@@ -17,7 +17,7 @@
       "id": "automated-suite",
       "status": "PASS_WITH_ENVIRONMENTAL_SKIP",
       "command": "node --test",
-    "result": { "tests": 165, "passed": 164, "failed": 0, "skipped": 1, "skip_reason": "Windows host denied test-symlink creation" },
+    "result": { "tests": 166, "passed": 165, "failed": 0, "skipped": 1, "skip_reason": "Windows host denied test-symlink creation" },
       "proves": "The checked-in control-plane, contract, execution, recovery, continuation, checkpoint, governance, adapter, shared-agent bridge, token-efficiency, project-context scope, and file-backed materialization behaviors pass their automated tests except for the explicitly host-skipped symlink-creation test.",
       "does_not_prove": "Independent external-provider trust, hosted distributed operation, or commercial production readiness."
     },
