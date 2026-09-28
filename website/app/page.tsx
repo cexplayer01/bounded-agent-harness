@@ -1,5 +1,5 @@
 const proof = [
-  ["145/145", "checked-in tests"],
+  ["166", "checked-in tests"],
   ["0", "runtime dependencies"],
   ["READY", "proof-release gate"],
 ];
@@ -78,16 +78,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="proof" id="proof" aria-label="Current prototype proof">
-        <p>Runnable today, described honestly.</p>
+      <section className="proof" id="proof" aria-label="Current verified proof">
+        <p>Directly tested today. Reproducible evidence, clearly scoped.</p>
         <div className="proof-grid">
           {proof.map(([value, label]) => (
             <div key={label}><strong>{value}</strong><span>{label}</span></div>
           ))}
         </div>
-        <p className="section-copy">Every public build exposes a machine-readable release receipt binding the live page to its exact source commit and proof record.</p>
+        <p className="section-copy">Current automated result: 165 passed, zero failed; one symlink-path test is skipped because this Windows host blocks test-symlink creation. Every public build exposes a machine-readable release receipt binding the live page to its exact source commit and proof record.</p>
         <a href="/release.json">Inspect the live release receipt ↗</a>
-        <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Inspect the runnable slice ↗</a>
+        <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/README.md#current-runnable-slice">Inspect the runnable slice ↗</a>
       </section>
 
       <section className="how" id="how">
@@ -124,23 +124,24 @@ export default function Home() {
 
       <section className="honest-section">
         <div className="honest-copy">
-          <p className="eyebrow">What exists now</p>
-          <h2>A working control-plane foundation—not a production claim.</h2>
-          <p>Version 0.4.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, and an additive token-efficiency layer for lazy capability loading, digest-bound artifact references, deterministic context pruning, and measured cache savings.</p>
+          <p className="eyebrow">Verified capabilities</p>
+          <h2>A tested local control plane, with the next integration step visible.</h2>
+          <p>Version 0.4.0 compiles, runs, resumes, inspects, and rejects unsafe local workflows. It includes contract-bound memory, evidence, cost enforcement, approval gates, specialist routing, portable takeover checkpoints, an in-process MCP compatibility proof, a repository-native shared-agent bridge, a local concurrency rehearsal, a proof-release gate, a token-capacity gate, an additive token-efficiency layer for lazy capability loading, digest-bound artifact references, deterministic context pruning, and measured cache savings. Milestone 1.8 adds deterministic project-scope validation and local source materialization: an explicit CLI can build a digest-bound context packet from allowlisted repository files. This is not an automatic Codex or ChatGPT host integration; a host must verify the packet and pass only selected content to a model.</p>
+          <p>Direct proof: project-scope validation passes 10/10 tests; source materialization passes 9/9 runnable tests, with its symlink-path test present but skipped because this Windows host blocks test-symlink creation.</p>
           <div className="inline-actions">
-            <a href="https://github.com/cexplayer01/bounded-agent-harness#current-runnable-slice">Run the five-minute demo ↗</a>
-            <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/THREAT-MODEL.md">Read the threat model ↗</a>
+            <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/README.md#current-runnable-slice">Run the five-minute demo ↗</a>
+            <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/THREAT-MODEL.md">Read the threat model ↗</a>
           </div>
         </div>
         <div className="boundary-card">
-          <p>Not claimed yet</p>
+          <p>Next proof frontiers</p>
           <ul>
-            <li>Production-ready hosted service</li>
-            <li>Cryptographic provider authentication</li>
-            <li>Real-provider compatibility proof</li>
-            <li>General autonomous-agent framework</li>
+            <li>Hosted, distributed runtime operation</li>
+            <li>Cryptographic provider identity verification</li>
+            <li>Compatibility with live external providers</li>
+            <li>General-purpose autonomous-agent reliability</li>
           </ul>
-          <span>Those boundaries are deliberate and documented.</span>
+          <span>Current evidence covers deterministic local operation and the specific integrations listed in the proof record.</span>
         </div>
       </section>
 
@@ -169,7 +170,7 @@ export default function Home() {
           <a href="https://github.com/cexplayer01/USB-Website-platform">Inspect the USB build ↗</a>
           <a href="https://dfwmetro.net">Visit DFW Metro ↗</a>
           <a href="https://freevibeapps.com">Visit FreeVibeApps ↗</a>
-          <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/main/PROOF-STATUS.md">Read the scoped proof ↗</a>
+          <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/PROOF-STATUS.md">Read the scoped proof ↗</a>
         </div>
       </section>
 
