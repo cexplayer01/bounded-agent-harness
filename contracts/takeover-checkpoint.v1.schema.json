@@ -1,19 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://usb.local/contracts/takeover-checkpoint.v1.schema.json",
-  "title": "USB takeover checkpoint",
-  "description": "Machine-readable continuation and preservation state for a USB repository stop point.",
+  "$id": "https://boundedagentharness.com/contracts/takeover-checkpoint.v1.schema.json",
+  "title": "Agent harness takeover checkpoint",
+  "description": "Machine-readable continuation and preservation state for one explicitly identified project repository.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "recorded_at_utc", "repository", "continuation", "evidence", "preservation_register", "authority"],
   "properties": {
-    "schema_version": { "const": "usb-takeover-checkpoint.v1" },
+    "schema_version": { "enum": ["agent-harness.takeover-checkpoint.v1", "usb-takeover-checkpoint.v1"] },
     "recorded_at_utc": { "type": "string", "format": "date-time" },
     "repository": {
       "type": "object",
       "additionalProperties": false,
       "required": ["branch", "head", "tracked_source_state", "expected_git_status"],
       "properties": {
+        "project_id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
         "branch": { "type": "string", "minLength": 1 },
         "head": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
         "tracked_source_state": { "enum": ["CLEAN", "CLEAN_WITH_PRESERVED_UNTRACKED", "IN_PROGRESS"] },
@@ -87,5 +88,11 @@
         "blocked_actions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "agent-harness.takeover-checkpoint.v1" } } },
+      "then": { "properties": { "repository": { "required": ["project_id"] } } }
+    }
+  ]
 }

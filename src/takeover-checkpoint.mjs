@@ -8,7 +8,7 @@ const TOP_LEVEL_KEYS = new Set([
   "authority"
 ]);
 
-const REPOSITORY_KEYS = new Set(["branch", "head", "tracked_source_state", "expected_git_status"]);
+const REPOSITORY_KEYS = new Set(["project_id", "branch", "head", "tracked_source_state", "expected_git_status"]);
 const CONTINUATION_KEYS = new Set([
   "phase",
   "status",
@@ -34,7 +34,8 @@ const REGISTER_KEYS = new Set([
   "required_for"
 ]);
 
-const CHECKPOINT_SCHEMA_VERSION = "usb-takeover-checkpoint.v1";
+const CHECKPOINT_SCHEMA_VERSION = "agent-harness.takeover-checkpoint.v1";
+const LEGACY_CHECKPOINT_SCHEMA_VERSION = "usb-takeover-checkpoint.v1";
 const TRACKED_SOURCE_STATES = new Set(["CLEAN", "CLEAN_WITH_PRESERVED_UNTRACKED", "IN_PROGRESS"]);
 const CONTINUATION_STATUSES = new Set(["READY", "IN_PROGRESS", "BLOCKED", "WAITING_FOR_OWNER", "COMPLETE"]);
 const REGISTER_KINDS = new Set(["FILE", "DIRECTORY"]);
@@ -110,14 +111,21 @@ function compareStatuses(expected, actual, findings, warnings) {
   }
 }
 
-export function validateTakeoverCheckpoint(checkpoint, { gitSnapshot = null, fileSnapshot = null, checkpointPath = "Project Brain/TAKEOVER-CHECKPOINT.v1.json" } = {}) {
+export function validateTakeoverCheckpoint(checkpoint, { gitSnapshot = null, fileSnapshot = null, checkpointPath = null, expectedProjectId = null } = {}) {
   const findings = [];
   const warnings = [];
   if (!checkKeys(checkpoint, TOP_LEVEL_KEYS, "$", findings)) return { valid: false, findings, warnings };
-  if (checkpoint.schema_version !== CHECKPOINT_SCHEMA_VERSION) add(findings, "SCHEMA_VERSION_MISMATCH", "schema_version", `expected ${CHECKPOINT_SCHEMA_VERSION}`);
+  if (![CHECKPOINT_SCHEMA_VERSION, LEGACY_CHECKPOINT_SCHEMA_VERSION].includes(checkpoint.schema_version)) add(findings, "SCHEMA_VERSION_MISMATCH", "schema_version", `expected ${CHECKPOINT_SCHEMA_VERSION}`);
   if (requiredString(checkpoint.recorded_at_utc, "recorded_at_utc", findings) && Number.isNaN(Date.parse(checkpoint.recorded_at_utc))) add(findings, "INVALID_TIMESTAMP", "recorded_at_utc", "must be an ISO-8601 timestamp");
 
   if (checkKeys(checkpoint.repository, REPOSITORY_KEYS, "repository", findings)) {
+    if (checkpoint.schema_version === CHECKPOINT_SCHEMA_VERSION && requiredString(checkpoint.repository.project_id, "repository.project_id", findings)) {
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(checkpoint.repository.project_id)) add(findings, "INVALID_PROJECT_ID", "repository.project_id", "must be a lowercase hyphenated project ID");
+    }
+    if (expectedProjectId !== null) {
+      requiredString(expectedProjectId, "expectedProjectId", findings);
+      if (checkpoint.repository.project_id !== expectedProjectId) add(findings, "PROJECT_ID_MISMATCH", "repository.project_id", "checkpoint does not belong to the expected project");
+    }
     requiredString(checkpoint.repository.branch, "repository.branch", findings);
     if (requiredString(checkpoint.repository.head, "repository.head", findings) && !/^[a-f0-9]{40}$/.test(checkpoint.repository.head)) add(findings, "INVALID_GIT_HEAD", "repository.head", "must be a 40-character lowercase commit SHA");
     if (!TRACKED_SOURCE_STATES.has(checkpoint.repository.tracked_source_state)) add(findings, "INVALID_TRACKED_SOURCE_STATE", "repository.tracked_source_state", "unsupported tracked-source state");
@@ -209,7 +217,7 @@ export function validateTakeoverCheckpoint(checkpoint, { gitSnapshot = null, fil
 
   if (gitSnapshot) {
     if (checkpoint.repository.branch !== gitSnapshot.branch) add(findings, "GIT_BRANCH_MISMATCH", "repository.branch", "checkpoint branch does not match the current branch");
-    const checkpointCommitOnly = gitSnapshot.head_parent === checkpoint.repository.head && Array.isArray(gitSnapshot.head_parent_paths) && gitSnapshot.head_parent_paths.length === 1 && gitSnapshot.head_parent_paths[0] === checkpointPath;
+    const checkpointCommitOnly = checkpointPath !== null && gitSnapshot.head_parent === checkpoint.repository.head && Array.isArray(gitSnapshot.head_parent_paths) && gitSnapshot.head_parent_paths.length === 1 && gitSnapshot.head_parent_paths[0] === checkpointPath;
     if (checkpoint.repository.head !== gitSnapshot.head && !checkpointCommitOnly) add(findings, "GIT_HEAD_MISMATCH", "repository.head", "checkpoint commit does not match the current commit or a checkpoint-only follow-up commit");
     compareStatuses(normalizeStatuses(checkpoint.repository.expected_git_status), normalizeStatuses(gitSnapshot.status), findings, warnings);
     for (const entry of gitSnapshot.status.filter((item) => item.code === "??")) {

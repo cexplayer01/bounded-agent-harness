@@ -7,6 +7,7 @@ function validCheckpoint() {
     schema_version: CHECKPOINT_SCHEMA_VERSION,
     recorded_at_utc: "2026-09-21T18:00:00.000Z",
     repository: {
+      project_id: "usb-website-platform",
       branch: "codex/usb-clean-review",
       head: "a".repeat(40),
       tracked_source_state: "CLEAN_WITH_PRESERVED_UNTRACKED",
@@ -57,6 +58,7 @@ function validCheckpoint() {
 test("valid takeover checkpoint matches the repository snapshot", () => {
   const checkpoint = validCheckpoint();
   const result = validateTakeoverCheckpoint(checkpoint, {
+    expectedProjectId: "usb-website-platform",
     gitSnapshot: {
       branch: checkpoint.repository.branch,
       head: checkpoint.repository.head,
@@ -68,6 +70,30 @@ test("valid takeover checkpoint matches the repository snapshot", () => {
   });
   assert.equal(result.valid, true, JSON.stringify(result.findings));
   assert.deepEqual(result.warnings, []);
+});
+
+test("generic checkpoints require and bind an explicit project identity", () => {
+  const checkpoint = validCheckpoint();
+  const mismatch = validateTakeoverCheckpoint(checkpoint, { expectedProjectId: "bounded-agent-harness" });
+  assert.equal(mismatch.valid, false);
+  assert.ok(mismatch.findings.some((finding) => finding.code === "PROJECT_ID_MISMATCH"));
+
+  delete checkpoint.repository.project_id;
+  const missing = validateTakeoverCheckpoint(checkpoint);
+  assert.equal(missing.valid, false);
+  assert.ok(missing.findings.some((finding) => finding.path === "repository.project_id"));
+});
+
+test("legacy USB checkpoint version remains readable during migration", () => {
+  const checkpoint = validCheckpoint();
+  checkpoint.schema_version = "usb-takeover-checkpoint.v1";
+  delete checkpoint.repository.project_id;
+  const result = validateTakeoverCheckpoint(checkpoint, { expectedProjectId: "usb-website-platform" });
+  assert.equal(result.valid, false);
+  assert.ok(result.findings.some((finding) => finding.code === "PROJECT_ID_MISMATCH"));
+
+  const legacyWithoutExpectedIdentity = validateTakeoverCheckpoint(checkpoint);
+  assert.equal(legacyWithoutExpectedIdentity.valid, true, JSON.stringify(legacyWithoutExpectedIdentity.findings));
 });
 
 test("portable clone passes with explicit warnings when local-only artifacts are absent", () => {
@@ -101,6 +127,7 @@ test("checkpoint fails closed when HEAD changes", () => {
 test("checkpoint accepts a follow-up commit that changes only the checkpoint", () => {
   const checkpoint = validCheckpoint();
   const result = validateTakeoverCheckpoint(checkpoint, {
+    checkpointPath: "Project Brain/TAKEOVER-CHECKPOINT.v1.json",
     gitSnapshot: {
       branch: checkpoint.repository.branch,
       head: "c".repeat(40),
@@ -111,6 +138,21 @@ test("checkpoint accepts a follow-up commit that changes only the checkpoint", (
     fileSnapshot: { "Project Brain/USB-HANDOFF-20260921.md": { exists: true, sha256: checkpoint.preservation_register[0].sha256 } }
   });
   assert.equal(result.valid, true, JSON.stringify(result.findings));
+});
+
+test("follow-up checkpoint commits require the caller's exact checkpoint path", () => {
+  const checkpoint = validCheckpoint();
+  const result = validateTakeoverCheckpoint(checkpoint, {
+    gitSnapshot: {
+      branch: checkpoint.repository.branch,
+      head: "c".repeat(40),
+      head_parent: checkpoint.repository.head,
+      head_parent_paths: ["Project Brain/TAKEOVER-CHECKPOINT.v1.json"],
+      status: checkpoint.repository.expected_git_status
+    }
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.findings.some((finding) => finding.code === "GIT_HEAD_MISMATCH"));
 });
 
 test("checkpoint fails closed when an untracked path is not registered", () => {
