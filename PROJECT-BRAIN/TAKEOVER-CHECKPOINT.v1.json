@@ -1,18 +1,12 @@
 {
   "schema_version": "agent-harness.takeover-checkpoint.v1",
-  "recorded_at_utc": "2026-09-28T20:35:00Z",
+  "recorded_at_utc": "2026-09-28T19:40:37Z",
   "repository": {
     "project_id": "bounded-agent-harness",
     "branch": "codex/project-brain-ownership-20260928",
-    "head": "aa779f9b0214bcfd739849bae107d42dad837310",
-    "tracked_source_state": "IN_PROGRESS",
-    "expected_git_status": [
-      {
-        "code": " M",
-        "path": "PROJECT-BRAIN/TAKEOVER-CHECKPOINT.v1.json",
-        "availability": "REPOSITORY"
-      }
-    ]
+    "head": "c968944d8b2b7d6ae158450c2f42d740bfcd40ea",
+    "tracked_source_state": "CLEAN",
+    "expected_git_status": []
   },
   "continuation": {
     "phase": "project-brain ownership and host project-scope integration",
@@ -87,7 +81,7 @@
       "classification": "BAH continuation checkpoint being established",
       "state": "CURRENT",
       "action": "PRESERVE_IN_PLACE",
-      "provenance": "BAH-owned continuation file created for project_id bounded-agent-harness and tracked in this repository. This update records the approved website publication request and the verified GitHub create-ref 403; expected_git_status identifies the checkpoint edit until its follow-up commit is complete.",
+      "provenance": "BAH-owned continuation file created for project_id bounded-agent-harness and tracked in this repository. This snapshot records the approved website publication request, verified GitHub create-ref 403, and checkpoint-only follow-up commit.",
       "owner_decision_required": false,
       "availability": "REPOSITORY",
       "required_for": "Portable BAH continuation and safe Git-state validation."
