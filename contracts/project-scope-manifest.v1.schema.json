@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://boundedagentharness.com/contracts/project-scope-manifest.v1.schema.json",
+  "title": "Bounded Agent Harness project-scope manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "project", "dependencies"],
+  "properties": {
+    "format": { "const": "agent-harness.project-scope-manifest.v1" },
+    "version": { "const": 1 },
+    "project": { "$ref": "#/$defs/project" },
+    "dependencies": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/dependency" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9._-]{1,79}$" },
+    "path": { "type": "string", "minLength": 1, "maxLength": 240, "pattern": "^(?!/)(?![A-Za-z]:)[^*?\\\\]+$", "allOf": [{ "not": { "pattern": ":" } }, { "not": { "pattern": "[\\u0000\\r\\n]" } }, { "not": { "pattern": "[\\[\\]]" } }, { "not": { "pattern": "(^|/)($|/)" } }], "not": { "pattern": "(^|/)\\.\\.?(/|$)" } },
+    "locator": { "type": "string", "maxLength": 240, "pattern": "^(heading|json-pointer|record):\\S[^*?\\r\\n]*$" },
+    "purpose": { "type": "string", "minLength": 12, "maxLength": 500, "pattern": "^[^\\u0000\\r\\n]+$" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "locator", "purpose"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "path": { "$ref": "#/$defs/path" }, "locator": { "$ref": "#/$defs/locator" }, "purpose": { "$ref": "#/$defs/purpose" } }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "repositoryId", "capabilities", "sources"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "repositoryId": { "$ref": "#/$defs/id" }, "capabilities": { "type": "array", "minItems": 1, "maxItems": 200, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "sources": { "type": "array", "minItems": 1, "maxItems": 500, "items": { "$ref": "#/$defs/source" } } }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "projectId", "repositoryId", "rationale", "affectedCapabilities", "sources"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "repositoryId": { "$ref": "#/$defs/id" },
+        "rationale": { "type": "string", "minLength": 12, "maxLength": 500, "pattern": "^[^\\u0000\\r\\n]+$" },
+        "affectedCapabilities": { "type": "array", "minItems": 1, "maxItems": 50, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "sources": { "type": "array", "minItems": 1, "maxItems": 500, "items": { "$ref": "#/$defs/source" } }
+      }
+    }
+  }
+}

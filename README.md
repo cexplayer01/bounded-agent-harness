@@ -74,6 +74,16 @@ digests, and renders them only after verification. `pruneContextRecords` perform
 before any optional AI summarization; required records never disappear, and every omitted record is reported. The
 pruning result is an active-prompt decision, not deletion of repository history or Project Brain evidence.
 
+### Project-scoped context gate
+
+Run `scope-context` before retrieving Project Brain or other shared context. The versioned manifest allowlists exact source IDs, repository identities, paths, and narrow locators. A foreign-project source is accepted only through a declared dependency with a concrete rationale and named affected capabilities; an unrelated project or an unregistered source blocks the entire candidate packet. The checker is deterministic and makes no model call, so it adds no model-visible receipt or evaluation tokens.
+
+```powershell
+node bin/harness.mjs scope-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json
+```
+
+The gate checks explicit ownership metadata; it does **not** infer semantic ownership from prose, verify source contents, or prove that a declared dependency is genuinely necessary. Project owners must maintain the allowlist and keep mixed-project documents section-scoped. Hosts must run the check before reading or injecting source content, then retrieve only the returned `selected` references. This release supplies the reusable checker and a synthetic example; it does not install a USB-specific manifest, move/clean files, or prove a host has wired the gate.
+
 `buildTokenUsageRecord`, `summarizeTokenUsage`, and `compareTokenEfficiency` record provider observations such as
 input, cached input, output, retries, reservations, and accepted outcomes. They measure savings but never grant
 capacity, authority, approval, or permission to bypass `withTokenCapacityGate`. Hosts may use the resulting report to
@@ -81,7 +91,7 @@ compare the same task before and after context optimization.
 
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 145/145 tests, a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 155/155 tests, including the project-context scope gate, plus a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness
@@ -105,6 +115,7 @@ node bin/harness.mjs leases --memory .agent-harness/run-1 --lease-ms 60000
 node bin/harness.mjs lock-status --memory .agent-harness/run-1 --stale-after-ms 60000
 node bin/harness.mjs impact --root . --request examples/change-impact-request.json --output change-impact.json
 node bin/harness.mjs proof-release --release examples/proof-release.v1.json --observations examples/proof-observations.v1.json --now 2026-09-23T19:00:00.000Z
+node bin/harness.mjs scope-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json
 ```
 
 ### Proof release gate

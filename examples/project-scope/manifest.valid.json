@@ -1,0 +1,34 @@
+{
+  "format": "agent-harness.project-scope-manifest.v1",
+  "version": 1,
+  "project": {
+    "id": "sample-site",
+    "repositoryId": "sample-site-repo",
+    "capabilities": ["site-runtime", "context-selection"],
+    "sources": [
+      {
+        "id": "site-current-state",
+        "path": "Project Brain/CURRENT-STATE.md",
+        "locator": "heading:Site runtime",
+        "purpose": "Current implementation facts for the generated business site."
+      }
+    ]
+  },
+  "dependencies": [
+    {
+      "id": "harness-runtime",
+      "projectId": "bounded-agent-harness",
+      "repositoryId": "bounded-agent-harness-repo",
+      "rationale": "The harness controls project-context selection before the site task starts.",
+      "affectedCapabilities": ["context-selection"],
+      "sources": [
+        {
+          "id": "harness-context-contract",
+          "path": "contracts/project-scope-manifest.v1.schema.json",
+          "locator": "record:project-scope-manifest.v1",
+          "purpose": "The exact contract consumed by the site's context-scope adapter."
+        }
+      ]
+    }
+  ]
+}

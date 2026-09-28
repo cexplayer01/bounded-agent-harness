@@ -1,0 +1,24 @@
+[
+  {
+    "id": "site-current-state",
+    "projectId": "sample-site",
+    "repositoryId": "sample-site-repo",
+    "path": "Project Brain/CURRENT-STATE.md",
+    "locator": "heading:Site runtime"
+  },
+  {
+    "id": "harness-context-contract",
+    "projectId": "bounded-agent-harness",
+    "repositoryId": "bounded-agent-harness-repo",
+    "path": "contracts/project-scope-manifest.v1.schema.json",
+    "locator": "record:project-scope-manifest.v1",
+    "dependencyId": "harness-runtime"
+  },
+  {
+    "id": "game-session-notes",
+    "projectId": "echo-fracture",
+    "repositoryId": "echo-fracture-repo",
+    "path": "Project Brain/GAME-NOTES.md",
+    "locator": "heading:Game mechanics"
+  }
+]
