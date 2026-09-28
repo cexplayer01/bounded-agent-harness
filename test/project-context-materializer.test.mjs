@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, open as openFileHandle, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -124,6 +124,35 @@ test("a missing or ambiguous locator blocks the whole packet instead of returnin
     assert.equal(result.findings[0].code, "LOCATOR_NOT_FOUND");
     assert.equal(result.findings[0].sourceId, sources[0].id);
   } finally { await rm(f.base, { recursive: true, force: true }); }
+});
+
+test("materializer blocks when a source file changes after its read", async () => {
+  const f = await fixture();
+  const sourcePath = join(f.roots.repositories[0].rootPath, ...sources[0].path.split("/"));
+  const probe = await openFileHandle(sourcePath, "r");
+  const fileHandlePrototype = Object.getPrototypeOf(probe);
+  await probe.close();
+  const readFileDescriptor = Object.getOwnPropertyDescriptor(fileHandlePrototype, "readFile");
+  const originalReadFile = readFileDescriptor.value;
+  let readCompleted = false;
+
+  try {
+    fileHandlePrototype.readFile = async function (...args) {
+      const bytes = await originalReadFile.apply(this, args);
+      await writeFile(sourcePath, Buffer.concat([bytes, Buffer.from("\nchanged-after-read\n")]));
+      readCompleted = true;
+      return bytes;
+    };
+
+    const result = await materializeProjectContext({ manifest, sources, roots: f.roots });
+    assert.equal(readCompleted, true);
+    assert.equal(result.status, "BLOCKED");
+    assert.deepEqual(result.selected, []);
+    assert.equal(result.findings[0].code, "SOURCE_CHANGED_DURING_READ");
+  } finally {
+    Object.defineProperty(fileHandlePrototype, "readFile", readFileDescriptor);
+    await rm(f.base, { recursive: true, force: true });
+  }
 });
 
 test("record and JSON-pointer locators resolve one exact JSON value and reject ambiguity", () => {
