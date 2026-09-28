@@ -1,27 +1,34 @@
 {
   "schema_version": "agent-harness.takeover-checkpoint.v1",
-  "recorded_at_utc": "2026-09-28T19:01:07Z",
+  "recorded_at_utc": "2026-09-28T20:35:00Z",
   "repository": {
     "project_id": "bounded-agent-harness",
     "branch": "codex/project-brain-ownership-20260928",
-    "head": "9d4bf97e9ccbf64cfb4f10a8718682a4b7284d81",
-    "tracked_source_state": "CLEAN_WITH_PRESERVED_UNTRACKED",
-    "expected_git_status": []
+    "head": "aa779f9b0214bcfd739849bae107d42dad837310",
+    "tracked_source_state": "IN_PROGRESS",
+    "expected_git_status": [
+      {
+        "code": " M",
+        "path": "PROJECT-BRAIN/TAKEOVER-CHECKPOINT.v1.json",
+        "availability": "REPOSITORY"
+      }
+    ]
   },
   "continuation": {
     "phase": "project-brain ownership and host project-scope integration",
     "status": "WAITING_FOR_OWNER",
     "objective": "Give Bounded Agent Harness its own portable Project Brain, prevent project checkpoint reuse across projects, and make project-scoped context selection an enforced host boundary.",
-    "last_completed": "Added BAH-owned project identity, current state, next step, deployment receipt, and ownership tests. Generalized the takeover checkpoint version, required project_id for new checkpoints, added expectedProjectId rejection, removed the assumed USB checkpoint path, and preserved legacy USB checkpoint reads. The BAH suite reports 171 tests (170 passed, 0 failed, 1 Windows symlink-creation skip); package audit is valid with no findings.",
-    "in_progress": "The BAH project brain and code are committed locally, but the branch is not on GitHub and is not yet portable to another machine. GitHub connector branch creation returned 403; this checkout's Git HTTPS transport is unavailable.",
-    "next_step": "Restore an authenticated GitHub write path and publish branch codex/project-brain-ownership-20260928 without force-pushing or changing the live website. Verify the exact branch commit through GitHub readback. Then proceed to the existing host project-scope retrieval/injection task in PROJECT-BRAIN/NEXT-STEP.md.",
-    "resume_command": "From the BAH repository root, read PROJECT-BRAIN/README.md, PROJECT-BRAIN/CURRENT-STATE.md, and PROJECT-BRAIN/NEXT-STEP.md. Run `node --test`, `node bin/audit-package.mjs`, and `git diff --check`. Treat the branch as LOCAL_ONLY until GitHub readback confirms it. Do not deploy the website.",
+    "last_completed": "Added BAH-owned project identity, current state, next step, deployment receipt, and ownership tests. Generalized the takeover checkpoint version, required project_id for new checkpoints, added expectedProjectId rejection, removed the assumed USB checkpoint path, and preserved legacy USB checkpoint reads. Updated the BAH homepage source at 6150a31 to report the verified 171-test suite and project-boundary proof with the host-integration limit stated. Site lint passed; the full suite reports 171 tests (170 passed, 0 failed, 1 Windows symlink-creation skip); package audit is valid with no findings. The owner authorized publishing this BAH update on 2026-09-28.",
+    "in_progress": "The approved source update and project brain are committed locally through aa779f9b0214bcfd739849bae107d42dad837310. GitHub repository metadata reports push permission, but an actual create-ref call returned HTTP 403 Resource not accessible by integration. The current Git runtime also lacks an HTTPS remote helper; no alternate branch will be modified. The site has not been rebuilt or deployed.",
+    "next_step": "Restore a working GitHub write route, then publish codex/project-brain-ownership-20260928 as a fast-forward from 34bffb1df3b053033048ba13699153f316c732b4 and verify the exact remote SHA. Build the static candidate from that published source commit, verify release.json and the static-only function boundary, upload it to boundedagentharness.com, and verify the live release. The owner GO for this exact site update is already recorded; rollback is Netlify deploy 6ab7542de0a386f0d1ec894f.",
+    "resume_command": "From the BAH repository root, read PROJECT-BRAIN/README.md, PROJECT-BRAIN/CURRENT-STATE.md, and PROJECT-BRAIN/NEXT-STEP.md. First restore authenticated GitHub write access and publish the existing branch without force-push; verify remote SHA before building. Then run `pnpm --dir website run build:netlify`, `pnpm --dir website run verify:release`, `pnpm --dir website run lint`, `node --test`, `node bin/audit-package.mjs`, and `git diff --check`. Upload only after the public source URL resolves to the generated release commit. Do not modify another branch or enable billing/auto-recharge.",
     "do_not_repeat": [
       "Do not put USB, DFW Metro, FreeVibeApps, or game-project current state into the BAH Project Brain.",
       "Do not copy USB product purpose or private owner history; use only the exact USB evidence pointer declared in PROJECT-BRAIN/PROJECT.json when a BAH claim requires it.",
       "Do not publish private HITL Removal or Danger Mode specifications, credentials, or owner records in this public repository.",
-      "Do not deploy or republish boundedagentharness.com as part of this source-only project-brain change; publication requires a separate exact owner GO.",
-      "The live site remains bound to source commit 34bffb1df3b053033048ba13699153f316c732b4, not the current local source branch."
+      "Do not deploy while the release snapshot's source URL points to a commit that cannot be reached from GitHub; the owner GO is granted, but source publication must come first.",
+      "Do not force-push or write this work onto codex/project-brain-scope-20260927 or another existing branch to bypass the create-ref permission failure.",
+      "The live site remains bound to source commit 34bffb1df3b053033048ba13699153f316c732b4 until the approved candidate is published and postflight-verified."
     ]
   },
   "evidence": {
@@ -56,14 +63,14 @@
       {
         "scope": "GitHub source publication",
         "status": "BLOCKED_BY_INTEGRATION_PERMISSION",
-        "summary": "The connected GitHub integration returned 403 when asked to create the branch; local Git reports that the HTTPS remote helper is unavailable. Local source work and tests are complete, but other machines cannot yet read this branch.",
-        "next_action": "Use an authenticated GitHub write route to publish the exact branch and verify its commit; do not force-push or deploy the site."
+        "summary": "Repository metadata reports push permission, but a fresh GitHub create-ref request for the approved branch returned HTTP 403 Resource not accessible by integration. The bundled Git runtime has no HTTPS remote helper, and no authenticated alternate route is configured. The local source branch is complete, but another machine cannot yet read it.",
+        "next_action": "Restore GitHub integration write authorization or an authenticated Git transport, publish the existing branch as a non-force fast-forward from 34bffb1df3b053033048ba13699153f316c732b4, and verify the remote SHA before building or deploying."
       },
       {
         "scope": "project-scoped context host integration",
         "status": "NOT_IMPLEMENTED",
         "summary": "The gate and file-backed materializer are proven locally, but no production host is proven to call them before retrieval/injection.",
-        "next_action": "After the branch is shared, implement and test the one host-neutral adapter defined in PROJECT-BRAIN/NEXT-STEP.md."
+        "next_action": "After the approved website publication is complete, continue with the one host-neutral adapter defined in PROJECT-BRAIN/NEXT-STEP.md."
       },
       {
         "scope": "symlink test portability",
@@ -80,7 +87,7 @@
       "classification": "BAH continuation checkpoint being established",
       "state": "CURRENT",
       "action": "PRESERVE_IN_PLACE",
-      "provenance": "Created for project_id bounded-agent-harness using the generic checkpoint contract. At checkpoint creation, this file is the sole untracked item in the BAH worktree.",
+      "provenance": "BAH-owned continuation file created for project_id bounded-agent-harness and tracked in this repository. This update records the approved website publication request and the verified GitHub create-ref 403; expected_git_status identifies the checkpoint edit until its follow-up commit is complete.",
       "owner_decision_required": false,
       "availability": "REPOSITORY",
       "required_for": "Portable BAH continuation and safe Git-state validation."
@@ -109,11 +116,12 @@
     }
   ],
   "authority": {
-    "next_action": "Restore the GitHub write route and publish this exact source-only branch, then verify it through GitHub readback. No website deployment is part of this action.",
+    "next_action": "Restore GitHub write authorization, publish this exact branch without force-push, verify its SHA, then build and publish the approved BAH static-site candidate and postflight the live release. The owner GO is already recorded.",
     "go_required": false,
     "blocked_actions": [
       "Do not force-push or overwrite another BAH branch.",
-      "Do not publish or republish the BAH website without a separate exact owner GO.",
+      "Do not deploy until the candidate's exact source commit is reachable through the public GitHub repository.",
+      "Do not enable Netlify auto-recharge, upgrade the account, or make unrelated billing changes.",
       "Do not expose private project brains, credentials, customer data, or proprietary add-on specifications."
     ]
   }
