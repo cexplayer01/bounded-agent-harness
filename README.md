@@ -82,13 +82,31 @@ pruning result is an active-prompt decision, not deletion of repository history 
 node bin/harness.mjs scope-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json
 ```
 
-`materialize-context` performs the next step: after the entire reference list passes the metadata gate, it reads only those exact files from a separate machine-local repository-roots map, resolves each heading/JSON-pointer/record locator against actual UTF-8 content, and returns a digest-bound packet. Any missing, escaped, ambiguous, or unresolved source blocks the whole packet; no partial selected content is released. The roots map contains local absolute paths and must not be committed or passed to the model.
+`materialize-context` performs the next step: after the entire reference list passes the metadata gate, it reads only those exact files from a separate machine-local repository-roots map, verifies each root is the Git top level with the declared credential-free `origin`, resolves each heading/JSON-pointer/record locator against stable UTF-8 file bytes, and returns a digest-bound packet. Symlinked source paths, missing/escaped/ambiguous/unresolved sources, changed-during-read files, and mismatched roots block the whole packet; no partial selected content is released. The roots map contains local absolute paths and must not be committed or passed to the model; `.agent-harness/local-context-roots.json` is ignored by Git. Packet consumers can verify content and packet digests with `verifyProjectContextPacket` before use. These digests detect drift, not malicious rewriting by a party that can recompute them.
+
+This is a trusted-local-workspace tool, not a defense against a malicious process concurrently rewriting repository paths during a read. Keep source checkouts and the roots map under trusted local control. Allowlisting is also not secret redaction: selected source text is returned verbatim and the CLI prints it, so never select files that contain passwords, API keys, tokens, or other secrets.
 
 ```powershell
 node bin/harness.mjs materialize-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json --roots .agent-harness/local-context-roots.json
 ```
 
-The gate still does **not** infer semantic ownership from prose or prove that a declared dependency is genuinely necessary. Project owners must maintain the allowlist and keep mixed-project documents section-scoped. This is a reusable CLI packet builder, not automatic host enforcement: the host must invoke it before reading or injecting context and pass only the returned packet to the model. This release does not install a USB-specific manifest or prove that Codex/other host retrieval is wired to it.
+The local roots file has this shape (use the operator's actual absolute root; never put credentials in the Git remote URL):
+
+```json
+{
+  "format": "agent-harness.project-context-roots.v1",
+  "version": 1,
+  "repositories": [
+    {
+      "repositoryId": "sample-site-repo",
+      "rootPath": "C:/local/path/to/site",
+      "expectedGitRemote": "https://example.invalid/sample-site.git"
+    }
+  ]
+}
+```
+
+The gate still does **not** infer semantic ownership from prose or prove that a declared dependency is genuinely necessary. A matching local Git origin prevents accidental checkout mix-ups but does not cryptographically authenticate repository ownership. Project owners must maintain the allowlist and keep mixed-project documents section-scoped. This is a reusable CLI packet builder, not automatic host enforcement: the host must invoke it before reading or injecting context, verify the packet, and pass only selected content to the model. This release includes no automatic Codex host hook; any consumer must be separately wired and verified.
 
 `buildTokenUsageRecord`, `summarizeTokenUsage`, and `compareTokenEfficiency` record provider observations such as
 input, cached input, output, retries, reservations, and accepted outcomes. They measure savings but never grant
@@ -97,7 +115,7 @@ compare the same task before and after context optimization.
 
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 155/155 tests, including the project-context scope gate, plus a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 165 tests: 164 passed, 0 failed, and 1 symlink test skipped because this Windows host denies test-symlink creation. It includes 10 project-context metadata-gate tests and 10 source-materializer tests, plus a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness
@@ -300,4 +318,4 @@ Code contributions are temporarily closed while contributor and relicensing term
 
 ## Status
 
-Development package version `0.4.0` is a source-available extraction prototype, not a published npm package or hosted service. The package version identifies the source/package line; it is not a production-readiness score. Current capability maturity is `LOCAL_CONTROL_PLANE_MILESTONE_1.8`, with direct proof recorded in [PROOF-STATUS.md](PROOF-STATUS.md). It includes a complete zero-side-effect CLI loop and an end-to-end two-provider MCP compatibility demo, contract-bound revisioned shared memory, a multi-writer-safe tamper-evident event log and atomic checkpoints, heartbeat lease evaluation, provider-neutral MCP adapters with optional identity pinning, versioned structured handoffs, the repository-native shared-agent task/claim/result bridge, contract-checked outputs, cost enforcement, recovery evidence, explicit resume, non-destructive lock diagnosis, lazy capability descriptors, digest-bound artifact references, deterministic context pruning and usage measurement, and a deterministic project-context scope gate. Completed runs are terminal. Next: wire project scope manifests into host retrieval/injection, then external MCP client configuration, private-repository adoption by Muse, owner-authorized orphan-lock recovery, cryptographic provider authentication, a real-provider compatibility proof, and a cross-provider production token benchmark.
+Development package version `0.4.0` is a source-available extraction prototype, not a published npm package or hosted service. The package version identifies the source/package line; it is not a production-readiness score. Current capability maturity is `LOCAL_CONTROL_PLANE_MILESTONE_1.8`, with direct proof recorded in [PROOF-STATUS.md](PROOF-STATUS.md). It includes a complete zero-side-effect CLI loop and an end-to-end two-provider MCP compatibility demo, contract-bound revisioned shared memory, a multi-writer-safe tamper-evident event log and atomic checkpoints, heartbeat lease evaluation, provider-neutral MCP adapters with optional identity pinning, versioned structured handoffs, the repository-native shared-agent task/claim/result bridge, contract-checked outputs, cost enforcement, recovery evidence, explicit resume, non-destructive lock diagnosis, lazy capability descriptors, digest-bound artifact references, deterministic context pruning and usage measurement, and a deterministic project-context metadata gate plus source materializer. Completed runs are terminal. Next: wire the materializer into host retrieval/injection and verify that hosts pass only verified selected content. USB has an untracked scoped-manifest candidate in its local working tree; it is not yet a Git-published integration, installed in a host, or automatically enforced. After that: external MCP client configuration, private-repository adoption by Muse, owner-authorized orphan-lock recovery, cryptographic provider authentication, a real-provider compatibility proof, and a cross-provider production token benchmark.

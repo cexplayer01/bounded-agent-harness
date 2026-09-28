@@ -1,30 +1,30 @@
 {
   "schema_version": "bounded-agent-harness-proof-status.v1",
-  "recorded_on": "2026-09-27",
+  "recorded_on": "2026-09-28",
   "subject": {
     "repository": "https://github.com/cexplayer01/bounded-agent-harness",
     "version": "0.4.0",
     "capability_maturity": "LOCAL_CONTROL_PLANE_MILESTONE_1.8",
-    "tested_commit": "59ff6bfcfd607b813798af01c2f9f16c6c7daaff"
+    "tested_commit": "177215547c1785c2b7317df370fe500b1d425fad"
   },
   "overall": {
     "status": "PROVEN_WITHIN_DECLARED_SCOPE",
-    "statement": "The deterministic local control plane, zero-side-effect execution path, bounded continuation controls, in-process MCP compatibility path, proof publication reconciliation gate, repository-native shared-agent bridge, local shared-agent concurrency rehearsal, additive token-efficiency layer, and declared-metadata project-context scope gate are directly reproducibly proven. USB/DFW Metro and FreeVibeApps are documented integration cases, not claims that this package is deployed as their hosted runtime infrastructure.",
+    "statement": "The deterministic local control plane, zero-side-effect execution path, bounded continuation controls, in-process MCP compatibility path, proof publication reconciliation gate, repository-native shared-agent bridge, local shared-agent concurrency rehearsal, additive token-efficiency layer, declared-metadata project-context scope gate, and allowlisted file-backed context materializer are directly reproducibly proven. The materializer checks local Git root/origin identity, rejects symlinked source paths, verifies packet/content digests, and blocks partial packets; its one symlink creation test is skipped on this Windows host. USB/DFW Metro and FreeVibeApps are documented integration cases, not claims that this package is deployed as their hosted runtime infrastructure.",
     "commercial_hosted_service": "NOT_PROVEN"
   },
   "direct_proof": [
     {
       "id": "automated-suite",
-      "status": "PASS",
-      "command": "npm test",
-      "result": { "tests": 155, "passed": 155, "failed": 0, "skipped": 0 },
-      "proves": "The checked-in control-plane, contract, execution, recovery, continuation, checkpoint, governance, adapter, shared-agent bridge, token-efficiency, and project-context scope behaviors pass their automated tests.",
+      "status": "PASS_WITH_ENVIRONMENTAL_SKIP",
+      "command": "node --test",
+    "result": { "tests": 165, "passed": 164, "failed": 0, "skipped": 1, "skip_reason": "Windows host denied test-symlink creation" },
+      "proves": "The checked-in control-plane, contract, execution, recovery, continuation, checkpoint, governance, adapter, shared-agent bridge, token-efficiency, project-context scope, and file-backed materialization behaviors pass their automated tests except for the explicitly host-skipped symlink-creation test.",
       "does_not_prove": "Independent external-provider trust, hosted distributed operation, or commercial production readiness."
     },
     {
       "id": "package-audit",
       "status": "PASS",
-      "command": "npm run audit",
+      "command": "node bin/audit-package.mjs",
       "result": { "valid": true, "findings": [] },
       "proves": "The extracted package passes its secret, path, dependency, and publication-surface audit.",
       "does_not_prove": "That an external deployment has been secured or that a provider has authenticated the package."
@@ -32,7 +32,7 @@
     {
       "id": "deterministic-demo",
       "status": "PASS",
-      "command": "npm run demo",
+      "command": "node bin/demo.mjs",
       "result": { "workflow_format": "agent-harness.workflow.v1", "compiled_cost_units": 7, "max_cost_units": 8, "digest": "sha256:75905e7bfa749029f0992c7e0c5f4808b9ef67aaad3b048a6d66e3033507dec0" },
       "proves": "A closed example plan compiles to a deterministic, digest-bound workflow.",
       "does_not_prove": "Model quality or live provider behavior."
@@ -40,7 +40,7 @@
     {
       "id": "mcp-compatibility-demo",
       "status": "PASS",
-      "command": "npm run demo:mcp",
+      "command": "node bin/demo-mcp.mjs",
       "result": { "status": "completed", "specialists": 2, "evidence_events": 6, "spent_cost_units": 5, "network": "NONE", "model": "NONE" },
       "proves": "Two intentionally different in-process MCP client shapes can complete one compiled workflow through the bounded adapter boundary.",
       "does_not_prove": "Trustworthiness or compatibility of a particular external MCP provider."
@@ -56,7 +56,7 @@
     {
       "id": "shared-agent-concurrency-rehearsal",
       "status": "PASS",
-      "command": "npm run demo:shared-task",
+      "command": "node bin/demo-shared-task.mjs",
       "result": { "pass": true, "overlapping_scope": "TASK_SCOPE_RESERVED", "disjoint_scope": "CLAIMED", "released_scope": "RECLAIMED", "external_state": "NOT_EXECUTED" },
       "proves": "The local queue behavior is usable as a two-agent handoff: overlapping work is rejected, disjoint work can proceed, and a completed reservation is released.",
       "does_not_prove": "Access to the private DFW repository, direct Muse messaging, hosted coordination, or any external effect."
@@ -78,9 +78,17 @@
       "does_not_prove": "Semantic ownership of source content, truth or necessity of dependency rationales, or that any host invokes the checker before retrieval/injection."
     },
     {
+      "id": "project-context-source-materializer",
+      "status": "PASS_WITH_ENVIRONMENTAL_SKIP",
+      "command": "node --test test/project-context-materializer.test.mjs",
+      "result": { "tests": 10, "passed": 9, "failed": 0, "skipped": 1, "skip_reason": "Windows host denied test-symlink creation", "combined_scope_and_materializer": { "tests": 20, "passed": 19, "failed": 0, "skipped": 1 } },
+      "proves": "The CLI reads only allowlisted UTF-8 files from Git roots whose local origin matches the credential-free roots-map entry, rejects detected symlink traversal, validates packet shape against the published schema before accepting recomputed digests, resolves exact Markdown/JSON locators while ignoring fenced-code headings, HTML-comment headings, and duplicate JSON keys, binds selected content to verifiable digests, deeply freezes output, hides local absolute paths, and blocks the entire packet on source failures. The symlink-path test is present but skipped because this Windows host denies test-symlink creation.",
+      "does_not_prove": "Cryptographic repository authentication, defense against a malicious concurrent local writer, secret redaction, that a host invokes materialization before retrieval/injection, semantic truth of project ownership or dependency rationales, or that the USB-specific manifest is installed into a host."
+    },
+    {
       "id": "proof-release-gate",
       "status": "PASS",
-      "command": "npm run proof:release",
+      "command": "node bin/harness.mjs proof-release --release examples/proof-release.v1.json --observations examples/proof-observations.v1.json --now 2026-09-23T19:00:00.000Z",
       "result": { "status": "READY_TO_PUBLISH", "current_claims": 1, "blocking_cases_tested": ["missing observation", "deployment or rollback drift", "expired observation", "field-name casing drift"] },
       "proves": "A proof receipt cannot publish a CURRENT claim unless a fresh exact read-only observation matches its target, deployment, rollback, timestamp, and fields.",
       "does_not_prove": "That a host adapter's supplied observation is truthful, or that a provider accepted a deployment."
@@ -154,6 +162,9 @@
   },
   "limitations": [
     "The package is a source-available extraction prototype, not a hosted service or published npm package.",
+    "Project-scoped source materialization is available as a local CLI, but USB/Codex host retrieval and injection do not yet invoke it automatically; project-specific roots and manifests must be configured locally.",
+    "A matching local Git origin prevents accidental checkout mapping errors but does not cryptographically authenticate a repository or prove that its declared owner is truthful.",
+    "The file-backed materializer is for trusted curated workspaces; path checks are not atomic against a malicious concurrent local writer, and allowlisting is not secret redaction because selected source text is returned verbatim.",
     "Distributed leasing, hosted scheduling, external provider authentication, and real-provider compatibility remain separate work.",
     "A cross-provider production benchmark of token savings remains unproven; the new layer records measurements but does not invent comparative results.",
     "DFW Metro production state and DFWMow lab deployments are external evidence and remain governed by their own deployment, database, provider, and rollback rules.",

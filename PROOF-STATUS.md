@@ -1,12 +1,12 @@
 # Bounded Agent Harness proof status
 
-Recorded 2026-09-27 for development package version `0.4.0`; implementation proof is tested against source commit `59ff6bfcfd607b813798af01c2f9f16c6c7daaff` (project-context scope gate). The proof-status-only follow-up records that tested implementation commit.
+Recorded 2026-09-28 for development package version `0.4.0`; implementation proof is tested against source commit `177215547c1785c2b7317df370fe500b1d425fad` (project-context metadata gate and hardened file-backed source materializer). This document and its machine-readable companion record the same tested source revision; later documentation-only commits do not change the tested implementation revision.
 
 Capability maturity: `LOCAL_CONTROL_PLANE_MILESTONE_1.8`. This maturity label is separate from contract IDs such as `*.v1` and from hosted/commercial readiness.
 
 ## Bottom line
 
-Bounded Agent Harness is proven within a declared local-control-plane scope. The current checked-in suite passes 155/155 tests, including 10 project-context scope tests; the package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, the token-efficiency utilities pass their focused proof, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
+Bounded Agent Harness is proven within a declared local-control-plane scope. `node --test` reports 165 tests: 164 passed, 0 failed, and 1 skipped because this Windows host denies test-symlink creation. That includes 10 project-context metadata-gate tests and 10 source-materializer tests (9 passed, 1 skipped). The package audit returns `valid: true` with no findings, the deterministic workflow demo passes, the two-provider in-process MCP compatibility demo completes without a network or model call, the repository-native shared-agent bridge passes its focused identity/claim/scope-reservation/lease tests, the local concurrency rehearsal passes overlap rejection/disjoint admission/release-and-reclaim, the token-efficiency utilities pass their focused proof, and the proof-release gate returns `READY_TO_PUBLISH` for a fresh exact observation.
 
 This is not a claim that the package is already a hosted production service or that an external provider has been independently authenticated.
 
@@ -16,8 +16,8 @@ The machine-readable record is [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json). I
 
 | Area | Result | Evidence | Boundary |
 |---|---|---|---|
-| Automated behavior | PASS | `node --test` — 155/155 | Checked-in local behavior, not hosted operation |
-| Project-context scope gate | PASS | `node --test test/project-context-scope.test.mjs` — 10/10; unrelated-project CLI fixture returns `BLOCKED` with `selected: []` | Validates declared metadata before retrieval; does not infer semantic ownership, verify source content, or prove host integration |
+| Automated behavior | PASS WITH ONE HOST-SKIPPED CHECK | `node --test` — 165 total, 164 passed, 0 failed, 1 skipped | Checked-in local behavior, not hosted operation; the skipped check is symlink-path rejection because this host will not create a test symlink |
+| Project-context gate and materializer | PASS WITH ONE HOST-SKIPPED CHECK | Scope gate 10/10; materializer 10 total, 9 passed, 0 failed, 1 skipped; combined command reports 20 total, 19 passed, 0 failed, 1 skipped | Validates packet shape against its published schema before accepting its digest; requires matching local Git root/origin, reads only allowlisted non-symlink paths, resolves exact locators while ignoring headings hidden in HTML comments, detects source changes during read, and returns a deeply frozen verifiable packet. It is for trusted workspaces, not malicious concurrent local writers; it does not cryptographically authenticate repository ownership, infer semantic ownership, validate rationale truth, redact secrets, or prove host integration |
 | Package safety surface | PASS | `npm run audit` — `valid: true`, no findings | Does not authenticate an external deployment |
 | Deterministic compilation | PASS | `npm run demo` | Closed example inputs and local compiler |
 | MCP adapter compatibility | PASS | `npm run demo:mcp` — 2 specialists, 6 evidence events, 5 cost units | In-process client shapes; no claim about a named external provider |

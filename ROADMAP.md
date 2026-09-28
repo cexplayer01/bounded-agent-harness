@@ -152,16 +152,22 @@ Status: local host-neutral utilities and negative tests implemented. They optimi
 capacity, authority, approval, evidence, and deployment gates remain unchanged. A production benchmark across real
 provider hosts remains future evidence rather than an implied claim.
 
-## 1.8 — project-scoped context gate
+## 1.8 — project-scoped context gate and source materializer
 
 - Exact project/repository/path/locator allowlists for context sources.
 - Cross-project sources require a declared dependency tied to a project capability and an explicit rationale.
 - Unknown, duplicate, or unrelated references block the complete candidate packet; no partial selection is released.
-- Deterministic CLI and schemas; no model calls or added model-visible receipts.
+- Deterministic CLI and schemas; the materializer opens only allowlisted files, resolves exact locators, and binds selected content to digests; no model calls or added model-visible receipts.
 
-Status: reusable local checker, CLI, schemas, fixtures, and adversarial tests implemented. Host retrieval/injection wiring
-and a real project-specific manifest are not yet proven; the checker validates declared metadata and cannot infer
-semantic ownership or the truth of a dependency rationale.
+Status: reusable local metadata checker and file-backed packet materializer, CLI, schemas, fixtures, and tests implemented.
+The materializer checks that each mapped path is the Git top level with the configured credential-free origin, rejects
+detected symlink traversal, verifies stable file reads and packet/content shape and digests, ignores Markdown headings
+inside HTML comments, and blocks partial output. Focused scope/materializer tests report 20 total, 19 passed, 0 failed,
+1 skipped because this Windows host denies creating the symlink test fixture. The matching origin is an accidental-
+checkout guard, not cryptographic authentication; path checks are not atomic against a malicious concurrent local
+writer. Host retrieval/injection wiring remains unproven; the USB-specific manifest currently exists only as a local
+working-tree candidate and is not installed in or automatically enforced by Codex/USB. Allowlisting is not secret
+redaction, and the checker cannot infer semantic ownership or the truth of a dependency rationale.
 
 ## Commercial path
 

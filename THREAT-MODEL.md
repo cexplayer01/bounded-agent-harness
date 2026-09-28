@@ -40,6 +40,7 @@
 - Secret storage, sandboxing, network egress, or provider identity.
 - Exactly-once guarantees from external providers. The harness now requires and preserves an idempotency key for external-effect retries, but the provider must enforce it.
 - Distributed leases, clock disagreement, or hostile filesystem access.
+- The local project-context materializer is for trusted, curated workspaces, not defense against a malicious concurrent local writer. It rejects detected static symlink traversal and checks repository containment before opening a source, but those pathname checks are not atomic; a writer could replace a checked path component before the open. Do not claim portable secure-open protection (`src/project-context-materializer.mjs`).
 - Prompt injection inside a provider. Contracts limit accepted shape, not semantic truth.
 - Verification of a provider's cost claim against an external invoice; the harness bounds trusted accounting but cannot audit a vendor bill by itself.
 - Authentication, tenancy, billing, hosted operation, or legal compliance.
