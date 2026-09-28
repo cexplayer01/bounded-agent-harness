@@ -1,0 +1,126 @@
+{
+  "schema_version": "agent-harness.takeover-checkpoint.v1",
+  "recorded_at_utc": "2026-09-28T19:01:07Z",
+  "repository": {
+    "project_id": "bounded-agent-harness",
+    "branch": "codex/project-brain-ownership-20260928",
+    "head": "f96cde3b2438352655f7d92574a81bc3f1a93ffc",
+    "tracked_source_state": "CLEAN_WITH_PRESERVED_UNTRACKED",
+    "expected_git_status": [
+      {
+        "code": "??",
+        "path": "PROJECT-BRAIN/TAKEOVER-CHECKPOINT.v1.json",
+        "availability": "REPOSITORY"
+      }
+    ]
+  },
+  "continuation": {
+    "phase": "project-brain ownership and host project-scope integration",
+    "status": "WAITING_FOR_OWNER",
+    "objective": "Give Bounded Agent Harness its own portable Project Brain, prevent project checkpoint reuse across projects, and make project-scoped context selection an enforced host boundary.",
+    "last_completed": "Added BAH-owned project identity, current state, next step, deployment receipt, and ownership tests. Generalized the takeover checkpoint version, required project_id for new checkpoints, added expectedProjectId rejection, removed the assumed USB checkpoint path, and preserved legacy USB checkpoint reads. The BAH suite reports 171 tests (170 passed, 0 failed, 1 Windows symlink-creation skip); package audit is valid with no findings.",
+    "in_progress": "The BAH project brain and code are committed locally, but the branch is not on GitHub and is not yet portable to another machine. GitHub connector branch creation returned 403; this checkout's Git HTTPS transport is unavailable.",
+    "next_step": "Restore an authenticated GitHub write path and publish branch codex/project-brain-ownership-20260928 without force-pushing or changing the live website. Verify the exact branch commit through GitHub readback. Then proceed to the existing host project-scope retrieval/injection task in PROJECT-BRAIN/NEXT-STEP.md.",
+    "resume_command": "From the BAH repository root, read PROJECT-BRAIN/README.md, PROJECT-BRAIN/CURRENT-STATE.md, and PROJECT-BRAIN/NEXT-STEP.md. Run `node --test`, `node bin/audit-package.mjs`, and `git diff --check`. Treat the branch as LOCAL_ONLY until GitHub readback confirms it. Do not deploy the website.",
+    "do_not_repeat": [
+      "Do not put USB, DFW Metro, FreeVibeApps, or game-project current state into the BAH Project Brain.",
+      "Do not copy USB product purpose or private owner history; use only the exact USB evidence pointer declared in PROJECT-BRAIN/PROJECT.json when a BAH claim requires it.",
+      "Do not publish private HITL Removal or Danger Mode specifications, credentials, or owner records in this public repository.",
+      "Do not deploy or republish boundedagentharness.com as part of this source-only project-brain change; publication requires a separate exact owner GO.",
+      "The live site remains bound to source commit 34bffb1df3b053033048ba13699153f316c732b4, not the current local source branch."
+    ]
+  },
+  "evidence": {
+    "tests": [
+      {
+        "name": "full BAH test suite",
+        "result": "PASS",
+        "summary": "node --test: 171 tests, 170 passed, 0 failed, 1 skipped because Windows denied test-symlink creation."
+      },
+      {
+        "name": "BAH package audit",
+        "result": "PASS",
+        "summary": "node bin/audit-package.mjs returned valid=true with no findings."
+      },
+      {
+        "name": "project ownership and checkpoint focus",
+        "result": "PASS",
+        "summary": "Project-brain ownership 2/2; takeover checkpoint 9/9."
+      }
+    ],
+    "live": [
+      {
+        "target": "https://boundedagentharness.com",
+        "result": "PASS",
+        "observed_on": "2026-09-28T18:21:54Z",
+        "deployment_id": "6abab040fab4a059dfd96ad1",
+        "rollback_deployment_id": "6ab7542de0a386f0d1ec894f",
+        "effect_boundary": "Previously verified production publication of the exact static BAH candidate from source commit 34bffb1df3b053033048ba13699153f316c732b4: zero available/required/edge functions; all 34 public files matched the preserved ZIP; /release.json bound the candidate commit and website digest. This project-brain branch was not deployed."
+      }
+    ],
+    "known_problems": [
+      {
+        "scope": "GitHub source publication",
+        "status": "BLOCKED_BY_INTEGRATION_PERMISSION",
+        "summary": "The connected GitHub integration returned 403 when asked to create the branch; local Git reports that the HTTPS remote helper is unavailable. Local source work and tests are complete, but other machines cannot yet read this branch.",
+        "next_action": "Use an authenticated GitHub write route to publish the exact branch and verify its commit; do not force-push or deploy the site."
+      },
+      {
+        "scope": "project-scoped context host integration",
+        "status": "NOT_IMPLEMENTED",
+        "summary": "The gate and file-backed materializer are proven locally, but no production host is proven to call them before retrieval/injection.",
+        "next_action": "After the branch is shared, implement and test the one host-neutral adapter defined in PROJECT-BRAIN/NEXT-STEP.md."
+      },
+      {
+        "scope": "symlink test portability",
+        "status": "HOST_SKIPPED",
+        "summary": "Windows denied creation of the test symlink; the focused test exists but was skipped in this full-suite run.",
+        "next_action": "Run the same suite on a host that allows symlink creation when available."
+      }
+    ]
+  },
+  "preservation_register": [
+    {
+      "path": "PROJECT-BRAIN/TAKEOVER-CHECKPOINT.v1.json",
+      "kind": "FILE",
+      "classification": "BAH continuation checkpoint being established",
+      "state": "CURRENT",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Created for project_id bounded-agent-harness using the generic checkpoint contract. At checkpoint creation, this file is the sole untracked item in the BAH worktree.",
+      "owner_decision_required": false,
+      "availability": "REPOSITORY",
+      "required_for": "Portable BAH continuation and safe Git-state validation."
+    },
+    {
+      "path": "PROJECT-BRAIN/",
+      "kind": "DIRECTORY",
+      "classification": "BAH-owned current state, identity, and next step",
+      "state": "CURRENT",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Created in this BAH-only source branch; excludes USB operational state and private add-on details.",
+      "owner_decision_required": false,
+      "availability": "REPOSITORY",
+      "required_for": "BAH continuation and project separation."
+    },
+    {
+      "path": "releases/boundedagentharness.com/2026-09-28-6abab040fab4a059dfd96ad1.json",
+      "kind": "FILE",
+      "classification": "Exact historical public deployment receipt",
+      "state": "CURRENT",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Records the verified static production candidate and rollback; it grants no deployment authority.",
+      "owner_decision_required": false,
+      "availability": "REPOSITORY",
+      "required_for": "Separating BAH release evidence from the USB Project Brain."
+    }
+  ],
+  "authority": {
+    "next_action": "Restore the GitHub write route and publish this exact source-only branch, then verify it through GitHub readback. No website deployment is part of this action.",
+    "go_required": false,
+    "blocked_actions": [
+      "Do not force-push or overwrite another BAH branch.",
+      "Do not publish or republish the BAH website without a separate exact owner GO.",
+      "Do not expose private project brains, credentials, customer data, or proprietary add-on specifications."
+    ]
+  }
+}
