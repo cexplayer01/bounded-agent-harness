@@ -76,13 +76,19 @@ pruning result is an active-prompt decision, not deletion of repository history 
 
 ### Project-scoped context gate
 
-Run `scope-context` before retrieving Project Brain or other shared context. The versioned manifest allowlists exact source IDs, repository identities, paths, and narrow locators. A foreign-project source is accepted only through a declared dependency with a concrete rationale and named affected capabilities; an unrelated project or an unregistered source blocks the entire candidate packet. The checker is deterministic and makes no model call, so it adds no model-visible receipt or evaluation tokens.
+`scope-context` validates the metadata allowlist before source retrieval. The versioned manifest binds exact source IDs, repository identities, paths, and narrow locators. A foreign-project source is accepted only through a declared dependency with a rationale and named affected capabilities; an unrelated or unregistered source blocks the entire candidate packet. The checker is deterministic and makes no model call, so it adds no model-visible receipt or evaluation tokens.
 
 ```powershell
 node bin/harness.mjs scope-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json
 ```
 
-The gate checks explicit ownership metadata; it does **not** infer semantic ownership from prose, verify source contents, or prove that a declared dependency is genuinely necessary. Project owners must maintain the allowlist and keep mixed-project documents section-scoped. Hosts must run the check before reading or injecting source content, then retrieve only the returned `selected` references. This release supplies the reusable checker and a synthetic example; it does not install a USB-specific manifest, move/clean files, or prove a host has wired the gate.
+`materialize-context` performs the next step: after the entire reference list passes the metadata gate, it reads only those exact files from a separate machine-local repository-roots map, resolves each heading/JSON-pointer/record locator against actual UTF-8 content, and returns a digest-bound packet. Any missing, escaped, ambiguous, or unresolved source blocks the whole packet; no partial selected content is released. The roots map contains local absolute paths and must not be committed or passed to the model.
+
+```powershell
+node bin/harness.mjs materialize-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json --roots .agent-harness/local-context-roots.json
+```
+
+The gate still does **not** infer semantic ownership from prose or prove that a declared dependency is genuinely necessary. Project owners must maintain the allowlist and keep mixed-project documents section-scoped. This is a reusable CLI packet builder, not automatic host enforcement: the host must invoke it before reading or injecting context and pass only the returned packet to the model. This release does not install a USB-specific manifest or prove that Codex/other host retrieval is wired to it.
 
 `buildTokenUsageRecord`, `summarizeTokenUsage`, and `compareTokenEfficiency` record provider observations such as
 input, cached input, output, retries, reservations, and accepted outcomes. They measure savings but never grant
@@ -116,6 +122,7 @@ node bin/harness.mjs lock-status --memory .agent-harness/run-1 --stale-after-ms 
 node bin/harness.mjs impact --root . --request examples/change-impact-request.json --output change-impact.json
 node bin/harness.mjs proof-release --release examples/proof-release.v1.json --observations examples/proof-observations.v1.json --now 2026-09-23T19:00:00.000Z
 node bin/harness.mjs scope-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json
+node bin/harness.mjs materialize-context --manifest examples/project-scope/manifest.valid.json --sources examples/project-scope/sources.valid.json --roots .agent-harness/local-context-roots.json
 ```
 
 ### Proof release gate

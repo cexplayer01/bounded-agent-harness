@@ -25,7 +25,7 @@
         {
           "id": "harness-context-contract",
           "path": "contracts/project-scope-manifest.v1.schema.json",
-          "locator": "record:project-scope-manifest.v1",
+          "locator": "json-pointer:/properties",
           "purpose": "The exact contract consumed by the site's context-scope adapter."
         }
       ]

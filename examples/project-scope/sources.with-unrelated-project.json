@@ -11,7 +11,7 @@
     "projectId": "bounded-agent-harness",
     "repositoryId": "bounded-agent-harness-repo",
     "path": "contracts/project-scope-manifest.v1.schema.json",
-    "locator": "record:project-scope-manifest.v1",
+    "locator": "json-pointer:/properties",
     "dependencyId": "harness-runtime"
   },
   {

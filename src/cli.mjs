@@ -15,6 +15,7 @@ import { scanChangeImpact } from "./change-impact.mjs";
 import { evaluateProofRelease, PROOF_OBSERVATIONS_FORMAT } from "./proof-release.mjs";
 import { claimSharedTask, completeSharedTask, enqueueSharedTask, inspectSharedTasks } from "./shared-task-queue.mjs";
 import { validateProjectContextScope } from "./project-context-scope.mjs";
+import { materializeProjectContext } from "./project-context-materializer.mjs";
 
 const json = async (path) => JSON.parse(await readFile(resolve(path), "utf8"));
 
@@ -124,6 +125,16 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     if (result.status !== "READY") process.exitCode = 1;
     return result;
   }
+  if (command === "materialize-context") {
+    assert(args.manifest && args.sources && args.roots, "CLI_ARGUMENT", "materialize-context requires --manifest, --sources, and --roots");
+    const manifest = await json(args.manifest);
+    const sources = await json(args.sources);
+    const roots = await json(args.roots);
+    const result = await materializeProjectContext({ manifest, sources, roots });
+    io.out(JSON.stringify(result, null, 2));
+    if (result.status !== "READY") process.exitCode = 1;
+    return result;
+  }
   if (command === "task-create") {
     assert(args.task && args.queue, "CLI_ARGUMENT", "task-create requires --task and --queue");
     const task = await json(args.task);
@@ -157,5 +168,5 @@ export async function runCli(argv, io = { out: console.log, err: console.error }
     io.out(JSON.stringify(result, null, 2));
     return result;
   }
-  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact|proof-release|scope-context|task-create|task-claim|task-complete|task-inspect> [options]");
+  throw new Error("Usage: agent-harness <validate|compile|run|resume|inspect|heartbeat|beat|leases|lock-status|impact|proof-release|scope-context|materialize-context|task-create|task-claim|task-complete|task-inspect> [options]");
 }

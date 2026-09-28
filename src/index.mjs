@@ -27,6 +27,7 @@ export { DEFAULT_TOKEN_CAPACITY_POLICY, TOKEN_CAPACITY_FORMAT, estimateTokenCoun
 export { CAPABILITY_INDEX_FORMAT, CAPABILITY_DESCRIPTOR_FORMAT, createCapabilityDescriptor, buildCapabilityIndex, verifyCapabilityIndex, resolveCapability } from "./capability-index.mjs";
 export { CONTEXT_PACKET_FORMAT, CONTEXT_PRUNING_FORMAT, ARTIFACT_REFERENCE_FORMAT, TOKEN_USAGE_FORMAT, TOKEN_EFFICIENCY_REPORT_FORMAT, buildArtifactReference, buildContextPacket, verifyContextPacket, renderContextPacket, pruneContextRecords, buildTokenUsageRecord, summarizeTokenUsage, compareTokenEfficiency, contextPacketTokenEstimate, contextPacketCanonicalText } from "./token-efficiency.mjs";
 export { PROJECT_SCOPE_MANIFEST_FORMAT, PROJECT_CONTEXT_SCOPE_RESULT_FORMAT, validateProjectScopeManifest, validateProjectContextScope, assertProjectContextScope } from "./project-context-scope.mjs";
+export { PROJECT_CONTEXT_ROOTS_FORMAT, PROJECT_CONTEXT_PACKET_FORMAT, extractProjectContextLocator, materializeProjectContext } from "./project-context-materializer.mjs";
 export { decideContinuation } from "./continuation-controller.mjs";
 export { ownerTimeoutWatchdog } from "./owner-timeout-watchdog.mjs";
 export { OWNER_WAKE_FORMAT, armOwnerTimeout, buildOwnerWakeRecord } from "./continuation-scheduler.mjs";
