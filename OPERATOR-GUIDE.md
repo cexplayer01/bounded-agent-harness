@@ -15,6 +15,14 @@ npm run proof:release
 
 Expected result: all tests pass, the package audit reports `valid: true`, and the MCP demo completes two specialist steps with pinned provider identities and bounded cost.
 
+## Publish a reviewed branch safely
+
+- Confirm the repository, remote URL, branch, working-tree state, and exact commit before publishing. Preserve unrelated edits; push only the reviewed commit or ref.
+- Prefer the established authenticated Git CLI route for a normal fast-forward push. A GitHub REST integration returning `403 Resource not accessible by integration` proves that integration cannot perform that API operation; it does not prove that the user's Git CLI credentials are absent or need to be recreated.
+- Read the current remote SHA and verify it is an ancestor of the candidate. Use a dry run when available, then use an ordinary non-force push. Verify the remote ref SHA afterward.
+- If a checkout fails Git's ownership/safe-directory check, do not add a broad or persistent `safe.directory` exception. Preserve that checkout and its metadata. Transfer the exact reviewed commit into a clean checkout owned by the authenticated operator, or stop and report the specific host-level ownership blocker.
+- Do not ask the owner to reconnect or recreate credentials until the known authenticated Git route has been tested and its actual failure recorded. Never expose credential values while diagnosing it.
+
 ## Publish proof without stale live claims
 
 Before updating a proof receipt, create a claim file from the exact state you intend to publish and obtain a fresh read-only observation packet from the relevant host adapter. Run:
