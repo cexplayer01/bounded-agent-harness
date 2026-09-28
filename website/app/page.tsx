@@ -22,7 +22,7 @@ const continuation = [
   ["Resume, don't fail", "Missing or stale approval becomes a durable checkpoint with the exact gate and workflow identity required to continue later."],
   ["Spend proof where it matters", "Change-impact cards choose focused verification so documentation and local edits do not trigger needless full-suite work."],
   ["Keep safe work moving", "A blocked gated action pauses that action; unrelated local work can continue until a real boundary or proven completion."],
-  ["FreeVibeApps / real integration", "The owner kept the harness mounted through a real deterministic site build, sidecar proof, deployment preflight, and same-origin production pilot."],
+  ["FreeVibeApps / real integration", "Owner-attested use through a deterministic Site build, sidecar proof, deployment preflight, and same-origin pilot, with focused tests and live readback recorded. The public proof states that raw run records are owner-controlled and not every project change is independently replayable from this repository."],
 ];
 
 export default function Home() {
@@ -88,6 +88,10 @@ export default function Home() {
         <p className="section-copy">Current automated result: 165 passed, zero failed; one symlink-path test is skipped because this Windows host blocks test-symlink creation. Every public build exposes a machine-readable release receipt binding the live page to its exact source commit and proof record.</p>
         <a href="/release.json">Inspect the live release receipt ↗</a>
         <a href="https://github.com/cexplayer01/bounded-agent-harness/blob/codex/project-brain-scope-20260927/README.md#current-runnable-slice">Inspect the runnable slice ↗</a>
+        <div className="proof-downloads" aria-label="Public source downloads">
+          <a href="/harness-review.txt">Download source and proof snapshot ↗</a>
+          <a href="/harness-tests.txt">Download automated test sources ↗</a>
+        </div>
       </section>
 
       <section className="how" id="how">

@@ -88,6 +88,8 @@ h1 em { color: var(--muted); font-style: normal; font-weight: 420; }
 .proof-grid strong { color: var(--amber); font: 650 28px/1 ui-monospace, SFMono-Regular, Consolas, monospace; }
 .proof-grid span { margin-top: 8px; color: #788a90; font-size: 11px; }
 .proof > a { color: var(--cyan); font-size: 12px; font-weight: 700; }
+.proof-downloads { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 22px; }
+.proof-downloads a { color: var(--cyan); font-size: 12px; font-weight: 700; }
 
 .how { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 120px 0; display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; }
 .section-heading h2 { margin: 0; font-size: clamp(34px, 4vw, 56px); line-height: 1.04; letter-spacing: -.045em; }
