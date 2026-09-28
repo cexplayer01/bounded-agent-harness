@@ -16,10 +16,11 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["repositoryId", "rootPath"],
+        "required": ["repositoryId", "rootPath", "expectedGitRemote"],
         "properties": {
           "repositoryId": { "$ref": "project-scope-manifest.v1.schema.json#/$defs/id" },
-          "rootPath": { "type": "string", "minLength": 1, "description": "Absolute local repository path. This machine-local mapping must not be committed or returned in a context packet." }
+          "rootPath": { "type": "string", "minLength": 1, "description": "Absolute local repository path. This machine-local mapping must not be committed or returned in a context packet." },
+          "expectedGitRemote": { "type": "string", "minLength": 1, "description": "Credential-free expected origin URL. The materializer compares it with the selected checkout's local Git origin; this prevents accidental wrong-checkout mapping but is not cryptographic repository authentication." }
         }
       }
     }
