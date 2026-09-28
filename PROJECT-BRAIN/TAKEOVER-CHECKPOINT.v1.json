@@ -4,15 +4,9 @@
   "repository": {
     "project_id": "bounded-agent-harness",
     "branch": "codex/project-brain-ownership-20260928",
-    "head": "f96cde3b2438352655f7d92574a81bc3f1a93ffc",
+    "head": "9d4bf97e9ccbf64cfb4f10a8718682a4b7284d81",
     "tracked_source_state": "CLEAN_WITH_PRESERVED_UNTRACKED",
-    "expected_git_status": [
-      {
-        "code": "??",
-        "path": "PROJECT-BRAIN/TAKEOVER-CHECKPOINT.v1.json",
-        "availability": "REPOSITORY"
-      }
-    ]
+    "expected_git_status": []
   },
   "continuation": {
     "phase": "project-brain ownership and host project-scope integration",
