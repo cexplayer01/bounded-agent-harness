@@ -80,8 +80,9 @@ h1 em { color: var(--muted); font-style: normal; font-weight: 420; }
 .card-foot { border-top: 1px solid var(--line); border-bottom: 0; }
 .pulse { width: 6px; height: 6px; display: inline-block; margin-right: 6px; border-radius: 50%; background: var(--cyan); }
 
-.proof { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 42px 0; display: grid; grid-template-columns: .8fr 2fr auto; align-items: center; gap: 42px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.proof { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 42px 0; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 2fr); align-items: center; gap: 42px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .proof > p { color: #9eacb1; font-size: 14px; }
+.proof > p.section-copy { grid-column: 1 / -1; }
 .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
 .proof-grid div { padding: 0 24px; border-left: 1px solid var(--line); }
 .proof-grid strong, .proof-grid span { display: block; }
