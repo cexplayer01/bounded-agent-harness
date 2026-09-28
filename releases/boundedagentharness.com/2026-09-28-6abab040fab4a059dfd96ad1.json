@@ -1,0 +1,46 @@
+{
+  "format": "bounded-agent-harness-public-deployment-receipt.v1",
+  "site": "https://boundedagentharness.com",
+  "siteId": "f1f89409-622f-4266-ae98-a42c5d541422",
+  "deployId": "6abab040fab4a059dfd96ad1",
+  "deployUrl": "https://6abab040fab4a059dfd96ad1--bounded-agent-harness.netlify.app",
+  "rollbackDeployId": "6ab7542de0a386f0d1ec894f",
+  "sourceRepository": "https://github.com/cexplayer01/bounded-agent-harness",
+  "sourceCommit": "34bffb1df3b053033048ba13699153f316c732b4",
+  "releaseReceiptUrl": "https://boundedagentharness.com/release.json",
+  "releaseReceiptSha256": "254ed8a75e9ce48c6ad6a9b7de609225107dd93cad52cdd24f8dd67ab22e9458",
+  "websiteSourceSha256": "ae48b6988939344df787de5c88927026b58536557068a66bf7a87178728287cc",
+  "proofStatusSha256": "7c4743e49fe37e58958142e5d13407620948cb777e2a85e0963ba62d35417411",
+  "publishedAt": "2026-09-28",
+  "verifiedAt": "2026-09-28T18:21:54Z",
+  "artifact": {
+    "candidateZipSha256": "36a598c4cdb390a69c020c160b9a21f3ac95285f35e33537eaa6fc56ffc42201",
+    "candidateZipBytes": 508308,
+    "candidateZipFiles": 35,
+    "publicFilesByteVerified": 34,
+    "availableFunctions": 0,
+    "requiredFunctions": 0,
+    "edgeFunctions": 0
+  },
+  "checks": {
+    "sourceCommitMatchesLiveReceipt": true,
+    "releaseReceiptHttp200": true,
+    "homepageHttp200": true,
+    "deployState": "ready",
+    "externalEffects": "PUBLIC_NETLIFY_DEPLOY_ONLY",
+    "databaseChanged": false,
+    "providerChanged": false,
+    "customerSitesChanged": false,
+    "dnsChanged": false,
+    "secretsChanged": false
+  },
+  "rollback": {
+    "method": "Republish Netlify deploy 6ab7542de0a386f0d1ec894f for site f1f89409-622f-4266-ae98-a42c5d541422",
+    "verifiedBeforePublish": true
+  },
+  "notes": [
+    "Netlify consumed _headers as control metadata; it is not a public route.",
+    "No function endpoint was invoked.",
+    "The failed function-bearing deploy 6abaa6b6b4dff6057ac0f8fa was deleted after owner GO and must not be restored."
+  ]
+}

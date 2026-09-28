@@ -115,7 +115,7 @@ compare the same task before and after context optimization.
 
 ## Proof status
 
-The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 166 tests: 165 passed, 0 failed, and 1 symlink test skipped because this Windows host denies test-symlink creation. It includes 10 project-context metadata-gate tests and 11 source-materializer tests, plus a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
+The current proof is dimension-specific rather than a single production-readiness claim. [`PROOF-STATUS.md`](PROOF-STATUS.md) and its machine-readable companion [`PROOF-STATUS.v1.json`](PROOF-STATUS.v1.json) record the exact tested source commit, reproducible commands, results, USB/DFW Metro/FreeVibeApps integration evidence, and remaining limits. The direct local proof is currently 169 tests: 168 passed, 0 failed, and 1 symlink test skipped because this Windows host denies test-symlink creation. It includes 10 project-context metadata-gate tests, 11 source-materializer tests, and 9 takeover-checkpoint tests, plus a clean package audit, a deterministic compiler demo, a two-provider in-process MCP compatibility demo, a repository-native shared-agent bridge, and token-efficiency utility proofs. DFW Metro, DFWMow, and FreeVibeApps are documented as integration and external-state evidence; they are not represented as hosted harness runtime infrastructure.
 
 ```powershell
 cd agent-harness
@@ -270,11 +270,11 @@ This distinction is intentionally host-neutral. Codex goal mode, a queue worker,
 
 ## Portable takeover checkpoints
 
-`src/takeover-checkpoint.mjs` validates a machine-readable stop point that carries the active objective, exact next step, resume command, repository identity, test/live evidence, known problems, authority boundary, and preservation register. A host supplies its current Git and file snapshots; the validator compares them without treating chat history as authority.
+`src/takeover-checkpoint.mjs` validates a machine-readable stop point that carries the active objective, exact next step, resume command, explicit project identity, repository identity, test/live evidence, known problems, authority boundary, and preservation register. New checkpoints use `agent-harness.takeover-checkpoint.v1`; the prior `usb-takeover-checkpoint.v1` label remains readable for migration. A host may provide `expectedProjectId` so a USB checkpoint cannot be accepted as BAH state (or vice versa).
 
 The preservation register classifies each preserved item as `REPOSITORY`, `LOCAL_ONLY`, or `EXTERNAL`, records provenance and intended action, and binds an optional SHA-256 digest. Missing local-only artifacts produce explicit warnings so another clone can continue safe repository work without recreating owner data. Unregistered changes, branch or commit drift, missing repository items, and preserved-file hash drift fail closed.
 
-This package exposes the validator as a library boundary. The default follow-up-commit path is the USB checkpoint location; a host for another repository can pass its own `checkpointPath`. A repository-specific host may add a thin snapshot adapter and a human-readable command, but the core package does not assume Git, a filesystem layout, credentials, deployment access, or a particular agent product.
+This package exposes the validator as a library boundary. It assumes no checkpoint filename: a host must pass its own `checkpointPath` before a checkpoint-only follow-up commit can satisfy Git validation. A repository-specific host may add a thin snapshot adapter and a human-readable command, but the core package does not assume Git, a filesystem layout, credentials, deployment access, or a particular agent product.
 
 `model-policy.mjs` turns that model policy into an explicit selection decision. A fork may select the economy tier for Class A/B work only when it fits the fork budget. Class C/D work always returns `ESCALATE` with `HUMAN_FLOOR_REQUIRED`; model selection is metadata and never invokes a provider.
 
@@ -301,6 +301,7 @@ The extraction audit checks that the folder remains zero-dependency, publication
 
 ## Documentation
 
+- [PROJECT-BRAIN/README.md](PROJECT-BRAIN/README.md) — BAH-owned current state and continuation entry point; cross-project records remain in their owning projects.
 - [PRODUCT.md](PRODUCT.md) — buyer, pain, commercial wedge, and proof required.
 - [OPERATOR-GUIDE.md](OPERATOR-GUIDE.md) — the shortest path to compile, run, inspect, and diagnose.
 - [THREAT-MODEL.md](THREAT-MODEL.md) — protected properties and explicit limitations.

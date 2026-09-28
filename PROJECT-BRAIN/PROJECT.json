@@ -1,0 +1,14 @@
+{
+  "schema_version": "agent-harness.project-brain.v1",
+  "project_id": "bounded-agent-harness",
+  "repository": "https://github.com/cexplayer01/bounded-agent-harness",
+  "brain_root": "PROJECT-BRAIN",
+  "references": [
+    {
+      "project_id": "usb-website-platform",
+      "repository": "https://github.com/cexplayer01/USB-Website-platform",
+      "path": "Project Brain/README.md",
+      "scope": "Only consult for an explicitly cited BAH integration-evidence question; do not import USB current status or general product context."
+    }
+  ]
+}
