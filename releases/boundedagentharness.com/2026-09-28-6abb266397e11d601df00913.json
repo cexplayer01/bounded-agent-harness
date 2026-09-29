@@ -1,0 +1,46 @@
+{
+  "format": "bounded-agent-harness-public-deployment-receipt.v1",
+  "site": "https://boundedagentharness.com",
+  "siteId": "f1f89409-622f-4266-ae98-a42c5d541422",
+  "deployId": "6abb266397e11d601df00913",
+  "deployUrl": "https://6abb266397e11d601df00913--bounded-agent-harness.netlify.app",
+  "rollbackDeployId": "6ab7542de0a386f0d1ec894f",
+  "sourceRepository": "https://github.com/cexplayer01/bounded-agent-harness",
+  "sourceCommit": "0150713fcd92629dc0501b9550a8f31b2f414f27",
+  "releaseReceiptUrl": "https://boundedagentharness.com/release.json",
+  "releaseReceiptSha256": "6908270b0a79b6ffa14e5a7bf4aa778160741404cc4f6754924f9531431809e7",
+  "websiteSourceSha256": "39cc977d4967862cfec21a46d78dfb87104f8aa29891779939f8ce38c12e5ab6",
+  "proofStatusSha256": "0ac80681d1a9a68e167f5ad3ae1b54264d0b1c7333558b2ba48d067c775e612d",
+  "publishedAt": "2026-09-28",
+  "verifiedAt": "2026-09-29T02:55:43Z",
+  "artifact": {
+    "candidateZipSha256": "f4c71ea7c7e7bbc79fd879d82eda381a3a3601acceec1094b29a7260ad0f2d0a",
+    "candidateZipBytes": 510334,
+    "candidateZipFiles": 35,
+    "publicFilesByteVerified": 34,
+    "availableFunctions": 0,
+    "requiredFunctions": 0,
+    "edgeFunctions": 0
+  },
+  "checks": {
+    "sourceCommitMatchesLiveReceipt": true,
+    "releaseReceiptHttp200": true,
+    "homepageHttp200": true,
+    "deployState": "ready",
+    "externalEffects": "PUBLIC_NETLIFY_DEPLOY_ONLY",
+    "databaseChanged": false,
+    "providerChanged": false,
+    "customerSitesChanged": false,
+    "dnsChanged": false,
+    "secretsChanged": false
+  },
+  "rollback": {
+    "method": "Republish Netlify deploy 6ab7542de0a386f0d1ec894f for site f1f89409-622f-4266-ae98-a42c5d541422",
+    "verifiedBeforePublish": true
+  },
+  "notes": [
+    "Netlify consumed _headers as control metadata; it is not a public route.",
+    "The source branch was pushed through the existing Git credential route after restoring the bundled Git helper path.",
+    "No function endpoint was present or invoked."
+  ]
+}
