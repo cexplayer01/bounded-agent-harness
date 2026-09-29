@@ -1,17 +1,12 @@
 {
   "schema_version": "agent-harness.takeover-checkpoint.v1",
-  "recorded_at_utc": "2026-09-29T02:58:02Z",
+  "recorded_at_utc": "2026-09-29T03:01:00Z",
   "repository": {
     "project_id": "bounded-agent-harness",
     "branch": "codex/project-brain-ownership-20260928",
-    "head": "be92433974ff72abb5b12d72d9898e3ae9ede972",
+    "head": "d8f13484e578e25a4107b73cf1875b03c1f13523",
     "tracked_source_state": "IN_PROGRESS",
     "expected_git_status": [
-      {
-        "code": " M",
-        "path": "PROJECT-BRAIN/TAKEOVER-CHECKPOINT.v1.json",
-        "availability": "REPOSITORY"
-      },
       {
         "code": "??",
         "path": "work/",
