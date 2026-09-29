@@ -1,28 +1,41 @@
 {
   "schema_version": "agent-harness.takeover-checkpoint.v1",
-  "recorded_at_utc": "2026-09-28T19:40:37Z",
+  "recorded_at_utc": "2026-09-29T02:58:02Z",
   "repository": {
     "project_id": "bounded-agent-harness",
     "branch": "codex/project-brain-ownership-20260928",
-    "head": "c968944d8b2b7d6ae158450c2f42d740bfcd40ea",
-    "tracked_source_state": "CLEAN",
-    "expected_git_status": []
+    "head": "be92433974ff72abb5b12d72d9898e3ae9ede972",
+    "tracked_source_state": "IN_PROGRESS",
+    "expected_git_status": [
+      {
+        "code": " M",
+        "path": "PROJECT-BRAIN/TAKEOVER-CHECKPOINT.v1.json",
+        "availability": "REPOSITORY"
+      },
+      {
+        "code": "??",
+        "path": "work/",
+        "availability": "LOCAL_ONLY"
+      }
+    ]
   },
   "continuation": {
     "phase": "project-brain ownership and host project-scope integration",
-    "status": "WAITING_FOR_OWNER",
+    "status": "READY",
     "objective": "Give Bounded Agent Harness its own portable Project Brain, prevent project checkpoint reuse across projects, and make project-scoped context selection an enforced host boundary.",
-    "last_completed": "Added BAH-owned project identity, current state, next step, deployment receipt, and ownership tests. Generalized the takeover checkpoint version, required project_id for new checkpoints, added expectedProjectId rejection, removed the assumed USB checkpoint path, and preserved legacy USB checkpoint reads. Updated the BAH homepage source at 6150a31 to report the verified 171-test suite and project-boundary proof with the host-integration limit stated. Site lint passed; the full suite reports 171 tests (170 passed, 0 failed, 1 Windows symlink-creation skip); package audit is valid with no findings. The owner authorized publishing this BAH update on 2026-09-28.",
-    "in_progress": "The approved source update and project brain are committed locally through aa779f9b0214bcfd739849bae107d42dad837310. GitHub repository metadata reports push permission, but an actual create-ref call returned HTTP 403 Resource not accessible by integration. The current Git runtime also lacks an HTTPS remote helper; no alternate branch will be modified. The site has not been rebuilt or deployed.",
-    "next_step": "Restore a working GitHub write route, then publish codex/project-brain-ownership-20260928 as a fast-forward from 34bffb1df3b053033048ba13699153f316c732b4 and verify the exact remote SHA. Build the static candidate from that published source commit, verify release.json and the static-only function boundary, upload it to boundedagentharness.com, and verify the live release. The owner GO for this exact site update is already recorded; rollback is Netlify deploy 6ab7542de0a386f0d1ec894f.",
-    "resume_command": "From the BAH repository root, read PROJECT-BRAIN/README.md, PROJECT-BRAIN/CURRENT-STATE.md, and PROJECT-BRAIN/NEXT-STEP.md. First restore authenticated GitHub write access and publish the existing branch without force-push; verify remote SHA before building. Then run `pnpm --dir website run build:netlify`, `pnpm --dir website run verify:release`, `pnpm --dir website run lint`, `node --test`, `node bin/audit-package.mjs`, and `git diff --check`. Upload only after the public source URL resolves to the generated release commit. Do not modify another branch or enable billing/auto-recharge.",
+    "last_completed": "Published the exact 35-file static BAH candidate from source commit 0150713fcd92629dc0501b9550a8f31b2f414f27 as Netlify deploy 6abb266397e11d601df00913. Netlify reports ready with zero available, required, or edge functions. All 34 publicly served files match the preserved candidate ZIP; `_headers` is control metadata. GitHub exposes the exact source commit. The false access blocker was traced to a local origin pointing at a sibling checkout, sandbox-owned older checkouts, and a missing bundled Git helper path during push; the saved Git credential route remained valid. OPERATOR-GUIDE.md now requires those checks before asking the owner to reconnect anything.",
+    "in_progress": null,
+    "next_step": "Implement the existing planned host-neutral retrieval/injection adapter so project-scoped context selection is enforced before model context construction. Reuse the current project-scope gate and source materializer; do not add a parallel scope engine or deploy a site for this local step.",
+    "resume_command": "From the BAH repository root, read PROJECT-BRAIN/README.md, PROJECT-BRAIN/CURRENT-STATE.md, and PROJECT-BRAIN/NEXT-STEP.md. Preserve the work/ artifacts. Confirm the repository identity is bounded-agent-harness, then implement and test the host-neutral retrieval/injection adapter described in NEXT-STEP.md. For any future Git publication, inspect the remote URL and ownership first; on this bundled Windows runtime set GIT_EXEC_PATH from `git --exec-path` for the push process and dry-run before asking the owner to reconnect GitHub.",
     "do_not_repeat": [
       "Do not put USB, DFW Metro, FreeVibeApps, or game-project current state into the BAH Project Brain.",
       "Do not copy USB product purpose or private owner history; use only the exact USB evidence pointer declared in PROJECT-BRAIN/PROJECT.json when a BAH claim requires it.",
       "Do not publish private HITL Removal or Danger Mode specifications, credentials, or owner records in this public repository.",
-      "Do not deploy while the release snapshot's source URL points to a commit that cannot be reached from GitHub; the owner GO is granted, but source publication must come first.",
-      "Do not force-push or write this work onto codex/project-brain-scope-20260927 or another existing branch to bypass the create-ref permission failure.",
-      "The live site remains bound to source commit 34bffb1df3b053033048ba13699153f316c732b4 until the approved candidate is published and postflight-verified."
+      "Do not treat a GitHub connector 403 or empty plugin repository list as proof that the authenticated Git CLI route is unavailable.",
+      "Do not ask the owner to reconnect GitHub before checking the actual remote, checkout ownership, `git --exec-path`, and an explicit HTTPS push dry run.",
+      "Do not run `pnpm install --offline` in an isolated worktree; the available store lacks the Next.js 16.2.6 tarball. Do not build from a worktree inside website/work or with a node_modules junction in the site tree.",
+      "Use `node --test 'test/*.test.mjs'` for the BAH tracked suite while preserved worktrees live under `work/`; bare `node --test` also discovers their tests and can report unrelated junction failures.",
+      "The live site is bound to source commit 0150713fcd92629dc0501b9550a8f31b2f414f27 and deploy 6abb266397e11d601df00913; do not replace it without a separate publication GO."
     ]
   },
   "evidence": {
@@ -30,7 +43,7 @@
       {
         "name": "full BAH test suite",
         "result": "PASS",
-        "summary": "node --test: 171 tests, 170 passed, 0 failed, 1 skipped because Windows denied test-symlink creation."
+        "summary": "node --test 'test/*.test.mjs': 171 tests, 170 passed, 0 failed, 1 skipped because Windows denied test-symlink creation."
       },
       {
         "name": "BAH package audit",
@@ -41,30 +54,51 @@
         "name": "project ownership and checkpoint focus",
         "result": "PASS",
         "summary": "Project-brain ownership 2/2; takeover checkpoint 9/9."
+      },
+      {
+        "name": "isolated offline website dependency install",
+        "result": "KNOWN_FAILURE",
+        "summary": "pnpm install --offline --frozen-lockfile --ignore-scripts could not find next-16.2.6.tgz in the local store; no tracked source was changed. The release will use the already-installed dependencies in the main checkout."
+      },
+      {
+        "name": "BAH static production build and local release check",
+        "result": "PASS",
+        "summary": "`pnpm --dir website run build:netlify` succeeded. `website/out` has 35 static files, netlify.toml publishes `out`, and there is no function source. Local verify-public-site-release returned PASS at 127.0.0.1:4170; homepage and receipt returned HTTP 200 and the receipt matched source commit 0150713fcd92629dc0501b9550a8f31b2f414f27."
+      },
+      {
+        "name": "exact BAH deployment candidate ZIP",
+        "result": "PASS",
+        "summary": "`work/bah-site-candidate-0150713.zip` contains 35 files at archive root; every ZIP entry SHA-256 matches website/out. Size 510,334 bytes; archive SHA-256 f4c71ea7c7e7bbc79fd879d82eda381a3a3601acceec1094b29a7260ad0f2d0a; functions 0."
       }
     ],
     "live": [
       {
         "target": "https://boundedagentharness.com",
         "result": "PASS",
-        "observed_on": "2026-09-28T18:21:54Z",
-        "deployment_id": "6abab040fab4a059dfd96ad1",
+        "observed_on": "2026-09-29T02:55:43Z",
+        "deployment_id": "6abb266397e11d601df00913",
         "rollback_deployment_id": "6ab7542de0a386f0d1ec894f",
-        "effect_boundary": "Previously verified production publication of the exact static BAH candidate from source commit 34bffb1df3b053033048ba13699153f316c732b4: zero available/required/edge functions; all 34 public files matched the preserved ZIP; /release.json bound the candidate commit and website digest. This project-brain branch was not deployed."
+        "effect_boundary": "Production publication of the exact static BAH candidate from source commit 0150713fcd92629dc0501b9550a8f31b2f414f27: zero available/required/edge functions; all 34 public files matched the preserved ZIP; /release.json bound the candidate commit and website digest. No other site, DNS, database, payment, credential, or provider setting changed."
       }
     ],
     "known_problems": [
       {
-        "scope": "GitHub source publication",
-        "status": "BLOCKED_BY_INTEGRATION_PERMISSION",
-        "summary": "Repository metadata reports push permission, but a fresh GitHub create-ref request for the approved branch returned HTTP 403 Resource not accessible by integration. The bundled Git runtime has no HTTPS remote helper, and no authenticated alternate route is configured. The local source branch is complete, but another machine cannot yet read it.",
-        "next_action": "Restore GitHub integration write authorization or an authenticated Git transport, publish the existing branch as a non-force fast-forward from 34bffb1df3b053033048ba13699153f316c732b4, and verify the remote SHA before building or deploying."
+        "scope": "Bundled Windows Git publication route",
+        "status": "MITIGATED_HOST_QUIRK",
+        "summary": "The checkout's origin pointed to a sibling local repository, older checkouts had sandbox ownership, and push could not find remote-https until GIT_EXEC_PATH was supplied from git --exec-path. The GitHub plugin exposed zero installed repositories, but the saved Git credential route remained valid and published the exact branch.",
+        "next_action": "For future pushes, verify the canonical remote and checkout ownership, supply the bundled helper path to the push process, perform an explicit HTTPS dry run, and only then diagnose credentials. Follow OPERATOR-GUIDE.md."
+      },
+      {
+        "scope": "Node test discovery with preserved worktrees",
+        "status": "LOCAL_WORKTREE_DISCOVERY",
+        "summary": "Bare `node --test` recursively discovered tests inside preserved worktrees under `work/`, including failed junction experiments. Those are unrelated to the main BAH test result; the explicit tracked test glob passes 170 tests with one host skip and zero failures.",
+        "next_action": "While these preservation worktrees remain, use `node --test 'test/*.test.mjs'` for exact BAH verification. Do not delete preserved worktrees just to change test discovery."
       },
       {
         "scope": "project-scoped context host integration",
         "status": "NOT_IMPLEMENTED",
         "summary": "The gate and file-backed materializer are proven locally, but no production host is proven to call them before retrieval/injection.",
-        "next_action": "After the approved website publication is complete, continue with the one host-neutral adapter defined in PROJECT-BRAIN/NEXT-STEP.md."
+        "next_action": "Continue with the one host-neutral adapter defined in PROJECT-BRAIN/NEXT-STEP.md."
       },
       {
         "scope": "symlink test portability",
@@ -81,7 +115,7 @@
       "classification": "BAH continuation checkpoint being established",
       "state": "CURRENT",
       "action": "PRESERVE_IN_PLACE",
-      "provenance": "BAH-owned continuation file created for project_id bounded-agent-harness and tracked in this repository. This snapshot records the approved website publication request, verified GitHub create-ref 403, and checkpoint-only follow-up commit.",
+      "provenance": "BAH-owned continuation file for project_id bounded-agent-harness. This snapshot records the completed source publication, live static deployment, Git route root cause, preserved local output, and the next local host-boundary integration step.",
       "owner_decision_required": false,
       "availability": "REPOSITORY",
       "required_for": "Portable BAH continuation and safe Git-state validation."
@@ -97,24 +131,170 @@
       "availability": "REPOSITORY",
       "required_for": "BAH continuation and project separation."
     },
-    {
+      {
       "path": "releases/boundedagentharness.com/2026-09-28-6abab040fab4a059dfd96ad1.json",
       "kind": "FILE",
       "classification": "Exact historical public deployment receipt",
-      "state": "CURRENT",
+      "state": "HISTORICAL",
       "action": "PRESERVE_IN_PLACE",
       "provenance": "Records the verified static production candidate and rollback; it grants no deployment authority.",
       "owner_decision_required": false,
       "availability": "REPOSITORY",
-      "required_for": "Separating BAH release evidence from the USB Project Brain."
+        "required_for": "Preserving the prior BAH production release evidence."
+    },
+    {
+      "path": "releases/boundedagentharness.com/2026-09-28-6abb266397e11d601df00913.json",
+      "kind": "FILE",
+      "classification": "Exact current public deployment receipt",
+      "state": "CURRENT",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Records production deploy 6abb266397e11d601df00913, source commit 0150713fcd92629dc0501b9550a8f31b2f414f27, the 34-file byte postflight, zero-function boundary, and rollback deploy 6ab7542de0a386f0d1ec894f.",
+      "owner_decision_required": false,
+      "availability": "REPOSITORY",
+      "required_for": "Current BAH publication evidence and rollback."
+    },
+    {
+      "path": "work/",
+      "kind": "DIRECTORY",
+      "classification": "Container for local-only BAH release worktrees and candidate artifacts",
+      "state": "PRESERVE",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Created during the approved BAH publication task. Its child worktrees and any release artifacts are registered individually below. Preserve this container; do not delete it as a cleanup shortcut.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Preserve exact local build attempts and continuation evidence without mixing them into tracked USB or BAH source."
+    },
+    {
+      "path": "work/bah-site-release-0150713/",
+      "kind": "DIRECTORY",
+      "classification": "Detached BAH release worktree using a junction to existing dependencies",
+      "state": "HISTORICAL",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Detached at 0150713fcd92629dc0501b9550a8f31b2f414f27. Tracked source is clean. The website scripts were not run here; it is retained unchanged as a fallback workspace.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Recover the exact first isolated worktree without disturbing the owner checkout."
+    },
+    {
+      "path": "work/bah-site-release-build-0150713/",
+      "kind": "DIRECTORY",
+      "classification": "Detached BAH release worktree with an incomplete offline install attempt",
+      "state": "HISTORICAL",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Detached at 0150713fcd92629dc0501b9550a8f31b2f414f27. `pnpm install --offline --frozen-lockfile --ignore-scripts` stopped because Next.js 16.2.6 is absent from the local store. Tracked source is clean; no cleanup or deletion is authorized here.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Retain the failed offline dependency experiment and exact package-store limitation."
+    },
+    {
+      "path": "work/bah-site-release-failed-0150713/",
+      "kind": "DIRECTORY",
+      "classification": "Failed isolated BAH release worktree containing generated review snapshots",
+      "state": "HISTORICAL",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Detached at 0150713fcd92629dc0501b9550a8f31b2f414f27. Its `create-public-release.mjs` run failed because a Windows node_modules junction was read as a file. It was moved intact with `git worktree move` from `website/work/bah-site-release-0150713/` to this path on 2026-09-28; rollback is the inverse `git worktree move`.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Recover the exact failed attempt; retain its generated review snapshot and its dependency-junction provenance."
+    },
+    {
+      "path": "website/.next",
+      "kind": "DIRECTORY",
+      "classification": "Ignored rebuildable Next.js output from the prior site build",
+      "state": "REBUILDABLE",
+      "action": "REBUILD_FROM_SOURCE",
+      "provenance": "Present before the new build; 4,715,904 bytes, last written 2026-09-28T17:10:08Z. Exact copy will be preserved under `work/bah-prior-site-output-20260928/.next` before overwrite.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Rollback of generated local build state if needed."
+    },
+    {
+      "path": "website/out",
+      "kind": "DIRECTORY",
+      "classification": "Ignored static export from the prior BAH site build",
+      "state": "REBUILDABLE",
+      "action": "REBUILD_FROM_SOURCE",
+      "provenance": "Present before the new build; 1,896,882 bytes, last written 2026-09-28T17:10:07Z. Exact copy will be preserved under `work/bah-prior-site-output-20260928/out` before overwrite.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Recovery of the prior local static export."
+    },
+    {
+      "path": "website/next-env.d.ts",
+      "kind": "FILE",
+      "classification": "Ignored generated Next.js type reference",
+      "state": "REBUILDABLE",
+      "action": "REBUILD_FROM_SOURCE",
+      "provenance": "Present before the new build; 253 bytes. Exact SHA-256 is recorded for pre-build comparison; an exact copy will be preserved under `work/bah-prior-site-output-20260928/next-env.d.ts`.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "sha256": "4e4da12aa061aac172fb1bcb48e9b6e4b293080d2f494327925fdba8f39632ac",
+      "required_for": "Restore the previous local build's generated type reference if needed."
+    },
+    {
+      "path": "website/public/harness-review.txt",
+      "kind": "FILE",
+      "classification": "Ignored generated public source snapshot from the prior site build",
+      "state": "REBUILDABLE",
+      "action": "REBUILD_FROM_SOURCE",
+      "provenance": "Before rebuild this was 447,799 bytes with SHA-256 2b2f79a1a6de31d8ddd7a3d39b53cf0ab9514a76c5e56727c05d2d8f2e5ff589. Its exact bytes are preserved in `work/bah-prior-site-output-20260928.zip`; this source path now contains the regenerated snapshot for source commit 0150713.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Restore the previous local public source snapshot if needed."
+    },
+    {
+      "path": "website/public/harness-tests.txt",
+      "kind": "FILE",
+      "classification": "Ignored generated public test snapshot from the prior site build",
+      "state": "REBUILDABLE",
+      "action": "REBUILD_FROM_SOURCE",
+      "provenance": "Before rebuild this was 147,696 bytes with SHA-256 82e22a27dce432a039b3cfb5d30c0cb461cb5c1fabc381b58b07e46228d4f599. Its exact bytes are preserved in `work/bah-prior-site-output-20260928.zip`; this source path now contains the regenerated snapshot for source commit 0150713.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Restore the previous local test snapshot if needed."
+    },
+    {
+      "path": "website/public/release.json",
+      "kind": "FILE",
+      "classification": "Ignored release metadata from the prior site build",
+      "state": "REBUILDABLE",
+      "action": "REBUILD_FROM_SOURCE",
+      "provenance": "Before rebuild this was 868 bytes with SHA-256 254ed8a75e9ce48c6ad6a9b7de609225107dd93cad52cdd24f8dd67ab22e9458. Its exact bytes are preserved in `work/bah-prior-site-output-20260928.zip`; this source path now contains the regenerated release receipt for source commit 0150713.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "required_for": "Restore the previous local release metadata if needed."
+    },
+    {
+      "path": "work/bah-prior-site-output-20260928.zip",
+      "kind": "FILE",
+      "classification": "Pre-build preservation copy of ignored generated BAH website artifacts",
+      "state": "PRESERVE",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Created before the new build from website/.next, website/out, website/next-env.d.ts, and the three generated public metadata/snapshot files. 185 archive entries were hash-compared byte-for-byte with their original sources; archive size 1,856,843 bytes, SHA-256 195285270e373451ea3bc6fc6c31d529ac4aab33e32ff9c7d8273b1cc8ea49e5. Keep it until the new candidate is deployed or the owner decides otherwise.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "sha256": "195285270e373451ea3bc6fc6c31d529ac4aab33e32ff9c7d8273b1cc8ea49e5",
+      "required_for": "Recover the precise previous local generated build state."
+    },
+    {
+      "path": "work/bah-site-candidate-0150713.zip",
+      "kind": "FILE",
+      "classification": "Built exact static BAH deployment candidate bound to local source commit 0150713",
+      "state": "PRESERVE",
+      "action": "PRESERVE_IN_PLACE",
+      "provenance": "Built from public source commit 0150713fcd92629dc0501b9550a8f31b2f414f27. Contains exactly 35 static files at archive root; all entry hashes match website/out; size 510,334 bytes; SHA-256 f4c71ea7c7e7bbc79fd879d82eda381a3a3601acceec1094b29a7260ad0f2d0a. This exact candidate was published as deploy 6abb266397e11d601df00913 and all 34 publicly served files matched it; `_headers` is Netlify control metadata.",
+      "owner_decision_required": false,
+      "availability": "LOCAL_ONLY",
+      "sha256": "f4c71ea7c7e7bbc79fd879d82eda381a3a3601acceec1094b29a7260ad0f2d0a",
+      "required_for": "Exact recovery and byte-comparison source for the current public deployment."
     }
   ],
   "authority": {
-    "next_action": "Restore GitHub write authorization, publish this exact branch without force-push, verify its SHA, then build and publish the approved BAH static-site candidate and postflight the live release. The owner GO is already recorded.",
+    "next_action": "Implement and test the local host-neutral project-scoped retrieval/injection adapter defined in PROJECT-BRAIN/NEXT-STEP.md.",
     "go_required": false,
     "blocked_actions": [
       "Do not force-push or overwrite another BAH branch.",
-      "Do not deploy until the candidate's exact source commit is reachable through the public GitHub repository.",
+      "Do not publish or deploy another BAH candidate without a separate exact owner GO.",
       "Do not enable Netlify auto-recharge, upgrade the account, or make unrelated billing changes.",
       "Do not expose private project brains, credentials, customer data, or proprietary add-on specifications."
     ]
